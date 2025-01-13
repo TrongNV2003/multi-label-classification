@@ -61,7 +61,7 @@ def get_model(
 ) -> AutoModelForSequenceClassification:
     config = AutoConfig.from_pretrained(checkpoint, num_labels=num_labels)
     model = AutoModelForSequenceClassification.from_pretrained(
-        checkpoint, config=config
+        checkpoint, config=config, ignore_mismatched_sizes=True
     )
 
     # add special tokens
