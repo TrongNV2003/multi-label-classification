@@ -72,8 +72,8 @@ class LlmTrainer:
             with tqdm(total=len(self.train_loader), unit="batches") as tepoch:
                 tepoch.set_description(f"epoch {epoch}")
                 for data in self.train_loader:
-                    text_input_ids = data["text_input_ids"].to(self.device)
-                    text_attention_mask = data["text_attention_mask"].to(self.device)
+                    text_input_ids = data["input_ids"].to(self.device)
+                    text_attention_mask = data["attention_mask"].to(self.device)
                     labels = data["labels"].to(self.device)
 
                     outputs = self.model(
@@ -108,8 +108,8 @@ class LlmTrainer:
         with tqdm(total=len(dataloader), unit="batches") as tepoch:
             tepoch.set_description("validation")
             for data in dataloader:
-                text_input_ids = data["text_input_ids"].to(self.device)
-                text_attention_mask = data["text_attention_mask"].to(self.device)
+                text_input_ids = data["input_ids"].to(self.device)
+                text_attention_mask = data["attention_mask"].to(self.device)
                 labels = data["labels"].to(self.device)
 
                 outputs = self.model(

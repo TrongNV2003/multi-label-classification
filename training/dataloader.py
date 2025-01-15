@@ -6,7 +6,7 @@ import torch
 from transformers import AutoTokenizer
 
 class Dataset:
-    def __init__(self, json_file: str, label_mapping: dict) -> None:
+    def __init__(self, json_file: str, label_mapping: dict, tokenizer) -> None:
         """
         Args:
             json_file (str): Path to the JSON file.
@@ -16,6 +16,8 @@ class Dataset:
             data = json.load(f)
         self.data = data
         self.label_mapping = label_mapping
+        self.sep_token = tokenizer.sep_token
+
     def __len__(self) -> int:
         return len(self.data)
 
@@ -36,7 +38,7 @@ class Dataset:
         labels = item["label_intent"]
 
         if history:
-            history_text = "[SEP]".join(history)
+            history_text = self.sep_token.join(history)
             context = f"<history>{history_text}</history><current>{current_message}</current>"
         else:
             context = f"<current>{current_message}</current>"
@@ -70,7 +72,7 @@ class LlmDataCollator:
         contexts_tensor = self.tokenizer(
             contexts,
             max_length=self.max_length,
-            padding="max_length",
+            padding=True,
             truncation=True,
             return_tensors="pt",
         )
@@ -78,8 +80,8 @@ class LlmDataCollator:
         label_tensor = torch.tensor(np.array(labels), dtype=torch.float)
 
         return {
-            "text_input_ids": contexts_tensor["input_ids"],
-            "text_attention_mask": contexts_tensor["attention_mask"],
+            "input_ids": contexts_tensor["input_ids"],
+            "attention_mask": contexts_tensor["attention_mask"],
             "labels": label_tensor,
             "current_message": current_message,
         }

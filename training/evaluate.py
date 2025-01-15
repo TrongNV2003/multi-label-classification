@@ -12,26 +12,18 @@ class Tester:
         model: torch.nn.Module,
         test_loader: DataLoader,
         output_file: str,
+        id2label: list,
     ) -> None:
         self.test_loader = test_loader
         self.output_file = output_file
+        self.id2label = id2label
 
         self.loss_fn = nn.BCEWithLogitsLoss()
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model = model.to(self.device)
-        
-        self.labels_mapping = {
-        0: "Cung cấp thông tin",
-        1: "Tương tác",
-        2: "Hỏi thông tin giao hàng",
-        3: "Hỗ trợ, hướng dẫn",
-        4: "Yêu cầu",
-        5: "Phản hồi",
-        6: "Sự vụ",
-        }
 
-    def test_llm(self):
+    def evaluate(self):
         """
         This function will eval the model on test set and return the accuracy, F1-score and latency
 
@@ -52,8 +44,8 @@ class Tester:
         start_time = time.time()    #throughput
         with torch.no_grad():
             for batch in self.test_loader:
-                text_input_ids = batch["text_input_ids"].to(self.device)
-                text_attention_mask = batch["text_attention_mask"].to(self.device)
+                text_input_ids = batch["input_ids"].to(self.device)
+                text_attention_mask = batch["attention_mask"].to(self.device)
                 labels = batch["labels"].to(self.device)
                 text_samples = batch["current_message"]
 
@@ -75,8 +67,8 @@ class Tester:
                 all_labels.extend(labels.cpu().numpy())
 
                 for i in range(len(text_input_ids)):
-                    true_label_names = self._map_labels(labels.cpu().numpy()[i], self.labels_mapping)
-                    predicted_label_names = self._map_labels(preds[i], self.labels_mapping)
+                    true_label_names = self._map_labels(labels.cpu().numpy()[i], self.id2label)
+                    predicted_label_names = self._map_labels(preds[i], self.id2label)
                     results.append({
                         "text": text_samples[i],
                         "true_labels": true_label_names,
@@ -124,8 +116,8 @@ class Tester:
             f1 score
         """
 
-        precision = precision_score(label, predict, average="macro", zero_division=0)
-        recall = recall_score(label, predict, average="macro", zero_division=0)
+        precision = precision_score(label, predict, average="weighted", zero_division=0)
+        recall = recall_score(label, predict, average="weighted", zero_division=0)
         f1_score = 2 * (precision * recall) / (precision + recall)
         accuracy = self._accuracy(output)
 
