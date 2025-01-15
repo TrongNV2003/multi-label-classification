@@ -1,6 +1,5 @@
 import argparse
 import random
-from transformers import TrainingArguments, Trainer
 
 import numpy as np
 import torch
@@ -70,7 +69,7 @@ def get_model(
     )
 
     # resize embedding khi add special tokens
-    model.resize_token_embeddings(len(tokenizer), mean_resizing=True) # Nếu dữ liệu nhiều thì set mean_resizing=False
+    model.resize_token_embeddings(len(tokenizer))
     model = model.to(device)
     return model
 
@@ -93,7 +92,7 @@ def count_parameters(model: torch.nn.Module) -> None:
 if __name__ == "__main__":
     set_seed(args.seed)
 
-    unique_labels = ["Cung cấp thông tin", "Tương tác", "Hỏi thông tin giao hàng", "Hỗ trợ, hướng dẫn", "Yêu cầu", "Phản hồi", "Sự vụ"]
+    unique_labels = ["Cung cấp thông tin", "Tương tác", "Hỏi thông tin giao hàng", "Hỗ trợ, hướng dẫn", "Yêu cầu", "Phản hồi", "Sự vụ", "UNKNOWN"]
     label2id = {label: idx for idx, label in enumerate(unique_labels)} # label_mapping
     id2label = {idx: label for idx, label in enumerate(unique_labels)}
 

@@ -10,7 +10,7 @@ class Tester:
     ) -> None:
         self.test_loader = test_loader
 
-        unique_labels = ["Cung cấp thông tin", "Tương tác", "Hỏi thông tin giao hàng", "Hỗ trợ, hướng dẫn", "Yêu cầu", "Phản hồi", "Sự vụ"]
+        unique_labels = ["Cung cấp thông tin", "Tương tác", "Hỏi thông tin giao hàng", "Hỗ trợ, hướng dẫn", "Yêu cầu", "Phản hồi", "Sự vụ", "UNKNOWN"]
         self.id2label = {idx: label for idx, label in enumerate(unique_labels)}
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

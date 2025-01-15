@@ -87,7 +87,7 @@ class LlmTrainer:
                     loss.backward()
                     self.optimizer.step()
 
-                    self.train_loss.update(loss.item(), self.train_batch_size)
+                    self.train_loss.update(loss.item(), text_input_ids.size(0))
                     tepoch.set_postfix({"train_loss": self.train_loss.avg})
                     tepoch.update(1)
 
@@ -119,7 +119,7 @@ class LlmTrainer:
                 logits = outputs.logits
                 loss = self.loss_fn(logits, labels)
                 
-                eval_loss.update(loss.item(), self.valid_batch_size)
+                eval_loss.update(loss.item(), text_input_ids.size(0))
                 tepoch.set_postfix({"valid_loss": eval_loss.avg})
                 tepoch.update(1)
         return eval_loss.avg

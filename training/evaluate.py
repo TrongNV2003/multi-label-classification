@@ -66,7 +66,7 @@ class Tester:
                 all_preds.extend(preds)
                 all_labels.extend(labels.cpu().numpy())
 
-                for i in range(len(text_input_ids)):
+                for i in range(len(text_samples)):
                     true_label_names = self._map_labels(labels.cpu().numpy()[i], self.id2label)
                     predicted_label_names = self._map_labels(preds[i], self.id2label)
                     results.append({

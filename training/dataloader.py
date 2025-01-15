@@ -6,12 +6,13 @@ import torch
 from transformers import AutoTokenizer
 
 class Dataset:
-    def __init__(self, json_file: str, label_mapping: dict, tokenizer) -> None:
+    def __init__(self, json_file: str, label_mapping: dict, tokenizer: AutoTokenizer) -> None:
         """
         Args:
             json_file (str): Path to the JSON file.
             label_mapping (dict): Mapping of unique labels to indices.
         """
+        
         with open(json_file, "r", encoding="utf-8") as f:
             data = json.load(f)
         self.data = data
