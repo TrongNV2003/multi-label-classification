@@ -1,11 +1,11 @@
 import argparse
 import random
+from transformers import TrainingArguments, Trainer
 
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
 from transformers import (
-    AutoConfig,
     AutoModelForSequenceClassification,
     AutoTokenizer,
 )
@@ -36,18 +36,19 @@ parser.add_argument("--pin_memory", dest="pin_memory", action="store_true", defa
 parser.add_argument("--save_dir", type=str, default="./bert-classification")
 parser.add_argument("--train_batch_size", type=int, default=16)
 parser.add_argument("--valid_batch_size", type=int, default=8)
+parser.add_argument("--test_batch_size", type=int, default=8)
 parser.add_argument("--train_file", type=str, default="dataset/train.json")
 parser.add_argument("--valid_file", type=str, default="dataset/val.json")
 parser.add_argument("--test_file", type=str, default="dataset/test.json")
+parser.add_argument("--record_output_file", type=str, default="output.json")
 parser.add_argument("--seed", type=int, default=42)
-
 args = parser.parse_args()
 
 
 def get_tokenizer(checkpoint: str) -> AutoTokenizer:
     tokenizer = AutoTokenizer.from_pretrained(checkpoint)
     """
-    [cls]<history>message2[sep]message1</history>[sep]<current>message0</current>
+    Input format: [cls]<history>message2[sep]message1</history><current>message0</current>
     """
 
     tokenizer.add_special_tokens(
@@ -57,14 +58,18 @@ def get_tokenizer(checkpoint: str) -> AutoTokenizer:
 
 
 def get_model(
-    checkpoint: str, device: str, tokenizer: AutoTokenizer, num_labels: str
-) -> AutoModelForSequenceClassification:
-    config = AutoConfig.from_pretrained(checkpoint, num_labels=num_labels)
+    checkpoint: str, device: str, tokenizer: AutoTokenizer, num_labels: str, id2label: list, label2id: list
+    ) -> AutoModelForSequenceClassification:
     model = AutoModelForSequenceClassification.from_pretrained(
-        checkpoint, config=config, ignore_mismatched_sizes=True
+        checkpoint,
+        problem_type="multi_label_classification",
+        ignore_mismatched_sizes=True,
+        num_labels=num_labels,
+        id2label=id2label,
+        label2id=label2id,
     )
 
-    # add special tokens
+    # resize embedding khi add special tokens
     model.resize_token_embeddings(len(tokenizer), mean_resizing=True) # Nếu dữ liệu nhiều thì set mean_resizing=False
     model = model.to(device)
     return model
@@ -73,7 +78,7 @@ def count_parameters(model: torch.nn.Module) -> None:
     """
     Prints the total number of parameters and trainable parameters in the model.
 
-    Parameters:
+    Args:
         model (torch.nn.Module): The model to evaluate.
 
     Returns:
@@ -88,17 +93,19 @@ def count_parameters(model: torch.nn.Module) -> None:
 if __name__ == "__main__":
     set_seed(args.seed)
 
-    tokenizer = get_tokenizer(args.model)
     unique_labels = ["Cung cấp thông tin", "Tương tác", "Hỏi thông tin giao hàng", "Hỗ trợ, hướng dẫn", "Yêu cầu", "Phản hồi", "Sự vụ"]
-    label_mapping = {label: idx for idx, label in enumerate(unique_labels)}
+    label2id = {label: idx for idx, label in enumerate(unique_labels)} # label_mapping
+    id2label = {idx: label for idx, label in enumerate(unique_labels)}
 
-    train_set = Dataset(json_file=args.train_file, label_mapping=label_mapping)
-    valid_set = Dataset(json_file=args.valid_file, label_mapping=label_mapping)
-    test_set = Dataset(json_file=args.test_file, label_mapping=label_mapping)
+    tokenizer = get_tokenizer(args.model)
+    
+    train_set = Dataset(json_file=args.train_file, label_mapping=label2id, tokenizer=tokenizer)
+    valid_set = Dataset(json_file=args.valid_file, label_mapping=label2id, tokenizer=tokenizer)
+    test_set = Dataset(json_file=args.test_file, label_mapping=label2id, tokenizer=tokenizer)
 
     collator = LlmDataCollator(tokenizer=tokenizer, max_length=args.max_length)
 
-    model = get_model(args.model, args.device, tokenizer, num_labels=len(unique_labels))
+    model = get_model(args.model, args.device, tokenizer, num_labels=len(unique_labels), id2label=id2label, label2id=label2id)
 
     count_parameters(model)
 
@@ -120,13 +127,11 @@ if __name__ == "__main__":
     )
     trainer.train()
 
-    # test
+    # Evaluate model on test set
     MODEL = "bert-classification"
-    output = "output.json"
     tuned_model = AutoModelForSequenceClassification.from_pretrained(MODEL)
 
-    test_loader = DataLoader(test_set, batch_size=8, shuffle=False, collate_fn=collator)
-    
-    tester = Tester(model=tuned_model, test_loader=test_loader, output_file=output)
+    test_loader = DataLoader(test_set, batch_size=args.test_batch_size, shuffle=False, collate_fn=collator)
+    tester = Tester(model=tuned_model, test_loader=test_loader, output_file=args.record_output_file, id2label=id2label)
 
-    tester.test_llm()
+    tester.evaluate()
