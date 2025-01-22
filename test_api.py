@@ -4,12 +4,7 @@ import time
 
 API_URL = "http://0.0.0.0:2206/predict"
 
-test_file = "dataset/test.json"
-
-with open(test_file, "r", encoding="utf-8") as f:
-    test_data = json.load(f)
-
-def measure_throughput(api_url, data):
+def measure_throughput(api_url: str, data: list) -> list:
     """
     Đo throughput của API bằng cách gửi tuần tự requests.
     
@@ -45,6 +40,10 @@ def measure_throughput(api_url, data):
     return results
 
 if __name__ == "__main__":
+    test_file = "dataset/test.json"
+    with open(test_file, "r", encoding="utf-8") as f:
+        test_data = json.load(f)
+
     results = measure_throughput(API_URL, test_data)
     
     with open("api_results.json", "w", encoding="utf-8") as f:
