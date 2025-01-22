@@ -56,7 +56,6 @@ class LlmTrainer:
         #     weight_decay=weight_decay,
         # )
 
-        # Không áp dụng weight decay cho bias và LayerNorm.weight
         no_decay = ["bias", "LayerNorm.weight"]
         optimizer_grouped_parameters = [
             {
@@ -69,7 +68,7 @@ class LlmTrainer:
             },
         ]
         self.optimizer = AdamW(optimizer_grouped_parameters, lr=learning_rate)
-
+        
         self.train_loss = AverageMeter()
         self.loss_fn = nn.BCEWithLogitsLoss()
         self.scheduler = ReduceLROnPlateau(self.optimizer, mode="min", patience=2, factor=0.5)

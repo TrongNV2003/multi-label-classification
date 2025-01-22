@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 from transformers import AutoTokenizer
 from training.utils import AverageMeter
-from torch.optim.lr_scheduler import ReduceLROnPlateau
+from transformers import get_scheduler
 
 class LlmTrainer:
     def __init__(
@@ -25,6 +25,7 @@ class LlmTrainer:
         valid_set: Dataset,
         collator_fn=None,
         evaluate_on_accuracy: bool = False,
+        warmup_steps_ratio: float = 0.1,
     ) -> None:
         self.device = device
         self.epochs = epochs
@@ -50,13 +51,6 @@ class LlmTrainer:
         )
         self.tokenizer = tokenizer
         self.model = model.to(self.device)
-        # self.optimizer = AdamW(
-        #     self.model.parameters(),
-        #     lr=learning_rate,
-        #     weight_decay=weight_decay,
-        # )
-
-        # Không áp dụng weight decay cho bias và LayerNorm.weight
         no_decay = ["bias", "LayerNorm.weight"]
         optimizer_grouped_parameters = [
             {
@@ -69,10 +63,18 @@ class LlmTrainer:
             },
         ]
         self.optimizer = AdamW(optimizer_grouped_parameters, lr=learning_rate)
-
         self.train_loss = AverageMeter()
         self.loss_fn = nn.BCEWithLogitsLoss()
-        self.scheduler = ReduceLROnPlateau(self.optimizer, mode="min", patience=2, factor=0.5)
+
+        # Số bước warmup
+        num_training_steps = len(self.train_loader) * epochs
+        warmup_steps = int(num_training_steps * warmup_steps_ratio)
+
+        # Sử dụng scheduler với warmup
+        self.scheduler = get_scheduler(
+            "linear", optimizer=self.optimizer, num_warmup_steps=warmup_steps, num_training_steps=num_training_steps
+        )
+
         self.evaluate_on_accuracy = evaluate_on_accuracy
         if evaluate_on_accuracy:
             self.best_valid_score = 0
@@ -101,20 +103,20 @@ class LlmTrainer:
                     self.optimizer.zero_grad()
                     loss.backward()
                     self.optimizer.step()
+                    self.scheduler.step()
 
                     self.train_loss.update(loss.item(), text_input_ids.size(0))
                     tepoch.set_postfix({"train_loss": self.train_loss.avg})
                     tepoch.update(1)
 
             valid_loss = self.evaluate(self.valid_loader)
-            self.scheduler.step(valid_loss)
 
             if valid_loss < self.best_valid_score:
                 print(
                     f"Validation loss decreased from {self.best_valid_score:.4f} to {valid_loss:.4f}. Saving."
                 )
                 self.best_valid_score = valid_loss
-                self._save()
+            self._save()
 
     @torch.no_grad()
     def evaluate(self, dataloader: DataLoader) -> float:
