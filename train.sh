@@ -1,4 +1,4 @@
-python -m training.train \
+python -m services.train \
     --dataloader_workers 2 \
     --device cuda \
     --seed 42 \
