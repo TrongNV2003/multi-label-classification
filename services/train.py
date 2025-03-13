@@ -98,7 +98,6 @@ if __name__ == "__main__":
     count_parameters(model)
 
     model_name = args.model.split('/')[-1]
-
     save_dir = f"{args.output_dir}-{model_name}"
 
     trainer = LlmTrainer(
