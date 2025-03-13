@@ -5,7 +5,6 @@ def split_data(input_path: str, save: bool = True) -> None:
     Function split data into train, val, test
     """
 
-    input_path = "dataset/output.json"
     with open(input_path, "r", encoding="utf-8") as file:
         data = json.load(file)
 
@@ -14,13 +13,13 @@ def split_data(input_path: str, save: bool = True) -> None:
     train_data = data[342:]
 
     if save:
-        with open("train.json", "w", encoding="utf-8") as train_file:
+        with open("dataset/train.json", "w", encoding="utf-8") as train_file:
             json.dump(train_data, train_file, ensure_ascii=False, indent=4)
 
-        with open("val.json", "w", encoding="utf-8") as val_file:
+        with open("dataset/val.json", "w", encoding="utf-8") as val_file:
             json.dump(val_data, val_file, ensure_ascii=False, indent=4)
 
-        with open("test.json", "w", encoding="utf-8") as test_file:
+        with open("dataset/test.json", "w", encoding="utf-8") as test_file:
             json.dump(test_data, test_file, ensure_ascii=False, indent=4)
 
         print("Dữ liệu đã được chia và lưu vào các file: train.json, val.json, test.json")
@@ -45,6 +44,6 @@ def split_data(input_path: str, save: bool = True) -> None:
 
 
 if __name__ == "__main__":
-    input_file = "dataset/output.json"
+    input_file = "raw_data/output.json"
     split_data(input_file)
     

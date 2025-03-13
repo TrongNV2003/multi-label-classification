@@ -1,6 +1,6 @@
-import requests
-import json
 import time
+import json
+import requests
 
 API_URL = "http://0.0.0.0:2206/predict"
 

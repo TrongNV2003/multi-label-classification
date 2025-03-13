@@ -1,7 +1,7 @@
 import json
-from typing import List, Mapping, Tuple
-
 import numpy as np
+from typing import Mapping, Tuple
+
 import torch
 from transformers import AutoTokenizer
 
@@ -12,7 +12,6 @@ class Dataset:
             json_file (str): Path to the JSON file.
             label_mapping (dict): Mapping of unique labels to indices.
         """
-        
         with open(json_file, "r", encoding="utf-8") as f:
             data = json.load(f)
         self.data = data
@@ -22,7 +21,7 @@ class Dataset:
     def __len__(self) -> int:
         return len(self.data)
 
-    def __getitem__(self, index: int) -> Tuple[str, int]:
+    def __getitem__(self, index: int) -> Tuple[str, list]:
         """
         Get the item at the given index
 
@@ -30,7 +29,6 @@ class Dataset:
             text: the text of the item
             labels: Multi-label vector
         
-        target input: [cls]<history>message(k-2)[sep]message(k-1)</history><current>message(k)</current>
         """
 
         item = self.data[index]
@@ -49,7 +47,7 @@ class Dataset:
             if label in self.label_mapping:
                 label_vector[self.label_mapping[label]] = 1
 
-        return context, label_vector, current_message
+        return context, label_vector
 
 
 class LlmDataCollator:
@@ -68,7 +66,7 @@ class LlmDataCollator:
             tensor (dict)
         """
 
-        contexts, labels, current_message = zip(*batch)
+        contexts, labels = zip(*batch)
 
         contexts_tensor = self.tokenizer(
             contexts,
@@ -83,6 +81,5 @@ class LlmDataCollator:
         return {
             "input_ids": contexts_tensor["input_ids"],
             "attention_mask": contexts_tensor["attention_mask"],
-            "labels": label_tensor,
-            "current_message": current_message,
+            "labels": label_tensor
         }
