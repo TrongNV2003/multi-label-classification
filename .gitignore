@@ -7,6 +7,6 @@ dataset
 result
 
 models
-onnx_models
+models_onnx
 
 BERT_for_multi_label_classification.ipynb

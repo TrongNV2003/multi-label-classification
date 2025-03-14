@@ -10,7 +10,7 @@ import numpy as np
 from loguru import logger
 
 class OnnxProvider:
-    def __init__(self, ft_model: str, save_dir: str, sample_text: str):
+    def __init__(self, ft_model: str, save_dir: str):
         self.model_name = ft_model
         self.onnx_models_folder = save_dir
         os.makedirs(self.onnx_models_folder, exist_ok=True)
@@ -21,11 +21,12 @@ class OnnxProvider:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
 
+        
+    def to_onnx(self, sample_text: str) -> str:
         encoding = self.tokenizer(sample_text, return_tensors='pt', padding=True, max_length=256, truncation=True)
-        self.input_ids = encoding['input_ids'].to(self.device)
-        self.attention_mask = encoding['attention_mask'].to(self.device)
+        input_ids = encoding['input_ids'].to(self.device)
+        attention_mask = encoding['attention_mask'].to(self.device)
 
-    def to_onnx(self):
         onnx_model_name = self.model_name.split('/')[-1]
 
         input_names = ["input_ids", "attention_mask"]
@@ -34,7 +35,7 @@ class OnnxProvider:
             "attention_mask" : {0: "batch_size", 1: "sequence_length"},
             "logits" : {0: 'batch'},
         }
-        inputList = [self.input_ids, self.attention_mask]
+        inputList = [input_ids, attention_mask]
         self.model.eval()
         torch.onnx.export(
             self.model,
@@ -99,30 +100,11 @@ class OnnxProvider:
             logger.error(f"Failed to load ONNX model for I/O details: {e}")
 
 
-    def inference_onnx(self, onnx_model: str):
-        session = onnxruntime.InferenceSession(onnx_model, providers = ["CPUExecutionProvider"])
-
-        sess_output = []
-        sess_input = {'input_ids': self.input_ids.cpu().numpy(), 'attention_mask': self.attention_mask.cpu().numpy()}
-        for out in session.get_outputs():
-            sess_output.append(out.name)
-
-        outputs = session.run(sess_output, sess_input)
-
-        logits = outputs[0]
-        logits = torch.from_numpy(logits)
-        prob = torch.nn.Sigmoid()(logits)[0]
-        intents = [
-            self.config.id2label[i] for i in range(len(prob)) if prob[i] >= 0.5
-        ]
-
-        return intents
-
-# if __name__ == "__main__":
-#     model="models/classification-phobert-base-v2"
-#     save_dir = "./onnx_models"
-#     sample_text = "alo ạ vâng cháu giao đơn hàng này chú ơi chú ra cổng nhận cháu đơn hàng đây này"
-#     convert = OnnxProvider(model, save_dir, sample_text)
+if __name__ == "__main__":
+    model="models/classification-phobert-base-v2"
+    save_dir = "./onnx_models"
+    sample_text = "alo ạ vâng cháu giao đơn hàng này chú ơi chú ra cổng nhận cháu đơn hàng đây này"
+    convert = OnnxProvider(model, save_dir)
     
-#     onnx_model = convert.to_onnx()
-#     fp16_model = convert.fix_onnx_fp16(f'{save_dir}/{onnx_model}.onnx')
+    onnx_model = convert.to_onnx(sample_text)
+    fp16_model = convert.fix_onnx_fp16(f'{save_dir}/{onnx_model}.onnx')
