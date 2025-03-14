@@ -13,7 +13,7 @@ class Tester:
         self,
         model: torch.nn.Module,
         test_loader: DataLoader,
-        output_file: str,
+        output_file: str = None,
     ) -> None:
         self.test_loader = test_loader
         self.output_file = output_file
@@ -69,9 +69,10 @@ class Tester:
         num_samples = len(results)
 
         
-        with open(self.output_file, "w", encoding="utf-8") as f:
-            json.dump(results, f, ensure_ascii=False, indent=4)
-        print(f"Results saved to {self.output_file}")
+        if self.output_file:
+            with open(self.output_file, "w", encoding="utf-8") as f:
+                json.dump(results, f, ensure_ascii=False, indent=4)
+            print(f"Results saved to {self.output_file}")
 
         self.score(all_labels, all_preds, results)
         self.calculate_latency(latencies)

@@ -5,6 +5,7 @@ python -m services.train \
     --epochs 10 \
     --learning_rate 3e-5 \
     --weight_decay 0.01 \
+    --warmup_steps 50 \
     --max_length 256 \
     --pad_mask_id -100 \
     --model vinai/phobert-base-v2 \

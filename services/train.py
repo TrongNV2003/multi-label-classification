@@ -33,11 +33,12 @@ parser.add_argument("--model", type=str, default="vinai/phobert-base-v2", requir
 parser.add_argument("--train_batch_size", type=int, default=16, required=True)
 parser.add_argument("--valid_batch_size", type=int, default=8, required=True)
 parser.add_argument("--test_batch_size", type=int, default=8, required=True)
+parser.add_argument("--warmup_steps", type=int, default=50, required=True)
 parser.add_argument("--train_file", type=str, default="dataset/train.json", required=True)
 parser.add_argument("--valid_file", type=str, default="dataset/val.json", required=True)
 parser.add_argument("--test_file", type=str, default="dataset/test.json", required=True)
 parser.add_argument("--output_dir", type=str, default="./models/classification", required=True)
-parser.add_argument("--record_output_file", type=str, default="output.json", required=True)
+parser.add_argument("--record_output_file", type=str, default="output.json")
 parser.add_argument("--evaluate_on_accuracy", type=bool, default=True, required=True)
 parser.add_argument("--pin_memory", dest="pin_memory", action="store_true", default=False)
 args = parser.parse_args()
@@ -106,6 +107,7 @@ if __name__ == "__main__":
         epochs=args.epochs,
         learning_rate=args.learning_rate,
         weight_decay=args.weight_decay,
+        warmup_steps=args.warmup_steps,
         model=model,
         pin_memory=args.pin_memory,
         save_dir=save_dir,
