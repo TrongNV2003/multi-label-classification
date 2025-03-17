@@ -178,7 +178,6 @@ class LlmTrainer:
         recall = recall_score(all_labels, all_preds, average="weighted", zero_division=0)
         f1 = f1_score(all_labels, all_preds, average="weighted", zero_division=0)
 
-        # In các metric
         logger.info(f"\n=== Validation Metrics ===")
         print(f"Accuracy: {accuracy * 100:.2f}%")
         print(f"Precision: {precision * 100:.2f}%")

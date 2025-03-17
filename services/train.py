@@ -10,6 +10,7 @@ from services.evaluate import Tester
 from services.trainer import LlmTrainer
 from services.dataloader import Dataset, LlmDataCollator
 
+
 def set_seed(seed: int) -> None:
     random.seed(seed)
     np.random.seed(seed)
@@ -18,6 +19,20 @@ def set_seed(seed: int) -> None:
         torch.cuda.manual_seed_all(seed)
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
+
+
+def get_vram_usage(device):
+    """Trả về VRAM tối đa đã sử dụng trong quá trình chạy (GB)."""
+    if not torch.cuda.is_available():
+        return 0.0
+    return torch.cuda.max_memory_allocated(device) / (1024 ** 3)
+
+
+def count_parameters(model: torch.nn.Module) -> None:
+    total_params = sum(p.numel() for p in model.parameters())
+    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print(f"Total parameters: {total_params:,}")
+    print(f"Trainable parameters: {trainable_params:,}")
 
 
 parser = argparse.ArgumentParser()
@@ -49,7 +64,6 @@ def get_tokenizer(checkpoint: str) -> AutoTokenizer:
     """
     Input format: <history>{history_1}<sep>{history_2}<sep>...<sep>{history_n}</history><current>{context}</current>
     """
-
     tokenizer.add_special_tokens(
         {'additional_special_tokens': ['<history>', '</history>', '<current>', '</current>']}
     )
@@ -67,17 +81,10 @@ def get_model(
         label2id=label2id,
         id2label=id2label,
     )
-
     model.resize_token_embeddings(len(tokenizer))
     model = model.to(device)
     return model
 
-def count_parameters(model: torch.nn.Module) -> None:
-    total_params = sum(p.numel() for p in model.parameters())
-    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-
-    print(f"Total parameters: {total_params:,}")
-    print(f"Trainable parameters: {trainable_params:,}")
 
 if __name__ == "__main__":
     set_seed(args.seed)
@@ -94,9 +101,16 @@ if __name__ == "__main__":
 
     collator = LlmDataCollator(tokenizer=tokenizer, max_length=args.max_length)
 
+    device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     model = get_model(args.model, args.device, tokenizer, num_labels=len(unique_labels), label2id=label2id, id2label=id2label)
-    print(model.config.id2label)
+    
+    print(f"\nLabel: {model.config.id2label}")
+
     count_parameters(model)
+
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.reset_peak_memory_stats(device)
 
     model_name = args.model.split('/')[-1]
     save_dir = f"{args.output_dir}-{model_name}"
@@ -121,6 +135,10 @@ if __name__ == "__main__":
 
     )
     trainer.train()
+
+    if torch.cuda.is_available():
+        max_vram = get_vram_usage(device)
+        print(f"VRAM tối đa tiêu tốn khi huấn luyện: {max_vram:.2f} GB")
 
     # Test model on test set
     tuned_model = AutoModelForSequenceClassification.from_pretrained(save_dir)

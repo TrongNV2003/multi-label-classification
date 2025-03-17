@@ -80,31 +80,10 @@ class Tester:
         print(f"num samples: {num_samples}")
 
     def _map_labels(self, label_indices: list, labels_mapping: dict) -> list:
-        """
-        Map label indices to their corresponding names.
-
-        Parameters:
-            label_indices: List of binary labels (0 or 1).
-            labels_mapping: Dictionary mapping indices to label names.
-
-        Returns:
-            List of label names.
-        """
         return [labels_mapping[idx] for idx, val in enumerate(label_indices) if val == 1.0]
 
 
     def score(self, label: list, predict: list, output: list) -> None:
-        """
-        This function will calculate the F1-score
-
-        Parameters:
-            label: list
-            predict: list
-
-        Returns:
-            f1 score
-        """
-
         precision = precision_score(label, predict, average="weighted", zero_division=0)
         recall = recall_score(label, predict, average="weighted", zero_division=0)
         f1 = f1_score(label, predict, average="weighted", zero_division=0)

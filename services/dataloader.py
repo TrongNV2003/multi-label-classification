@@ -7,11 +7,6 @@ from transformers import AutoTokenizer
 
 class Dataset:
     def __init__(self, json_file: str, label_mapping: dict, tokenizer: AutoTokenizer) -> None:
-        """
-        Args:
-            json_file (str): Path to the JSON file.
-            label_mapping (dict): Mapping of unique labels to indices.
-        """
         with open(json_file, "r", encoding="utf-8") as f:
             data = json.load(f)
         self.data = data
@@ -22,15 +17,6 @@ class Dataset:
         return len(self.data)
 
     def __getitem__(self, index: int) -> Tuple[str, list]:
-        """
-        Get the item at the given index
-
-        Returns:
-            text: the text of the item
-            labels: Multi-label vector
-        
-        """
-
         item = self.data[index]
         history = item["history"]
         current_message = item["current_message"]
@@ -56,16 +42,6 @@ class LlmDataCollator:
         self.max_length = max_length
         
     def __call__(self, batch: list) -> Mapping[str, torch.Tensor]:
-        """
-        Tokenize the batch of data and convert tokenized data to tensor
-        
-        args:
-            batch (tuple)
-
-        returns:
-            tensor (dict)
-        """
-
         contexts, labels = zip(*batch)
 
         contexts_tensor = self.tokenizer(
