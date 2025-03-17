@@ -6,7 +6,7 @@ from loguru import logger
 from transformers import AutoTokenizer
 from torch.utils.data import DataLoader
 
-from services.dataloader import Dataset, LlmDataCollator
+from multi_intent_classification.services.dataloader import Dataset, LlmDataCollator
 
 class ONNXInference:
     def __init__(

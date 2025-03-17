@@ -1,4 +1,4 @@
-python -m services.train \
+python -m multi_intent_classification.services.train \
     --dataloader_workers 2 \
     --device cuda \
     --seed 42 \
@@ -12,10 +12,10 @@ python -m services.train \
     --train_batch_size 16 \
     --valid_batch_size 8 \
     --test_batch_size 8 \
-    --train_file dataset/train.json \
-    --valid_file dataset/val.json \
-    --test_file dataset/test.json \
-    --output_dir ./models/classification \
-    --record_output_file output.json \
+    --train_file multi_intent_classification/dataset/train.json \
+    --valid_file multi_intent_classification/dataset/val.json \
+    --test_file multi_intent_classification/dataset/test.json \
+    --output_dir ./multi_intent_classification/models/classification \
+    --record_output_file multi_intent_classification/output.json \
     --evaluate_on_accuracy True \
 

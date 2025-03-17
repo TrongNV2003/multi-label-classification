@@ -6,9 +6,9 @@ import torch
 from torch.utils.data import DataLoader
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-from services.evaluate import Tester
-from services.trainer import LlmTrainer
-from services.dataloader import Dataset, LlmDataCollator
+from multi_intent_classification.services.evaluate import Tester
+from multi_intent_classification.services.trainer import LlmTrainer
+from multi_intent_classification.services.dataloader import Dataset, LlmDataCollator
 
 
 def set_seed(seed: int) -> None:

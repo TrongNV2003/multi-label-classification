@@ -10,7 +10,7 @@ import numpy as np
 from tqdm import tqdm
 from loguru import logger
 
-from services.utils import AverageMeter
+from multi_intent_classification.services.utils import AverageMeter
 
 class LlmTrainer:
     def __init__(
