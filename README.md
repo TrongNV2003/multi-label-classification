@@ -13,5 +13,6 @@ bash train.sh
 ```
 
 ### Future plans:
-    + Convert model sang ONNX để tăng tốc inference
+    + Convert model sang ONNX để tăng tốc inference (done)
+    + So sánh kết quả với LLM model (Qwen-72B) (done)
     

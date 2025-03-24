@@ -7,6 +7,7 @@ gen_dataset
 labels.txt
 
 result
+evaluation_results.json
 
 models
 models_onnx
