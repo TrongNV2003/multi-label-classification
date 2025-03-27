@@ -10,6 +10,8 @@ from multi_intent_classification.services.evaluate import Tester
 from multi_intent_classification.services.trainer import LlmTrainer
 from multi_intent_classification.services.dataloader import Dataset, LlmDataCollator
 
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 def set_seed(seed: int) -> None:
     random.seed(seed)
@@ -20,20 +22,17 @@ def set_seed(seed: int) -> None:
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
-
 def get_vram_usage(device):
     """Trả về VRAM tối đa đã sử dụng trong quá trình chạy (GB)."""
     if not torch.cuda.is_available():
         return 0.0
     return torch.cuda.max_memory_allocated(device) / (1024 ** 3)
 
-
 def count_parameters(model: torch.nn.Module) -> None:
     total_params = sum(p.numel() for p in model.parameters())
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"Total parameters: {total_params:,}")
     print(f"Trainable parameters: {trainable_params:,}")
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataloader_workers", type=int, default=2, required=True)
@@ -56,8 +55,9 @@ parser.add_argument("--output_dir", type=str, default="./models/classification",
 parser.add_argument("--record_output_file", type=str, default="output.json")
 parser.add_argument("--evaluate_on_accuracy", type=bool, default=True, required=True)
 parser.add_argument("--pin_memory", dest="pin_memory", action="store_true", default=False)
+parser.add_argument("--early_stopping_patience", type=int, default=3, help="Number of epochs to wait for improvement", required=True)
+parser.add_argument("--early_stopping_threshold", type=float, default=0.001, help="Minimum improvement to reset early stopping counter", required=True)
 args = parser.parse_args()
-
 
 def get_tokenizer(checkpoint: str) -> AutoTokenizer:
     tokenizer = AutoTokenizer.from_pretrained(checkpoint)
@@ -68,7 +68,6 @@ def get_tokenizer(checkpoint: str) -> AutoTokenizer:
         {'additional_special_tokens': ['<history>', '</history>', '<current>', '</current>']}
     )
     return tokenizer
-
 
 def get_model(
     checkpoint: str, device: str, tokenizer: AutoTokenizer, num_labels: str, id2label: list, label2id: list
@@ -132,6 +131,8 @@ if __name__ == "__main__":
         valid_batch_size=args.valid_batch_size,
         collator_fn=collator,
         evaluate_on_accuracy=args.evaluate_on_accuracy,
+        early_stopping_patience=args.early_stopping_patience,
+        early_stopping_threshold=args.early_stopping_threshold,
 
     )
     trainer.train()
@@ -141,9 +142,10 @@ if __name__ == "__main__":
         print(f"VRAM tối đa tiêu tốn khi huấn luyện: {max_vram:.2f} GB")
 
     # Test model on test set
-    tuned_model = AutoModelForSequenceClassification.from_pretrained(save_dir)
+    tuned_model = AutoModelForSequenceClassification.from_pretrained(save_dir).to(args.device)
     test_loader = DataLoader(test_set, batch_size=args.test_batch_size, shuffle=False, collate_fn=collator)
     tester = Tester(model=tuned_model, test_loader=test_loader, output_file=args.record_output_file)
+    
     tester.evaluate()
 
     print(f"\nmodel: {args.model}")

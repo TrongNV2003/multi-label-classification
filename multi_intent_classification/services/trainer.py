@@ -1,8 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.optim import AdamW
-from transformers import AutoTokenizer
-from transformers import get_scheduler
+from transformers import AutoTokenizer, get_scheduler
 from torch.utils.data import DataLoader, Dataset
 from sklearn.metrics import precision_score, recall_score, f1_score
 
@@ -31,6 +30,8 @@ class LlmTrainer:
         valid_set: Dataset,
         collator_fn=None,
         evaluate_on_accuracy: bool = False,
+        early_stopping_patience: int = 3,
+        early_stopping_threshold: float = 0.001,
     ) -> None:
         self.device = device
         self.epochs = epochs
@@ -82,6 +83,10 @@ class LlmTrainer:
 
         self.evaluate_on_accuracy = evaluate_on_accuracy
         self.best_valid_score = 0 if evaluate_on_accuracy else float("inf")
+        self.early_stopping_patience = early_stopping_patience
+        self.early_stopping_threshold = early_stopping_threshold
+        self.early_stopping_counter = 0
+        self.best_epoch = 0
 
     def train(self) -> None:
         for epoch in range(1, self.epochs + 1):
@@ -114,21 +119,40 @@ class LlmTrainer:
                     tepoch.update(1)
 
             valid_score = self.evaluate(self.valid_loader)
+            improved = False
 
             if self.evaluate_on_accuracy:
-                if valid_score > self.best_valid_score:
+                if valid_score > self.best_valid_score + self.early_stopping_threshold:
                     print(f"Validation accuracy improved from {self.best_valid_score:.4f} to {valid_score:.4f}. Saving...")
                     self.best_valid_score = valid_score
+                    self.best_epoch = epoch
                     self._save()
+                    self.early_stopping_counter = 0
+                    improved = True
                     print(f"Saved best model.")
+                else:
+                    self.early_stopping_counter += 1
+                    print(f"No improvement in val accuracy. Counter: {self.early_stopping_counter}/{self.early_stopping_patience}")
 
             else:
-                if valid_score < self.best_valid_score:
+                if valid_score < self.best_valid_score - self.early_stopping_threshold:
                     print(f"Validation loss decreased from {self.best_valid_score:.4f} to {valid_score:.4f}. Saving...")
                     self.best_valid_score = valid_score
+                    self.best_epoch = epoch
                     self._save()
+                    self.early_stopping_counter = 0
+                    improved = True
                     print(f"Saved best model.")
+                else:
+                    self.early_stopping_counter += 1
+                    print(f"No improvement in validation loss. Counter: {self.early_stopping_counter}/{self.early_stopping_patience}")
 
+            if improved:
+                print(f"Saved best model at epoch {self.best_epoch}.")
+            
+            if self.early_stopping_counter >= self.early_stopping_patience:
+                print(f"Early stopping triggered after {self.early_stopping_patience} epochs without improvement.")
+                break
 
     @torch.no_grad()
     def evaluate(self, dataloader: DataLoader) -> float:

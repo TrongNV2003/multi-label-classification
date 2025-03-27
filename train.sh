@@ -16,6 +16,7 @@ python -m multi_intent_classification.services.train \
     --valid_file multi_intent_classification/dataset/val.json \
     --test_file multi_intent_classification/dataset/test.json \
     --output_dir ./multi_intent_classification/models/classification \
-    --record_output_file multi_intent_classification/output.json \
+    --record_output_file output.json \
     --evaluate_on_accuracy True \
-
+    --early_stopping_patience 3 \
+    --early_stopping_threshold 0.001 \
