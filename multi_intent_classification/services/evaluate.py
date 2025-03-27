@@ -95,16 +95,20 @@ class Tester:
 
     def _calculate_accuracy(self, data):
         correct = 0
+        correct_one = 0
         total = len(data)
         for item in data:
             true_set = set(item["true_labels"])
             pred_set = set(item["predicted_labels"])
             if true_set == pred_set:
                 correct += 1
+            if true_set & pred_set:
+                correct_one += 1
         accuracy = correct / total if total > 0 else 0
-        print(f"Accuracy: {accuracy * 100:.2f}%")
-        return accuracy
+        accuracy_one = correct_one / total if total > 0 else 0
+        print(f"\nAccuracy (Match one): {accuracy_one * 100:.2f}%")
+        print(f"Accuracy (Match all): {accuracy * 100:.2f}%")
 
     def _calculate_latency(self, latencies: list) -> None:
         p99_latency = np.percentile(latencies, 99)
-        print(f"P99 Latency: {p99_latency * 1000:.2f} ms")
+        print(f"\nP99 Latency: {p99_latency * 1000:.2f} ms")
