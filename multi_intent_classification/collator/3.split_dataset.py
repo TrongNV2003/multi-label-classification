@@ -37,13 +37,13 @@ def split_data(input_path: str, save: bool = True) -> None:
     )
 
     if save:
-        with open("gen_dataset/gen_train.json", "w", encoding="utf-8") as train_file:
+        with open("multi_intent_classification/dify_dataset/train.json", "w", encoding="utf-8") as train_file:
             json.dump(train_set, train_file, ensure_ascii=False, indent=4)
 
-        with open("gen_dataset/gen_val.json", "w", encoding="utf-8") as val_file:
+        with open("multi_intent_classification/dify_dataset/val.json", "w", encoding="utf-8") as val_file:
             json.dump(valid_set, val_file, ensure_ascii=False, indent=4)
 
-        with open("gen_dataset/gen_test.json", "w", encoding="utf-8") as test_file:
+        with open("multi_intent_classification/dify_dataset/test.json", "w", encoding="utf-8") as test_file:
             json.dump(test_set, test_file, ensure_ascii=False, indent=4)
 
         print("Dữ liệu đã được chia và lưu vào các file: train.json, val.json, test.json")
@@ -68,7 +68,7 @@ def split_data(input_path: str, save: bool = True) -> None:
 
 
 if __name__ == "__main__":
-    input_file = "gen_dataset/gen_processed.json"
+    input_file = "multi_intent_classification/dify_dataset/processed_data.json"
     split_data(input_file)
     
 

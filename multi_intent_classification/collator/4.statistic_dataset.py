@@ -54,16 +54,36 @@ def visualize_label_distribution(train_counts, val_counts, test_counts, unique_l
     plt.tight_layout()
     plt.show()
 
-if __name__ == "__main__":
-    unique_labels = ["Cung cấp thông tin", "Tương tác", "Hỏi thông tin giao hàng", "Hỗ trợ, hướng dẫn", "Yêu cầu", "Phản hồi", "Sự vụ", "UNKNOWN"]
+def get_unique_labels(input_file):
+    with open(input_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
 
-    with open("dataset/train.json", "r", encoding="utf-8") as f:
+    outputs_labels_count = Counter()
+
+    for record in data:
+        outputs_labels = record["label_intent"]
+        outputs_labels_count.update(outputs_labels)
+
+    outputs_labels_list = [label for label, _ in outputs_labels_count.most_common()]
+
+    print(f"\nDanh sách nhãn trong workflow_outputs: {outputs_labels_list}")
+    print(f"Tổng số lượng nhãn: {len(outputs_labels_list)}")
+    return outputs_labels_list
+
+
+if __name__ == "__main__":
+    input_file = "multi_intent_classification/dify_dataset/processed_data.json"
+    
+    # unique_labels = ['Giục giao', 'Phàn nàn dịch vụ', 'Yêu cầu giao lại', 'Lấy thông tin COD Giao', 'Thông tin trạng thái ĐH', 'Giao hàng chậm', 'Giục lấy', 'Thông tin địa chỉ ĐH - Kho đích', 'Thông tin địa chỉ ĐH - Vị trí hiện tại', 'Hẹn giao', 'KN - Shop đã nhận trả hàng', 'Lấy hàng chậm', 'Hủy đơn hàng', 'Giục trung chuyển', 'Giục trả', 'Lấy thông tin COD Lấy', 'Hẹn lấy', 'KN - KH chưa nhận hàng', 'Lấy thông tin COD giao', 'Lấy thông tin COD Trả', 'KN - Shop chưa nhận trả hàng', 'KN - Gửi hàng BC', 'KN - Shop đã đưa hàng cho COD', 'Khác']
+    unique_labels = get_unique_labels(input_file)
+
+    with open("multi_intent_classification/dify_dataset/train.json", "r", encoding="utf-8") as f:
         train_data = json.load(f)
 
-    with open("dataset/val.json", "r", encoding="utf-8") as f:
+    with open("multi_intent_classification/dify_dataset/val.json", "r", encoding="utf-8") as f:
         val_data = json.load(f)
     
-    with open("dataset/test.json", "r", encoding="utf-8") as f:
+    with open("multi_intent_classification/dify_dataset/test.json", "r", encoding="utf-8") as f:
         test_data = json.load(f)
 
     train_counts, train_num_labels = analyze_labels(train_data, unique_labels, "Train set")
