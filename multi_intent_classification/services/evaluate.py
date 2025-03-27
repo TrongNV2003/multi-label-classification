@@ -26,8 +26,8 @@ class Tester:
     def evaluate(self):
         self.model.eval()
         latencies = []
-        all_labels = []
-        all_preds = []
+        true_labels = []
+        pred_labels = []
         total_loss = 0
         results = []
         
@@ -54,8 +54,8 @@ class Tester:
                 total_loss += loss.item()
 
                 preds = (torch.sigmoid(logits) > 0.5).float().cpu().numpy()
-                all_preds.extend(preds)
-                all_labels.extend(labels.cpu().numpy())
+                pred_labels.extend(preds)
+                true_labels.extend(labels.cpu().numpy())
 
                 for i in range(len(preds)):
                     true_label_names = self._map_labels(labels.cpu().numpy()[i], self.model.config.id2label)
@@ -67,53 +67,44 @@ class Tester:
                     })
                     
         num_samples = len(results)
-
         
         if self.output_file:
             with open(self.output_file, "w", encoding="utf-8") as f:
                 json.dump(results, f, ensure_ascii=False, indent=4)
             print(f"Results saved to {self.output_file}")
 
-        self.score(all_labels, all_preds, results)
-        self.calculate_latency(latencies)
+        self._print_metrics(true_labels, pred_labels, "micro")
+        self._print_metrics(true_labels, pred_labels, "macro")
+        self._print_metrics(true_labels, pred_labels, "weighted")
+        self._calculate_accuracy(results)
+        self._calculate_latency(latencies)
 
         print(f"num samples: {num_samples}")
 
     def _map_labels(self, label_indices: list, labels_mapping: dict) -> list:
         return [labels_mapping[idx] for idx, val in enumerate(label_indices) if val == 1.0]
 
+    def _print_metrics(self, true_labels, pred_labels, average_type):
+        precision = precision_score(true_labels, pred_labels, average=average_type, zero_division=0)
+        recall = recall_score(true_labels, pred_labels, average=average_type, zero_division=0)
+        f1 = f1_score(true_labels, pred_labels, average=average_type, zero_division=0)
+        print(f"\nMetrics ({average_type}):")
+        print(f"Precision: {precision * 100:.2f}%")
+        print(f"Recall: {recall * 100:.2f}%")
+        print(f"F1 Score: {f1 * 100:.2f}%")
 
-    def score(self, label: list, predict: list, output: list) -> None:
-        precision = precision_score(label, predict, average="weighted", zero_division=0)
-        recall = recall_score(label, predict, average="weighted", zero_division=0)
-        f1 = f1_score(label, predict, average="weighted", zero_division=0)
-        accuracy = self._accuracy(output)
-
-        logger.info(f"Accuracy: {accuracy * 100:.2f}")
-        logger.info(f"Precision: {precision * 100:.2f}")
-        logger.info(f"Recall: {recall * 100:.2f}")
-        logger.info(f"F1 score: {f1 * 100:.2f}")
-
-    
-
-    def _accuracy(self, output_data: list) -> float:
-        """
-        Calculate accuracy for multi-label predictions where a sample is correct
-        if at least one predicted label matches the true labels.
-        """
-
+    def _calculate_accuracy(self, data):
         correct = 0
-        total = len(output_data)
-
-        for sample in output_data:
-            true_labels = set(sample["true_labels"])
-            predicted_labels = set(sample["predicted_labels"])
-            
-            if true_labels & predicted_labels:  # Giao của true_labels và predicted_labels không rỗng
+        total = len(data)
+        for item in data:
+            true_set = set(item["true_labels"])
+            pred_set = set(item["predicted_labels"])
+            if true_set == pred_set:
                 correct += 1
+        accuracy = correct / total if total > 0 else 0
+        print(f"Accuracy: {accuracy * 100:.2f}%")
+        return accuracy
 
-        return correct / total if total > 0 else 0.0
-
-    def calculate_latency(self, latencies: list) -> None:
+    def _calculate_latency(self, latencies: list) -> None:
         p99_latency = np.percentile(latencies, 99)
         print(f"P99 Latency: {p99_latency * 1000:.2f} ms")

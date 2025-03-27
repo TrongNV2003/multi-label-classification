@@ -1,9 +1,13 @@
 __pycache__
 
+_debugger.py
 .env
+query.sql
 
 dataset
 gen_dataset
+dify_dataset
+
 labels.txt
 
 result
