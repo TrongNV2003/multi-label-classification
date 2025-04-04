@@ -1,6 +1,8 @@
 import pandas as pd
 import json
 import re
+import random
+from collections import Counter
 
 def process_raw_data_excel_to_json():
     """
@@ -118,5 +120,53 @@ def get_needed_data():
     with open('multi_intent_classification/dify_dataset/processed_data.json', 'w', encoding='utf-8') as f:
         json.dump(needed_data, f, ensure_ascii=False, indent=4)
 
+def preprocessing_meta_data():
+    input_jsonl_file = "metadata_dataset/meta_data.jsonl"
+    train_file = "metadata_dataset/train.json"
+    test_file = "metadata_dataset/test.json"
+    val_file = "metadata_dataset/val.json"
+
+    data = []
+    with open(input_jsonl_file, "r", encoding="utf-8") as f:
+        for line in f:
+            data.append(json.loads(line.strip()))
+
+    intent_counts = Counter(entry["intent"] for entry in data)
+    total_samples = len(data)
+
+    print("Thống kê số lượng nhãn:")
+    for intent, count in intent_counts.items():
+        print(f" - {intent}: {count} mẫu ({count/total_samples*100:.2f}%)")
+    print(f"Tổng số mẫu: {total_samples}")
+
+    random.seed(42)
+    random.shuffle(data)
+
+    train_ratio = 0.7
+    test_ratio = 0.15
+    val_ratio = 0.15
+
+    train_size = int(train_ratio * total_samples)
+    test_size = int(test_ratio * total_samples)
+    val_size = total_samples - train_size - test_size
+
+    train_data = data[:train_size]
+    test_data = data[train_size:train_size + test_size]
+    val_data = data[train_size + test_size:]
+
+    def write_json(data, filename):
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+
+    write_json(train_data, train_file)
+    write_json(test_data, test_file)
+    write_json(val_data, val_file)
+
+    # In thông tin phân chia
+    print("\nPhân chia dữ liệu:")
+    print(f" - Train: {len(train_data)} mẫu ({len(train_data)/total_samples*100:.2f}%)")
+    print(f" - Test: {len(test_data)} mẫu ({len(test_data)/total_samples*100:.2f}%)")
+    print(f" - Val: {len(val_data)} mẫu ({len(val_data)/total_samples*100:.2f}%)")
+
 if __name__ == "__main__":
-    get_needed_data()
+    preprocessing_meta_data()
