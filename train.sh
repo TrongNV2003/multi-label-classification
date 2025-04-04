@@ -10,10 +10,10 @@ python -m multi_intent_classification.services.pipeline \
     --pad_mask_id -100 \
     --model vinai/phobert-base-v2 \
     --train_batch_size 16 \
-    --valid_batch_size 8 \
+    --val_batch_size 8 \
     --test_batch_size 8 \
     --train_file multi_intent_classification/dataset/train.json \
-    --valid_file multi_intent_classification/dataset/val.json \
+    --val_file multi_intent_classification/dataset/val.json \
     --test_file multi_intent_classification/dataset/test.json \
     --output_dir ./multi_intent_classification/models/classification \
     --record_output_file output.json \

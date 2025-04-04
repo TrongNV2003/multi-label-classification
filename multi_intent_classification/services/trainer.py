@@ -1,13 +1,12 @@
 import torch
 import torch.nn as nn
 from torch.optim import AdamW
-from transformers import AutoTokenizer, get_scheduler
 from torch.utils.data import DataLoader, Dataset
-from sklearn.metrics import precision_score, recall_score, f1_score
+from transformers import AutoTokenizer, get_scheduler
 
 import numpy as np
 from tqdm import tqdm
-from loguru import logger
+from sklearn.metrics import precision_score, recall_score, f1_score
 
 from multi_intent_classification.services.utils import AverageMeter
 
@@ -28,11 +27,11 @@ class TrainingArguments:
         train_set: Dataset,
         valid_batch_size: int,
         valid_set: Dataset,
+        early_stopping_patience: int,
+        early_stopping_threshold: float,
+        evaluate_on_accuracy: bool,
+        is_multi_label: bool,
         collator_fn=None,
-        early_stopping_patience: int = 3,
-        early_stopping_threshold: float = 0.001,
-        evaluate_on_accuracy: bool = False,
-        is_multi_label: bool = False,
     ) -> None:
         self.device = device
         self.epochs = epochs
@@ -91,6 +90,7 @@ class TrainingArguments:
         self.best_epoch = 0
 
     def train(self) -> None:
+        print(f"Task type: {'Multi-label' if self.is_multi_label else 'Single-label'}")
         for epoch in range(1, self.epochs + 1):
             self.model.train()
             train_loss = AverageMeter()
@@ -131,7 +131,6 @@ class TrainingArguments:
                     self._save()
                     self.early_stopping_counter = 0
                     improved = True
-                    print(f"Saved best model.")
                 else:
                     self.early_stopping_counter += 1
                     print(f"No improvement in val accuracy. Counter: {self.early_stopping_counter}/{self.early_stopping_patience}")
@@ -144,7 +143,6 @@ class TrainingArguments:
                     self._save()
                     self.early_stopping_counter = 0
                     improved = True
-                    print(f"Saved best model.")
                 else:
                     self.early_stopping_counter += 1
                     print(f"No improvement in validation loss. Counter: {self.early_stopping_counter}/{self.early_stopping_patience}")
@@ -192,28 +190,29 @@ class TrainingArguments:
 
         all_preds = np.concatenate(all_preds)
         all_labels = np.concatenate(all_labels)
-        
-        if self.is_multi_label:
-            exact_match = np.all(all_preds == all_labels, axis=1).mean() # Exact match ratio
-            accuracy = np.any(all_preds == all_labels, axis=1).mean() # Partial match ratio
-            precision = precision_score(all_labels, all_preds, average="micro", zero_division=0)
-            recall = recall_score(all_labels, all_preds, average="micro", zero_division=0)
-            f1 = f1_score(all_labels, all_preds, average="micro", zero_division=0)
-        else:
-            accuracy = np.mean(all_preds == all_labels)
-            precision = precision_score(all_labels, all_preds, average="weighted", zero_division=0)
-            recall = recall_score(all_labels, all_preds, average="weighted", zero_division=0)
-            f1 = f1_score(all_labels, all_preds, average="weighted", zero_division=0)
 
-        logger.info(f"\n=== Validation Metrics ===")
+        accuracy = np.mean(all_preds == all_labels)
+
         if self.is_multi_label:
-            print(f"Exact Match Accuracy: {exact_match * 100:.2f}%")
+            self._print_metrics(all_preds, all_labels, average_type="micro")
+        else:
+            self._print_metrics(all_preds, all_labels, average_type="weighted")
+
+        return accuracy if self.evaluate_on_accuracy else eval_loss.avg
+
+
+    def _print_metrics(self, all_preds: np.ndarray, all_labels: np.ndarray, average_type: str) -> None:
+        accuracy = np.mean(all_preds == all_labels)
+        precision = precision_score(all_labels, all_preds, average=average_type, zero_division=0)
+        recall = recall_score(all_labels, all_preds, average=average_type, zero_division=0)
+        f1 = f1_score(all_labels, all_preds, average=average_type, zero_division=0)
+
+        print(f"\n=== Metrics ({average_type}) ===")
         print(f"Accuracy: {accuracy * 100:.2f}%")
         print(f"Precision: {precision * 100:.2f}%")
         print(f"Recall: {recall * 100:.2f}%")
-        print(f"F1-score: {f1 * 100:.2f}%")
-        
-        return accuracy if self.evaluate_on_accuracy else eval_loss.avg
+        print(f"F1 Score: {f1 * 100:.2f}%")
+
 
     def _save(self) -> None:
         self.tokenizer.save_pretrained(self.save_dir)
