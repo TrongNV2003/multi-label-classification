@@ -11,7 +11,7 @@ from loguru import logger
 
 from multi_intent_classification.services.utils import AverageMeter
 
-class LlmTrainer:
+class TrainingArguments:
     def __init__(
         self,
         dataloader_workers: int,
@@ -29,15 +29,17 @@ class LlmTrainer:
         valid_batch_size: int,
         valid_set: Dataset,
         collator_fn=None,
-        evaluate_on_accuracy: bool = False,
         early_stopping_patience: int = 3,
         early_stopping_threshold: float = 0.001,
+        evaluate_on_accuracy: bool = False,
+        is_multi_label: bool = False,
     ) -> None:
         self.device = device
         self.epochs = epochs
         self.save_dir = save_dir
         self.train_batch_size = train_batch_size
         self.valid_batch_size = valid_batch_size
+        self.is_multi_label = is_multi_label
 
         self.train_loader = DataLoader(
             train_set,
@@ -71,7 +73,7 @@ class LlmTrainer:
         ]
         self.optimizer = AdamW(optimizer_grouped_parameters, lr=learning_rate)
 
-        self.loss_fn = nn.BCEWithLogitsLoss()
+        self.loss_fn = nn.BCEWithLogitsLoss() if self.is_multi_label else nn.CrossEntropyLoss()
 
         num_training_steps = len(self.train_loader) * epochs
         self.scheduler = get_scheduler(
@@ -176,33 +178,36 @@ class LlmTrainer:
                 loss = self.loss_fn(logits, labels)
                 eval_loss.update(loss.item(), input_ids.size(0))
 
-                probs = torch.sigmoid(logits)
-                preds = (probs > 0.5).float().cpu().numpy()
+                if self.is_multi_label:
+                    probs = torch.sigmoid(logits)
+                    preds = (probs > 0.5).float().cpu().numpy()
+                else:
+                    preds = torch.argmax(logits, dim=1).cpu().numpy()
+                    
                 all_preds.append(preds)
                 all_labels.append(labels.cpu().numpy())
 
-                if self.evaluate_on_accuracy:
-                    all_preds_array = np.concatenate(all_preds)
-                    all_labels_array = np.concatenate(all_labels)
-                    correct = (torch.tensor(all_preds_array) == torch.tensor(all_labels_array)).sum().item()
-
-                    total = len(all_labels)
-                    accuracy = correct / total if total > 0 else 0
-                    tepoch.set_postfix({"valid_loss": eval_loss.avg, "valid_acc": accuracy})
-                else:
-                    tepoch.set_postfix({"valid_loss": eval_loss.avg})
-
+                tepoch.set_postfix({"valid_loss": eval_loss.avg})
                 tepoch.update(1)
 
         all_preds = np.concatenate(all_preds)
         all_labels = np.concatenate(all_labels)
-
-        accuracy = np.mean(all_preds == all_labels)
-        precision = precision_score(all_labels, all_preds, average="weighted", zero_division=0)
-        recall = recall_score(all_labels, all_preds, average="weighted", zero_division=0)
-        f1 = f1_score(all_labels, all_preds, average="weighted", zero_division=0)
+        
+        if self.is_multi_label:
+            exact_match = np.all(all_preds == all_labels, axis=1).mean() # Exact match ratio
+            accuracy = np.any(all_preds == all_labels, axis=1).mean() # Partial match ratio
+            precision = precision_score(all_labels, all_preds, average="micro", zero_division=0)
+            recall = recall_score(all_labels, all_preds, average="micro", zero_division=0)
+            f1 = f1_score(all_labels, all_preds, average="micro", zero_division=0)
+        else:
+            accuracy = np.mean(all_preds == all_labels)
+            precision = precision_score(all_labels, all_preds, average="weighted", zero_division=0)
+            recall = recall_score(all_labels, all_preds, average="weighted", zero_division=0)
+            f1 = f1_score(all_labels, all_preds, average="weighted", zero_division=0)
 
         logger.info(f"\n=== Validation Metrics ===")
+        if self.is_multi_label:
+            print(f"Exact Match Accuracy: {exact_match * 100:.2f}%")
         print(f"Accuracy: {accuracy * 100:.2f}%")
         print(f"Precision: {precision * 100:.2f}%")
         print(f"Recall: {recall * 100:.2f}%")

@@ -1,4 +1,4 @@
-python -m multi_intent_classification.services.train \
+python -m multi_intent_classification.services.pipeline \
     --dataloader_workers 2 \
     --device cuda \
     --seed 42 \
@@ -17,6 +17,7 @@ python -m multi_intent_classification.services.train \
     --test_file multi_intent_classification/dataset/test.json \
     --output_dir ./multi_intent_classification/models/classification \
     --record_output_file output.json \
-    --evaluate_on_accuracy True \
     --early_stopping_patience 3 \
     --early_stopping_threshold 0.001 \
+    --evaluate_on_accuracy True \
+    --is_multi_label True \

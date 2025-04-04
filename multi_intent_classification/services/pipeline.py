@@ -1,3 +1,4 @@
+import time
 import random
 import argparse
 import numpy as np
@@ -6,8 +7,8 @@ import torch
 from torch.utils.data import DataLoader
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-from multi_intent_classification.services.evaluate import Tester
-from multi_intent_classification.services.trainer import LlmTrainer
+from multi_intent_classification.services.evaluate import TestingArguments
+from multi_intent_classification.services.trainer import TrainingArguments
 from multi_intent_classification.services.dataloader import Dataset, LlmDataCollator
 
 import os
@@ -41,22 +42,23 @@ parser.add_argument("--seed", type=int, default=42, required=True)
 parser.add_argument("--epochs", type=int, default=10, required=True)
 parser.add_argument("--learning_rate", type=float, default=3e-5, required=True)
 parser.add_argument("--weight_decay", type=float, default=0.01, required=True)
+parser.add_argument("--warmup_steps", type=int, default=50, required=True)
 parser.add_argument("--max_length", type=int, default=256, required=True)
 parser.add_argument("--pad_mask_id", type=int, default=-100, required=True)
 parser.add_argument("--model", type=str, default="vinai/phobert-base-v2", required=True)
+parser.add_argument("--pin_memory", dest="pin_memory", action="store_true", default=False)
 parser.add_argument("--train_batch_size", type=int, default=16, required=True)
 parser.add_argument("--valid_batch_size", type=int, default=8, required=True)
 parser.add_argument("--test_batch_size", type=int, default=8, required=True)
-parser.add_argument("--warmup_steps", type=int, default=50, required=True)
 parser.add_argument("--train_file", type=str, default="dataset/train.json", required=True)
 parser.add_argument("--valid_file", type=str, default="dataset/val.json", required=True)
 parser.add_argument("--test_file", type=str, default="dataset/test.json", required=True)
 parser.add_argument("--output_dir", type=str, default="./models/classification", required=True)
 parser.add_argument("--record_output_file", type=str, default="output.json")
+parser.add_argument("--early_stopping_patience", type=int, default=3, required=True)
+parser.add_argument("--early_stopping_threshold", type=float, default=0.001, required=True)
 parser.add_argument("--evaluate_on_accuracy", type=bool, default=True, required=True)
-parser.add_argument("--pin_memory", dest="pin_memory", action="store_true", default=False)
-parser.add_argument("--early_stopping_patience", type=int, default=3, help="Number of epochs to wait for improvement", required=True)
-parser.add_argument("--early_stopping_threshold", type=float, default=0.001, help="Minimum improvement to reset early stopping counter", required=True)
+parser.add_argument("--is_multi_label", type=bool, default=True, required=True)
 args = parser.parse_args()
 
 def get_tokenizer(checkpoint: str) -> AutoTokenizer:
@@ -74,8 +76,7 @@ def get_model(
     ) -> AutoModelForSequenceClassification:
     model = AutoModelForSequenceClassification.from_pretrained(
         checkpoint,
-        problem_type="multi_label_classification",
-        ignore_mismatched_sizes=True,
+        problem_type="multi_label_classification" if args.is_multi_label else "single_label_classification",
         num_labels=num_labels,
         label2id=label2id,
         id2label=id2label,
@@ -94,11 +95,11 @@ if __name__ == "__main__":
 
     tokenizer = get_tokenizer(args.model)
     
-    train_set = Dataset(json_file=args.train_file, label_mapping=label2id, tokenizer=tokenizer)
-    valid_set = Dataset(json_file=args.valid_file, label_mapping=label2id, tokenizer=tokenizer)
-    test_set = Dataset(json_file=args.test_file, label_mapping=label2id, tokenizer=tokenizer)
+    train_set = Dataset(json_file=args.train_file, label_mapping=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
+    valid_set = Dataset(json_file=args.valid_file, label_mapping=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
+    test_set = Dataset(json_file=args.test_file, label_mapping=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
 
-    collator = LlmDataCollator(tokenizer=tokenizer, max_length=args.max_length)
+    collator = LlmDataCollator(tokenizer=tokenizer, max_length=args.max_length, is_multi_label=args.is_multi_label)
 
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     model = get_model(args.model, args.device, tokenizer, num_labels=len(unique_labels), label2id=label2id, id2label=id2label)
@@ -114,7 +115,8 @@ if __name__ == "__main__":
     model_name = args.model.split('/')[-1]
     save_dir = f"{args.output_dir}-{model_name}"
 
-    trainer = LlmTrainer(
+    start_time = time.time()
+    trainer = TrainingArguments(
         dataloader_workers=args.dataloader_workers,
         device=args.device,
         epochs=args.epochs,
@@ -130,22 +132,29 @@ if __name__ == "__main__":
         train_batch_size=args.train_batch_size,
         valid_batch_size=args.valid_batch_size,
         collator_fn=collator,
-        evaluate_on_accuracy=args.evaluate_on_accuracy,
         early_stopping_patience=args.early_stopping_patience,
         early_stopping_threshold=args.early_stopping_threshold,
-
+        evaluate_on_accuracy=args.evaluate_on_accuracy,
+        is_multi_label=False,
     )
     trainer.train()
+    end_time = time.time()
+    print(f"Training time: {(end_time - start_time) / 60} mins")
 
     if torch.cuda.is_available():
         max_vram = get_vram_usage(device)
         print(f"VRAM tối đa tiêu tốn khi huấn luyện: {max_vram:.2f} GB")
 
-    # Test model on test set
+
+    # Test model
     tuned_model = AutoModelForSequenceClassification.from_pretrained(save_dir).to(args.device)
     test_loader = DataLoader(test_set, batch_size=args.test_batch_size, shuffle=False, collate_fn=collator)
-    tester = Tester(model=tuned_model, test_loader=test_loader, output_file=args.record_output_file)
-    
+    tester = TestingArguments(
+        model=tuned_model,
+        test_loader=test_loader,
+        output_file=args.record_output_file,
+        is_multi_label=args.is_multi_label
+    )
     tester.evaluate()
 
     print(f"\nmodel: {args.model}")
