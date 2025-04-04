@@ -120,7 +120,7 @@ class TrainingArguments:
                     tepoch.set_postfix({"train_loss": train_loss.avg, "lr": current_lr})
                     tepoch.update(1)
 
-            valid_score = self.evaluate(self.valid_loader)
+            valid_score = self._validate(self.valid_loader)
             improved = False
 
             if self.evaluate_on_accuracy:
@@ -157,7 +157,7 @@ class TrainingArguments:
                 break
 
     @torch.no_grad()
-    def evaluate(self, dataloader: DataLoader) -> float:
+    def _validate(self, dataloader: DataLoader) -> float:
         self.model.eval()
         eval_loss = AverageMeter()
         all_preds = []
