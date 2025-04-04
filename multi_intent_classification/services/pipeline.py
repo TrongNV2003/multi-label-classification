@@ -135,7 +135,7 @@ if __name__ == "__main__":
         early_stopping_patience=args.early_stopping_patience,
         early_stopping_threshold=args.early_stopping_threshold,
         evaluate_on_accuracy=args.evaluate_on_accuracy,
-        is_multi_label=False,
+        is_multi_label=args.is_multi_label,
     )
     trainer.train()
     end_time = time.time()
