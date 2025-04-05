@@ -6,6 +6,7 @@ from transformers import AutoTokenizer, get_scheduler
 
 import numpy as np
 from tqdm import tqdm
+from typing import Optional, Callable
 from sklearn.metrics import precision_score, recall_score, f1_score
 
 from multi_intent_classification.services.utils import AverageMeter
@@ -27,11 +28,11 @@ class TrainingArguments:
         train_set: Dataset,
         valid_batch_size: int,
         valid_set: Dataset,
-        early_stopping_patience: int,
-        early_stopping_threshold: float,
-        evaluate_on_accuracy: bool,
-        is_multi_label: bool,
-        collator_fn=None,
+        early_stopping_patience: int = 3,
+        early_stopping_threshold: float = 0.001,
+        evaluate_on_accuracy: bool = True,
+        is_multi_label: bool = False,
+        collator_fn: Optional[Callable] = None,
     ) -> None:
         self.device = device
         self.epochs = epochs
@@ -72,7 +73,10 @@ class TrainingArguments:
         ]
         self.optimizer = AdamW(optimizer_grouped_parameters, lr=learning_rate)
 
-        self.loss_fn = nn.BCEWithLogitsLoss() if self.is_multi_label else nn.CrossEntropyLoss()
+        if self.is_multi_label:
+            self.loss_fn = nn.BCEWithLogitsLoss(reduction='mean')
+        else:
+            self.loss_fn = nn.CrossEntropyLoss(label_smoothing=0.0)
 
         num_training_steps = len(self.train_loader) * epochs
         self.scheduler = get_scheduler(
