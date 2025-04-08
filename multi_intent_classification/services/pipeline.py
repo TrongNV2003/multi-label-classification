@@ -6,8 +6,8 @@ import numpy as np
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-from multi_intent_classification.services.evaluate import TestingArguments
 from multi_intent_classification.services.trainer import TrainingArguments
+from multi_intent_classification.services.evaluate import TestingArguments
 from multi_intent_classification.services.dataloader import Dataset, LlmDataCollator
 
 import os
@@ -35,29 +35,29 @@ def count_parameters(model: torch.nn.Module) -> None:
     print(f"Trainable parameters: {trainable_params:,}")
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--dataloader_workers", type=int, default=2, required=True)
+parser.add_argument("--dataloader_workers", type=int, default=2)
 parser.add_argument("--device", type=str, default="cuda", required=True)
-parser.add_argument("--seed", type=int, default=42, required=True)
+parser.add_argument("--seed", type=int, default=42)
 parser.add_argument("--epochs", type=int, default=10, required=True)
 parser.add_argument("--learning_rate", type=float, default=3e-5, required=True)
-parser.add_argument("--weight_decay", type=float, default=0.01, required=True)
-parser.add_argument("--warmup_steps", type=int, default=50, required=True)
-parser.add_argument("--max_length", type=int, default=256, required=True)
-parser.add_argument("--pad_mask_id", type=int, default=-100, required=True)
+parser.add_argument("--weight_decay", type=float, default=0.01)
+parser.add_argument("--warmup_steps", type=int, default=50)
+parser.add_argument("--max_length", type=int, default=256)
+parser.add_argument("--pad_mask_id", type=int, default=-100)
 parser.add_argument("--model", type=str, default="vinai/phobert-base-v2", required=True)
 parser.add_argument("--pin_memory", dest="pin_memory", action="store_true", default=False)
 parser.add_argument("--train_batch_size", type=int, default=16, required=True)
-parser.add_argument("--val_batch_size", type=int, default=8, required=True)
-parser.add_argument("--test_batch_size", type=int, default=8, required=True)
+parser.add_argument("--val_batch_size", type=int, default=16, required=True)
+parser.add_argument("--test_batch_size", type=int, default=16, required=True)
 parser.add_argument("--train_file", type=str, default="dataset/train.json", required=True)
 parser.add_argument("--val_file", type=str, default="dataset/val.json", required=True)
 parser.add_argument("--test_file", type=str, default="dataset/test.json", required=True)
 parser.add_argument("--output_dir", type=str, default="./models/classification", required=True)
 parser.add_argument("--record_output_file", type=str, default="output.json")
-parser.add_argument("--early_stopping_patience", type=int, default=3, required=True)
-parser.add_argument("--early_stopping_threshold", type=float, default=0.001, required=True)
-parser.add_argument("--evaluate_on_accuracy", type=bool, default=True, required=True)
-parser.add_argument("--is_multi_label", type=bool, default=True, required=True)
+parser.add_argument("--early_stopping_patience", type=int, default=5, required=True)
+parser.add_argument("--early_stopping_threshold", type=float, default=0.001)
+parser.add_argument("--evaluate_on_accuracy", action="store_true", default=False)
+parser.add_argument("--is_multi_label", action="store_true", default=False)
 args = parser.parse_args()
 
 def get_tokenizer(checkpoint: str) -> AutoTokenizer:
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     model = get_model(args.model, args.device, tokenizer, num_labels=len(unique_labels), label2id=label2id, id2label=id2label)
     
     print(f"\nLabel: {model.config.id2label}")
-
+    print(f"\nEval_on_accuracy: {args.evaluate_on_accuracy}")
     count_parameters(model)
 
     if torch.cuda.is_available():

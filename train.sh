@@ -9,15 +9,16 @@ python -m multi_intent_classification.services.pipeline \
     --max_length 256 \
     --pad_mask_id -100 \
     --model vinai/phobert-base-v2 \
+    --pin_memory \
     --train_batch_size 16 \
-    --val_batch_size 8 \
-    --test_batch_size 8 \
+    --val_batch_size 16 \
+    --test_batch_size 16 \
     --train_file multi_intent_classification/dataset/train.json \
     --val_file multi_intent_classification/dataset/val.json \
     --test_file multi_intent_classification/dataset/test.json \
     --output_dir ./multi_intent_classification/models/classification \
     --record_output_file output.json \
-    --early_stopping_patience 3 \
+    --early_stopping_patience 5 \
     --early_stopping_threshold 0.001 \
-    --evaluate_on_accuracy True \
-    --is_multi_label True \
+    --evaluate_on_accuracy \
+    --is_multi_label \
