@@ -1,4 +1,3 @@
-from torch.utils.data import Subset
 import json
 import random
 
@@ -6,7 +5,7 @@ import random
 def split_dataset(dataset: list, train_ratio: float = 0.7, valid_ratio: float = 0.15, test_ratio: float = 0.15):
     total_size = len(dataset)
     indices = list(range(total_size))
-    random.shuffle(indices)
+    # random.shuffle(indices)
 
     train_size = int(train_ratio * total_size)
     valid_size = int(valid_ratio * total_size)
@@ -37,21 +36,21 @@ def split_data(input_path: str, save: bool = True) -> None:
     )
 
     if save:
-        with open("multi_intent_classification/dify_dataset/train.json", "w", encoding="utf-8") as train_file:
+        with open("dataset_speech_analyse/train.json", "w", encoding="utf-8") as train_file:
             json.dump(train_set, train_file, ensure_ascii=False, indent=4)
 
-        with open("multi_intent_classification/dify_dataset/val.json", "w", encoding="utf-8") as val_file:
+        with open("dataset_speech_analyse/val.json", "w", encoding="utf-8") as val_file:
             json.dump(valid_set, val_file, ensure_ascii=False, indent=4)
 
-        with open("multi_intent_classification/dify_dataset/test.json", "w", encoding="utf-8") as test_file:
+        with open("dataset_speech_analyse/test.json", "w", encoding="utf-8") as test_file:
             json.dump(test_set, test_file, ensure_ascii=False, indent=4)
 
         print("Dữ liệu đã được chia và lưu vào các file: train.json, val.json, test.json")
 
     # Kiểm tra phần tử trùng lặp giữa các tập
-    train_ids = {item["current_message"] for item in train_set}
-    val_ids = {item["current_message"] for item in valid_set}
-    test_ids = {item["current_message"] for item in test_set}
+    train_ids = {item["message"] for item in train_set}
+    val_ids = {item["message"] for item in valid_set}
+    test_ids = {item["message"] for item in test_set}
 
     # Kiểm tra giao của các tập
     train_val_overlap = train_ids & val_ids
@@ -68,7 +67,7 @@ def split_data(input_path: str, save: bool = True) -> None:
 
 
 if __name__ == "__main__":
-    input_file = "multi_intent_classification/dify_dataset/processed_data.json"
+    input_file = "dataset_speech_analyse/raw_data/processed_data_history.json"
     split_data(input_file)
     
 
