@@ -32,12 +32,12 @@ class Dataset:
         item = self.data[index]
         if self.word_segment:
             history = [self._word_segment(text) for text in item.get("history", []) if text is not None]
-            current_message = self._word_segment(item["current_message"])
+            current_message = self._word_segment(item["message"])
         else:
             history = item.get("history", [])
-            current_message = item["current_message"]
+            current_message = item["message"]
             
-        labels = item["label_intent"]   # list
+        labels = item["label_intent"]
 
         if history:
             history_text = self.sep_token.join(history)

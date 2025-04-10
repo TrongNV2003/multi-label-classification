@@ -62,9 +62,12 @@ args = parser.parse_args()
 
 def get_tokenizer(checkpoint: str) -> AutoTokenizer:
     tokenizer = AutoTokenizer.from_pretrained(checkpoint)
+    tokenizer.truncation_side = "left"
+
     """
     Input format: <history>{history_1}<sep>{history_2}<sep>...<sep>{history_n}</history><current>{context}</current>
     """
+    
     tokenizer.add_special_tokens(
         {'additional_special_tokens': ['<history>', '</history>', '<current>', '</current>']}
     )
