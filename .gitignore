@@ -5,9 +5,10 @@ _debugger.py
 query.sql
 
 dataset
-gen_dataset
-dify_dataset
-metadata_dataset
+dataset_gen
+dataset_dify
+dataset_metadata
+dataset_speech_analyse
 
 labels.txt
 
