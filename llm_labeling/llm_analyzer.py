@@ -21,16 +21,19 @@ class LLMAnalyzer:
     def __init__(
         self,
         prompt_template: Optional[str] = EXTRACT_INFO_PROMPT,
-        num_processes: int = 4
+        num_processes: int = 4,
+        hierarchy: Optional[Dict] = None,
+        
     ) -> None:
         self.prompt_template = prompt_template
         self.num_processes = num_processes
-        
+        self.hierarchy = hierarchy
         self.valid_intents = [
             "INFORM_INTENT", "NEGATE_INTENT", "AFFIRM_INTENT", "INFORM", "REQUEST", "AFFIRM", "NEGATE", "SELECT",
             "REQUEST_ALTS", "THANK_YOU", "GOODBYE", "CONFIRM", "OFFER", "NOTIFY_SUCCESS", "NOTIFY_FAILURE",
             "INFORM_COUNT", "OFFER_INTENT", "REQ_MORE", "UNKNOWN"
         ]
+  
 
     @staticmethod
     def _parse_json(text: str) -> Dict:
@@ -57,15 +60,16 @@ class LLMAnalyzer:
     ) -> str:
         return prompt_template.format(text=text, history=history)
 
-    @staticmethod
-    def analyze_text_worker(args: Tuple[str, str, str]) -> Tuple[Dict, float]:
+    def map_level2_to_level1(self, hierarchy, level2_label):
+        """Hàm mapping ngược từ level 2 về level 1"""
+        for level1, level2_dict in hierarchy.items():
+            if level2_label in level2_dict:
+                return f"{level1}|{level2_label}"
+        return "UNKNOWN|UNKNOWN"
+
+    def analyze_text_worker(self, args: Tuple[str, str, str]) -> Tuple[Dict, float]:
         text, history, prompt_template = args
         llm = OpenAI(api_key=llm_config.api_key, base_url=llm_config.base_url)
-        valid_intents = [
-            "INFORM_INTENT", "NEGATE_INTENT", "AFFIRM_INTENT", "INFORM", "REQUEST", "AFFIRM", "NEGATE", "SELECT",
-            "REQUEST_ALTS", "THANK_YOU", "GOODBYE", "CONFIRM", "OFFER", "NOTIFY_SUCCESS", "NOTIFY_FAILURE",
-            "INFORM_COUNT", "OFFER_INTENT", "REQ_MORE", "UNKNOWN"
-        ]
 
         prompt_str = LLMAnalyzer._inject_prompt(text, history, prompt_template)
         start_time = time.time()
@@ -85,8 +89,11 @@ class LLMAnalyzer:
         result = LLMAnalyzer._parse_json(content)
 
         pred_labels = result["intention"][0]["predicted_labels"]
-        result["intention"][0]["predicted_labels"] = [label for label in pred_labels if label in valid_intents]
-        logger.info(f"Processed: Predicted labels {pred_labels}")
+        filtered_labels = [label for label in pred_labels if label in self.valid_intents]
+        if not filtered_labels:
+            filtered_labels = ["UNKNOWN"]
+        result["intention"][0]["predicted_labels"] = filtered_labels
+        logger.info(f"Processed: Predicted labels {filtered_labels}")
 
         return result, latency
 
@@ -98,17 +105,17 @@ class LLMAnalyzer:
 
         start_time = time.time()
 
-        # Chuẩn bị dữ liệu đầu vào cho multiprocessing
-        inputs = [(text, history, self.prompt_template) for history, text, _ in dataset]
+        inputs = [(text, history, self.prompt_template) for id, history, text, _ in dataset]
 
-        # Sử dụng Pool để xử lý song song
         with Pool(processes=self.num_processes) as pool:
             process_results = pool.map(self.analyze_text_worker, inputs)
 
-        # Xử lý kết quả từ các process
         for i, (result, latency) in enumerate(process_results):
-            history, text, true_labels = dataset[i]
+            id, history, text, true_labels = dataset[i]
             pred_labels = result["intention"][0]["predicted_labels"]
+            if self.hierarchy:
+                # Map level 2 labels to level 1 labels
+                pred_labels = [self.map_level2_to_level1(self.hierarchy, label) for label in pred_labels]
 
             true_multi_hot = [1 if label in true_labels else 0 for label in self.valid_intents]
             pred_multi_hot = [1 if label in pred_labels else 0 for label in self.valid_intents]
@@ -118,6 +125,7 @@ class LLMAnalyzer:
             latencies.append(latency)
 
             results.append({
+                "id": id,
                 "text": text,
                 "history": history,
                 "true_labels": true_labels,
@@ -126,191 +134,72 @@ class LLMAnalyzer:
             })
 
         self.calculate_latency(latencies)
-        all_true_labels = np.array(all_true_labels)
-        all_pred_labels = np.array(all_pred_labels)
+        all_labels = np.array(all_true_labels)
+        all_preds = np.array(all_pred_labels)
+        self._calculate_accuracy(results)
 
-        accuracy = np.mean([np.array_equal(t, p) for t, p in zip(all_true_labels, all_pred_labels)])
-        precision = precision_score(all_true_labels, all_pred_labels, average="weighted", zero_division=0)
-        recall = recall_score(all_true_labels, all_pred_labels, average="weighted", zero_division=0)
-        f1 = f1_score(all_true_labels, all_pred_labels, average="weighted", zero_division=0)
+        metrics = {}
+        for average_type in ["micro", "macro", "weighted"]:
+            avg_metrics = self._calculate_metrics(all_preds, all_labels, average_type)
+            metrics[average_type] = avg_metrics
+            self._print_metrics(avg_metrics, average_type)
 
         print(f"\nEvaluation Metrics:")
-        print(f"Accuracy: {accuracy * 100:.2f}%")
-        print(f"Precision: {precision * 100:.2f}%")
-        print(f"Recall: {recall * 100:.2f}%")
-        print(f"F1 Score: {f1 * 100:.2f}%")
         print(f"Total time: {time.time() - start_time:.2f} seconds")
 
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(results, f, ensure_ascii=False, indent=4)
         print(f"Results saved to {output_file}")
 
+
+    def _calculate_metrics(self, all_preds: np.ndarray, all_labels: np.ndarray, average_type: str) -> Dict[str, float]:
+        metrics = {}
+        sample_accuracy = (all_preds == all_labels).all(axis=1).mean()
+        metrics["accuracy"] = float(sample_accuracy)
+        metrics["precision"] = float(precision_score(all_labels, all_preds, average=average_type, zero_division=0))
+        metrics["recall"] = float(recall_score(all_labels, all_preds, average=average_type, zero_division=0))
+        metrics["f1"] = float(f1_score(all_labels, all_preds, average=average_type, zero_division=0))
+        return metrics
+
+
+    def _calculate_accuracy(self, results: List[Dict]) -> None:
+        correct = 0
+        correct_one = 0
+        total = len(results)
+        for item in results:
+            true_set = set(item["true_labels"])
+            pred_set = set(item["predicted_labels"])
+            if true_set == pred_set:
+                correct += 1
+            if true_set & pred_set:
+                correct_one += 1
+        accuracy = correct / total if total > 0 else 0
+        accuracy_one = correct_one / total if total > 0 else 0
+        print(f"\nAccuracy (Match one): {accuracy_one * 100:.2f}%")
+        print(f"Accuracy (Match all): {accuracy * 100:.2f}%")
+
+
+    def _print_metrics(self, metrics: Dict[str, float], average_type: str) -> None:
+        print(f"\nMetrics ({average_type}):")
+        print(f"Accuracy: {metrics['accuracy'] * 100:.2f}")
+        print(f"Precision: {metrics['precision'] * 100:.2f}")
+        print(f"Recall: {metrics['recall'] * 100:.2f}")
+        print(f"F1 Score: {metrics['f1'] * 100:.2f}")
+
     def calculate_latency(self, latencies: list) -> None:
+        p95_latency = np.percentile(latencies, 95)
         p99_latency = np.percentile(latencies, 99)
         mean_latency = np.mean(latencies)
-        min_latency = np.min(latencies)
-        max_latency = np.max(latencies)
-        std_latency = np.std(latencies)
+
         print(f"\nLatency Statistics (seconds):")
+        print(f"P95 Latency: {p95_latency * 1000:.2f} ms")
         print(f"P99 Latency: {p99_latency * 1000:.2f} ms")
-        print(f"Average Latency: {mean_latency:.3f}")
-        print(f"Min Latency: {min_latency:.3f}")
-        print(f"Max Latency: {max_latency:.3f}")
-        print(f"Std Latency: {std_latency:.3f}")
 
 if __name__ == "__main__":
+    # hierarchy_file = "label_hierarchy.json"
+    # with open(hierarchy_file, "r", encoding="utf-8") as f:
+    #     hierarchy = json.load(f) 
+        
     nlu = LLMAnalyzer(num_processes=8)
-    test_set = Dataset("multi_intent_classification/dataset/test_en.json")
-    nlu.evaluate_dataset(test_set, output_file="evaluation_results.json")
-
-
-
-"""
-singleprocessing
-"""
-
-# import json
-# import re
-# import time
-# import numpy as np
-# from loguru import logger
-# from sklearn.metrics import precision_score, recall_score, f1_score
-
-# from openai import OpenAI
-# from typing import Dict, List, Optional, Union
-
-# from llm_labeling.common import Role
-# from llm_labeling.config.setting import llm_config
-# from llm_labeling.prompts import EXTRACT_INFO_PROMPT, SYSTEM_PROMPT
-# from llm_labeling.llm_dataloader import Dataset
-
-# class LLMAnalyzer():
-#     def __init__(
-#         self,
-#         llm: Optional[OpenAI] = None,
-#         prompt_template: Optional[str] = EXTRACT_INFO_PROMPT,
-#     ) -> None:
-
-#         if llm is None:
-#             llm = OpenAI(api_key=llm_config.api_key, base_url=llm_config.base_url)
-#         self.llm = llm
-#         self.prompt_template = prompt_template
-        
-#         self.valid_intents = [
-#             "INFORM_INTENT", "NEGATE_INTENT", "AFFIRM_INTENT", "INFORM", "REQUEST", "AFFIRM", "NEGATE", "SELECT",
-#             "REQUEST_ALTS", "THANK_YOU", "GOODBYE", "CONFIRM", "OFFER", "NOTIFY_SUCCESS", "NOTIFY_FAILURE",
-#             "INFORM_COUNT", "OFFER_INTENT", "REQ_MORE", "UNKNOWN"
-#         ]
-
-#     @staticmethod
-#     def _parse_json(text: str) -> Dict:
-#         pattern = r"<output>\n(.*?)</output>"
-#         match = re.search(pattern, text, re.DOTALL)
-#         try:
-#             if match:
-#                 json_text = match.group(1)
-#                 json_dict = json.loads(json_text)
-#                 return json_dict
-#             else:
-#                 return json.loads(text)
-#         except (json.JSONDecodeError, ValueError, KeyError) as e:
-#             logger.error(f"Error parsing JSON: {e}. Raw text: {text}")
-#             return {"intention": [{"predicted_labels": ["UNKNOWN"]}]}
-        
-#     def _inject_prompt(
-#             self,
-#             text: str,
-#             history: Union[List[str], str],
-#     ) -> str:
-#         prompt_str = self.prompt_template.format(
-#             text=text,
-#             history=history,
-#         )
-#         return prompt_str
-
-#     def analyze_text(
-#             self,
-#             text: str,
-#             history: Union[str, List[str]] = None,
-#             **kwargs,
-#     ) -> tuple[Dict, float]:
-#         prompt_str = self._inject_prompt(
-#             text=text,
-#             history=history,
-#         )
-#         start_time = time.time()
-#         response = self.llm.chat.completions.create(
-#             seed=llm_config.seed,
-#             temperature=llm_config.temperature,
-#             top_p=llm_config.top_p,
-#             model=llm_config.model,
-#             messages=[
-#                 {"role": Role.SYSTEM, "content": SYSTEM_PROMPT},
-#                 {"role": Role.USER, "content": prompt_str},
-#             ],
-#             response_format={"type": "json_object"},
-#         )
-#         latency = time.time() - start_time
-#         content = response.choices[0].message.content
-#         result = self._parse_json(content)
-
-#         pred_labels = result["intention"][0]["predicted_labels"]
-#         result["intention"][0]["predicted_labels"] = [label for label in pred_labels if label in self.valid_intents]
-#         return result, latency
-    
-#     def evaluate_dataset(self, dataset: Dataset, output_file: str = "results.json") -> None:
-#         all_true_labels = []
-#         all_pred_labels = []
-#         latencies = []
-#         results = []
-
-#         start_time = time.time()
-#         for i in range(len(dataset)):
-#             history, text, true_labels = dataset[i]
-#             result, latency = self.analyze_text(text=text, history=history)
-            
-#             pred_labels = result["intention"][0]["predicted_labels"]
-#             print(f"Processed {i}: Predicted labels {pred_labels} - True labels {true_labels}")
-#             true_multi_hot = [1 if label in true_labels else 0 for label in self.valid_intents]
-#             pred_multi_hot = [1 if label in pred_labels else 0 for label in self.valid_intents]
-
-#             all_true_labels.append(true_multi_hot)
-#             all_pred_labels.append(pred_multi_hot)
-#             latencies.append(latency)
-
-#             results.append({
-#                 "text": text,
-#                 "history": history,
-#                 "true_labels": true_labels,
-#                 "predicted_labels": pred_labels,
-#                 "latency": latency
-#             })
-        
-#         self.calculate_latency(latencies)
-#         all_true_labels = np.array(all_true_labels)
-#         all_pred_labels = np.array(all_pred_labels)
-
-#         accuracy = np.mean([np.array_equal(t, p) for t, p in zip(all_true_labels, all_pred_labels)])
-#         precision = precision_score(all_true_labels, all_pred_labels, average="weighted", zero_division=0)
-#         recall = recall_score(all_true_labels, all_pred_labels, average="weighted", zero_division=0)
-#         f1 = f1_score(all_true_labels, all_pred_labels, average="weighted", zero_division=0)
-
-#         print(f"\nEvaluation Metrics:")
-#         print(f"Accuracy: {accuracy * 100:.2f}%")
-#         print(f"Precision: {precision * 100:.2f}%")
-#         print(f"Recall: {recall * 100:.2f}%")
-#         print(f"F1 Score: {f1 * 100:.2f}%")
-#         print(f"Total time: {time.time() - start_time:.2f} seconds")
-
-#         with open(output_file, "w", encoding="utf-8") as f:
-#             json.dump(results, f, ensure_ascii=False, indent=4)
-#         print(f"Results saved to {output_file}")
-
-#     def calculate_latency(self, latencies: list) -> None:
-#         p99_latency = np.percentile(latencies, 99)
-#         print(f"P99 Latency: {p99_latency * 1000:.2f} ms")
-
-# if __name__ == "__main__":
-#     nlu = LLMAnalyzer()
-#     test_set = Dataset("multi_intent_classification/dataset/test_en.json")
-#     nlu.evaluate_dataset(test_set, output_file="evaluation_results.json")
+    test_set = Dataset("dataset_speech_analyse/test_llm.json")
+    nlu.evaluate_dataset(test_set, output_file="output_llm.json")
