@@ -15,7 +15,7 @@ from typing import Dict, List, Optional, Union, Tuple
 from llm_labeling.common import Role
 from llm_labeling.llm_dataloader import Dataset
 from llm_labeling.config.setting import llm_config
-from llm_labeling.prompts import EXTRACT_INFO_PROMPT, SYSTEM_PROMPT
+from llm_labeling.prompts_vi import EXTRACT_INFO_PROMPT, SYSTEM_PROMPT
 
 class LLMAnalyzer:
     def __init__(
@@ -28,11 +28,7 @@ class LLMAnalyzer:
         self.prompt_template = prompt_template
         self.num_processes = num_processes
         self.hierarchy = hierarchy
-        self.valid_intents = [
-            "INFORM_INTENT", "NEGATE_INTENT", "AFFIRM_INTENT", "INFORM", "REQUEST", "AFFIRM", "NEGATE", "SELECT",
-            "REQUEST_ALTS", "THANK_YOU", "GOODBYE", "CONFIRM", "OFFER", "NOTIFY_SUCCESS", "NOTIFY_FAILURE",
-            "INFORM_COUNT", "OFFER_INTENT", "REQ_MORE", "UNKNOWN"
-        ]
+        self.valid_intents = ["Cung cấp thông tin", "Tương tác", "Hỏi thông tin giao hàng", "Hỗ trợ, hướng dẫn", "Yêu cầu", "Phản hồi", "Sự vụ", "UNKNOWN"]
   
 
     @staticmethod
@@ -201,5 +197,5 @@ if __name__ == "__main__":
     #     hierarchy = json.load(f) 
         
     nlu = LLMAnalyzer(num_processes=8)
-    test_set = Dataset("dataset_speech_analyse/test_llm.json")
+    test_set = Dataset("dataset_gen/test.json")
     nlu.evaluate_dataset(test_set, output_file="output_llm.json")

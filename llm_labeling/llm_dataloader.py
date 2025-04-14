@@ -14,7 +14,7 @@ class Dataset:
         item = self.data[index]
         id = item["id"]
         history = item["history"]
-        current_message = item["message"]
+        current_message = item["current_message"]
         labels = item["label_intent"]
 
         history_text = "\n".join(history) if history else ""
