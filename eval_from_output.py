@@ -7,6 +7,9 @@ file_name = "output_llm.json"
 with open(file_name, "r", encoding="utf-8") as f:
     data = json.load(f)
 
+for item in data:
+    if not item["predicted_labels"]:
+        item["predicted_labels"] = ["UNKNOWN|UNKNOWN"]
 
 def calculate_accuracy(results):
     correct = 0
