@@ -9,7 +9,7 @@ from tqdm import tqdm
 from typing import Optional, Callable
 from sklearn.metrics import precision_score, recall_score, f1_score
 
-from multi_intent_classification.services.utils import AverageMeter
+from multi_intent_classification.utils.utils import AverageMeter
 
 class TrainingArguments:
     def __init__(

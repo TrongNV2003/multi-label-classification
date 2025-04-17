@@ -8,6 +8,8 @@ from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_sc
 import torch
 from torch.utils.data import DataLoader, Dataset
 
+from multi_intent_classification.utils import constant
+
 class TestingArguments:
     def __init__(
         self,
@@ -62,7 +64,8 @@ class TestingArguments:
                         probs = torch.sigmoid(logits)
                         batch_preds = (probs > 0.5).float().cpu().numpy()
                     else:
-                        batch_preds = torch.argmax(logits, dim=1).cpu().numpy()
+                        probs = torch.softmax(logits, dim=1)
+                        batch_preds = torch.argmax(probs, dim=1).cpu().numpy()
                     
                     batch_labels = labels.cpu().numpy()
                     all_preds.append(batch_preds)
@@ -71,10 +74,26 @@ class TestingArguments:
                     for i in range(len(batch_preds)):
                         true_label_names = self._map_labels(batch_labels[i], self.model.config.id2label)
                         predicted_label_names = self._map_labels(batch_preds[i], self.model.config.id2label)
-                        
+                        probs_np = probs[i].cpu().numpy()
+
+                        predicted_probs = {}
+                        if self.is_multi_label:
+                            for idx, val in enumerate(batch_preds[i]):
+                                if val == 1:
+                                    label_name = self.model.config.id2label[idx]
+                                    predicted_probs[label_name] = float(probs_np[idx])
+                                else: 
+                                    label_name = "UNKNOWN|UNKNOWN"
+                                    predicted_probs[label_name] = 0.0
+                        else:
+                            predicted_label_idx = batch_preds[i]
+                            label_name = self.model.config.id2label[predicted_label_idx]
+                            predicted_probs[label_name] = float(probs_np[predicted_label_idx])
+                            
                         results.append({
                             "true_labels": true_label_names,
                             "predicted_labels": predicted_label_names,
+                            "probabilities": predicted_probs,
                             "latency": float(latency) / len(batch_preds),
                         })
 
@@ -104,11 +123,15 @@ class TestingArguments:
         self._calculate_accuracy(results)
 
 
-    def _map_labels(self, label_data: list, labels_mapping: dict) -> list:
+    def _map_labels(self, label_data, labels_mapping: Dict[int, str]) -> List[str]:
         if self.is_multi_label:
-            return [labels_mapping[idx] for idx, val in enumerate(label_data) if val == 1]
+            vals = label_data.tolist() if hasattr(label_data, "tolist") else list(label_data)
+            selected = [labels_mapping[idx] for idx, val in enumerate(vals) if val == 1]
+            return selected if selected else [constant.UNKNOWN_LABEL]
+
         else:
-            return [labels_mapping[label_data]]
+            idx = int(label_data)
+            return [labels_mapping.get(idx, constant.UNKNOWN_LABEL)]
 
 
     def _calculate_metrics(self, all_preds: np.ndarray, all_labels: np.ndarray, average_type: str) -> Dict[str, float]:
