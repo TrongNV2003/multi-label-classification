@@ -14,9 +14,14 @@ labels.txt
 label_hierarchy.json
 
 result
+output.json
 evaluation_results.json
 
 models
 models_onnx
+
+output_confusion_matrix
+output_records
+postprocessing
 
 BERT_for_multi_label_classification.ipynb

@@ -16,7 +16,7 @@ python -m multi_intent_classification.services.pipeline \
     --train_file multi_intent_classification/dataset/train.json \
     --val_file multi_intent_classification/dataset/val.json \
     --test_file multi_intent_classification/dataset/test.json \
-    --output_dir ./multi_intent_classification/models/classification \
+    --output_dir ./models \
     --record_output_file output.json \
     --early_stopping_patience 5 \
     --early_stopping_threshold 0.001 \

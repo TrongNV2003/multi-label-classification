@@ -115,7 +115,7 @@ if __name__ == "__main__":
         torch.cuda.reset_peak_memory_stats(device)
 
     model_name = args.model.split('/')[-1]
-    save_dir = f"{args.output_dir}-{model_name}"
+    save_dir = f"{args.output_dir}/{model_name}"
 
     start_time = time.time()
     trainer = TrainingArguments(

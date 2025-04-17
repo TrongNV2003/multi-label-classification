@@ -40,8 +40,9 @@ class Dataset:
         labels = item["label_intent"]
 
         if history:
-            history_text = self.sep_token.join(history)
-            context = f"<history>{history_text}</history><current>{current_message}</current>"
+            reversed_history = list(reversed(history))
+            history_text = self.sep_token.join(reversed_history)
+            context = f"<current>{current_message}</current><history>{history_text}</history>"
         else:
             context = f"<current>{current_message}</current>"
         
