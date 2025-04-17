@@ -1,75 +1,77 @@
-import torch
-import logging
+import os
+import time
 import argparse
-import onnxruntime
 from loguru import logger
+
+import torch
 from transformers import AutoTokenizer
 from torch.utils.data import DataLoader
 
+import onnxruntime
+from optimum.onnxruntime import ORTModelForSequenceClassification
+
+from multi_intent_classification.onnx_cls.onnx_converter import OnnxConverter
 from multi_intent_classification.services.dataloader import Dataset, LlmDataCollator
 
 class ONNXInference:
     def __init__(
             self,
-            onnx_model_path: str,
             test_loader: DataLoader,
+            device: str,
+            model: ORTModelForSequenceClassification,
+            id2label: dict,
             output_file: str,
-            id2label: dict
     ) -> None:
-        self.onnx_model_path = onnx_model_path
         self.test_loader = test_loader
+        self.device = device
+        self.model = model.to(self.device)
         self.id2label = id2label
         self.output_file = output_file
-
-        self.session = onnxruntime.InferenceSession(
-            onnx_model_path,
-            providers=["CUDAExecutionProvider"] if torch.cuda.is_available() else ["CPUExecutionProvider"]
-        )
-        self.sess_output = [out.name for out in self.session.get_outputs()]
-
-        logging.basicConfig(
-            filename=output_file,
-            level=logging.INFO,
-            format='%(asctime)s - %(levelname)s - %(message)s'
-        )
-        self.logger = logging.getLogger()
+        
 
     def run(self):
         for batch_idx, batch in enumerate(self.test_loader):
-            input_ids = batch["input_ids"].numpy()  # Chuyển sang NumPy cho ONNX
-            attention_mask = batch["attention_mask"].numpy()
+            input_ids = batch["input_ids"].to(self.device)
+            attention_mask = batch["attention_mask"].to(self.device)
 
-            sess_input = {
-                'input_ids': input_ids,
-                'attention_mask': attention_mask
-            }
+            outputs = self.model(input_ids=input_ids, attention_mask=attention_mask)
+            logits = outputs.logits
+            probs = torch.sigmoid(logits)
+            preds = (probs > 0.5).long()
+            pred_indices = preds[0].nonzero(as_tuple=True)[0].tolist()
+            predicted_label_names = [self.id2label[idx] for idx in pred_indices] or ["UNKNOWN|UNKNOWN"]
 
-            outputs = self.session.run(self.sess_output, sess_input)
-            logits = torch.from_numpy(outputs[0])
+            # confidence: cao nhất trên softmax logits
+            confidence = torch.softmax(logits, dim=-1)[0].max().item()
 
-            pred = torch.argmax(logits, dim=1).item()
-            predicted_label_name = self.id2label[pred]
-            confidence = torch.softmax(logits, dim=1).max().item()
 
             log_message = (
                 f"Query {batch_idx + 1}: "
-                f"Category type: {predicted_label_name} | "
+                f"Labels: {predicted_label_names} | "
                 f"Confidence: {confidence:.4f}"
             )
             logger.info(log_message)
-            self.logger.info(log_message)
 
 
 if __name__ == "__main__":
-    import time
     parser = argparse.ArgumentParser()
-    parser.add_argument("--tokenize_model", type=str, default="vinai/phobert-base-v2", help="Tokenizer model", required=True)
-    parser.add_argument("--onnx_model", type=str, default="models_onnx/classification-phobert-base-v2.onnx", help="ONNX model path", required=True)
+    parser.add_argument("--model", type=str, default="vinai/phobert-base-v2", help="Torch model", required=True)
+    parser.add_argument("--output_dir", type=str, default="./models", help="Output directory to save ONNX model")
     parser.add_argument("--test_set", type=str, default="dataset/test.json", help="Test dataset file", required=True)
     parser.add_argument("--output_file", type=str, default="output.log", help="Output log file")
     args = parser.parse_args()
 
-    tokenizer = AutoTokenizer.from_pretrained(args.tokenize_model)
+    model_name = args.model.split('/')[-1]  # phobert-base-v2
+    torch_model_dir = f"{args.output_dir}/{model_name}"   #./models/phobert-base-v2
+    onnx_model_dir = f"{args.output_dir}/{model_name}_onnx" # ./models/phobert-base-v2_onnx
+    if not os.path.exists(onnx_model_dir):
+        OnnxConverter.convert_to_onnx(model_name=torch_model_dir, save_dir=onnx_model_dir)
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    providers = "CUDAExecutionProvider" if torch.cuda.is_available() else "CPUExecutionProvider"
+    model = ORTModelForSequenceClassification.from_pretrained(onnx_model_dir, provider=providers, use_io_binding=True, file_name="model_optimized.onnx")
+    tokenizer = AutoTokenizer.from_pretrained(args.model)
+    
     unique_labels = ["Cung cấp thông tin", "Tương tác", "Hỏi thông tin giao hàng", "Hỗ trợ, hướng dẫn", "Yêu cầu", "Phản hồi", "Sự vụ", "UNKNOWN"]
     id2label = {idx: label for idx, label in enumerate(unique_labels)}
     label2id = {label: idx for idx, label in enumerate(unique_labels)}
@@ -77,7 +79,8 @@ if __name__ == "__main__":
     test_set = Dataset(
         json_file=args.test_set,
         label_mapping=label2id,
-        tokenizer=tokenizer
+        tokenizer=tokenizer,
+        is_multi_label=True,
     )
 
     collator = LlmDataCollator(tokenizer=tokenizer, max_length=256)
@@ -85,15 +88,16 @@ if __name__ == "__main__":
     test_loader = DataLoader(
         test_set,
         batch_size=1,
-        shuffle=True,
+        shuffle=False,
         collate_fn=collator
     )
 
     infer = ONNXInference(
-        onnx_model_path=args.onnx_model,
         test_loader=test_loader,
+        model=model,
+        id2label=id2label,
+        device=device,
         output_file=args.output_file,
-        id2label=id2label
     )
 
     start_time = time.time()

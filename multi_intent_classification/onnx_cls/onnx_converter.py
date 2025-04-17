@@ -4,11 +4,13 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification, Auto
 import onnx
 import onnxruntime
 from onnx import numpy_helper
+from optimum.onnxruntime import AutoOptimizationConfig, ORTOptimizer, ORTModelForSequenceClassification
 
 import os
 import argparse
 import numpy as np
 from loguru import logger
+
 
 class OnnxConverter:
     def __init__(self, ft_model: str, save_dir: str):
@@ -100,18 +102,31 @@ class OnnxConverter:
         except Exception as e:
             logger.error(f"Failed to load ONNX model for I/O details: {e}")
 
+    @staticmethod
+    def convert_to_onnx(model_name: str, save_dir: str) -> str:
+        logger.info(f"Exporting model {model_name} to ONNX")
+        model = ORTModelForSequenceClassification.from_pretrained(model_name, export=True)
+        
+        optimizer = ORTOptimizer.from_pretrained(model)
+        optimization_config = AutoOptimizationConfig.O4(use_raw_attention_mask=True)
+        optimizer.optimize(save_dir=save_dir, optimization_config=optimization_config)
+        
+        model.save_pretrained(save_dir)
+        logger.info(f"Exported ONNX model to {save_dir}")
+        
+        return save_dir
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--fine_tuned_model", type=str, default="models/classification-phobert-base-v2", required=True)
-    parser.add_argument("--output_dir", type=str, default="./onnx_models", help="Output directory to save ONNX model")
-    parser.add_argument("--sample_text", type=str, default="alo ạ vâng cháu giao đơn hàng này chú ơi chú ra cổng nhận cháu đơn hàng đây này", help="Sample text to convert ONNX model")
-    args = parser.parse_args()
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument("--fine_tuned_model", type=str, default="models/classification-phobert-base-v2", required=True)
+#     parser.add_argument("--output_dir", type=str, default="./onnx_models", help="Output directory to save ONNX model")
+#     parser.add_argument("--sample_text", type=str, default="alo ạ vâng cháu giao đơn hàng này chú ơi chú ra cổng nhận cháu đơn hàng đây này", help="Sample text to convert ONNX model")
+#     args = parser.parse_args()
 
-    convert = OnnxConverter(
-        ft_model=args.fine_tuned_model,
-        save_dir=args.output_dir
-    )
+#     convert = OnnxConverter(
+#         ft_model=args.fine_tuned_model,
+#         save_dir=args.output_dir
+#     )
     
-    onnx_model = convert.to_onnx(args.sample_text)
-    convert.fix_onnx_fp16(f'{args.output_dir}/{onnx_model}.onnx')
+#     onnx_model = convert.to_onnx(args.sample_text)
+#     convert.fix_onnx_fp16(f'{args.output_dir}/{onnx_model}.onnx')
