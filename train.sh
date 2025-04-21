@@ -1,4 +1,4 @@
-python -m multi_intent_classification.services.pipeline \
+python -m multi_intent_classification.main \
     --dataloader_workers 2 \
     --device cuda \
     --seed 42 \
@@ -13,9 +13,9 @@ python -m multi_intent_classification.services.pipeline \
     --train_batch_size 16 \
     --val_batch_size 16 \
     --test_batch_size 16 \
-    --train_file multi_intent_classification/dataset/train.json \
-    --val_file multi_intent_classification/dataset/val.json \
-    --test_file multi_intent_classification/dataset/test.json \
+    --train_file dataset/train.json \
+    --val_file dataset/val.json \
+    --test_file dataset/test.json \
     --output_dir ./models \
     --record_output_file output.json \
     --early_stopping_patience 5 \

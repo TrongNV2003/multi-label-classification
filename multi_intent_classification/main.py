@@ -1,3 +1,6 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
 import time
 import random
 import argparse
@@ -10,8 +13,6 @@ from multi_intent_classification.services.trainer import TrainingArguments
 from multi_intent_classification.services.evaluate import TestingArguments
 from multi_intent_classification.services.dataloader import Dataset, LlmDataCollator
 
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 def set_seed(seed: int) -> None:
     random.seed(seed)
