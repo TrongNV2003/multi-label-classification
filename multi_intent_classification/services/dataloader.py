@@ -58,10 +58,9 @@ class Dataset:
 
         return context, label_vector
 
-    def _word_segment(self, text: str) -> str:
-        tokens = word_tokenize(text)
-        text_segment = " ".join(tokens)
-        return text_segment
+    def _word_segment(self, sentence: str) -> str:
+        context = word_tokenize(sentence, format="text")
+        return context
 
 class LlmDataCollator:
     def __init__(self, tokenizer: AutoTokenizer, max_length: int, is_multi_label: bool = False) -> None:

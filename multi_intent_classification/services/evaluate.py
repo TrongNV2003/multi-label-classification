@@ -112,10 +112,7 @@ class TestingArguments:
 
         metrics = {}
         for average_type in ["micro", "macro", "weighted"]:
-            avg_metrics = self._calculate_metrics(all_preds, all_labels, average_type)
-            metrics[average_type] = avg_metrics
-            self._print_metrics(avg_metrics, average_type)
-        
+            m = self._calculate_metrics(all_preds, all_labels, average_type)
 
         latency_stats = self._calculate_latency_stats(latencies)
         metrics["latency"] = latency_stats
@@ -128,7 +125,6 @@ class TestingArguments:
             vals = label_data.tolist() if hasattr(label_data, "tolist") else list(label_data)
             selected = [labels_mapping[idx] for idx, val in enumerate(vals) if val == 1]
             return selected if selected else [constant.UNKNOWN_LABEL]
-
         else:
             idx = int(label_data)
             return [labels_mapping.get(idx, constant.UNKNOWN_LABEL)]
@@ -137,16 +133,19 @@ class TestingArguments:
     def _calculate_metrics(self, all_preds: np.ndarray, all_labels: np.ndarray, average_type: str) -> Dict[str, float]:
         metrics = {}
         if self.is_multi_label:
-            sample_accuracy = (all_preds == all_labels).all(axis=1).mean()
-            metrics["accuracy"] = float(sample_accuracy)
             metrics["precision"] = float(precision_score(all_labels, all_preds, average=average_type, zero_division=0))
             metrics["recall"] = float(recall_score(all_labels, all_preds, average=average_type, zero_division=0))
             metrics["f1"] = float(f1_score(all_labels, all_preds, average=average_type, zero_division=0))
         else:
-            metrics["accuracy"] = float(accuracy_score(all_labels, all_preds))
             metrics["precision"] = float(precision_score(all_labels, all_preds, average=average_type, zero_division=0))
             metrics["recall"] = float(recall_score(all_labels, all_preds, average=average_type, zero_division=0))
             metrics["f1"] = float(f1_score(all_labels, all_preds, average=average_type, zero_division=0))
+        
+        print(f"\nMetrics ({average_type}):")
+        print(f"Precision: {metrics['precision'] * 100:.2f}")
+        print(f"Recall: {metrics['recall'] * 100:.2f}")
+        print(f"F1 Score: {metrics['f1'] * 100:.2f}")
+        
         return metrics
 
 
@@ -165,14 +164,6 @@ class TestingArguments:
         accuracy_one = correct_one / total if total > 0 else 0
         print(f"\nAccuracy (Match one): {accuracy_one * 100:.2f}%")
         print(f"Accuracy (Match all): {accuracy * 100:.2f}%")
-
-
-    def _print_metrics(self, metrics: Dict[str, float], average_type: str) -> None:
-        print(f"\nMetrics ({average_type}):")
-        print(f"Accuracy: {metrics['accuracy'] * 100:.2f}")
-        print(f"Precision: {metrics['precision'] * 100:.2f}")
-        print(f"Recall: {metrics['recall'] * 100:.2f}")
-        print(f"F1 Score: {metrics['f1'] * 100:.2f}")
 
 
     def _calculate_latency_stats(self, latencies: List[float]) -> Dict[str, float]:
