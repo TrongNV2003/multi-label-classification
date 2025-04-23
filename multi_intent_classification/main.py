@@ -59,16 +59,17 @@ parser.add_argument("--early_stopping_patience", type=int, default=5, required=T
 parser.add_argument("--early_stopping_threshold", type=float, default=0.001)
 parser.add_argument("--evaluate_on_accuracy", action="store_true", default=False)
 parser.add_argument("--is_multi_label", action="store_true", default=False)
+
+parser.add_argument("--use_focal_loss", action="store_true", default=False)
+parser.add_argument("--focal_loss_gamma", type=float, default=2.0)
+parser.add_argument("--focal_loss_alpha", type=float, default=0.25)
 args = parser.parse_args()
 
 def get_tokenizer(checkpoint: str) -> AutoTokenizer:
     tokenizer = AutoTokenizer.from_pretrained(checkpoint)
-    tokenizer.truncation_side = "left"
-
     """
     Input format: <history>{history_1}<sep>{history_2}<sep>...<sep>{history_n}</history><current>{context}</current>
     """
-    
     tokenizer.add_special_tokens(
         {'additional_special_tokens': ['<history>', '</history>', '<current>', '</current>']}
     )
@@ -139,6 +140,9 @@ if __name__ == "__main__":
         early_stopping_threshold=args.early_stopping_threshold,
         evaluate_on_accuracy=args.evaluate_on_accuracy,
         is_multi_label=args.is_multi_label,
+        use_focal_loss=args.use_focal_loss,
+        focal_loss_alpha=args.focal_loss_alpha,
+        focal_loss_gamma=args.focal_loss_gamma,
     )
     trainer.train()
     end_time = time.time()

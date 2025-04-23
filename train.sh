@@ -22,3 +22,6 @@ python -m multi_intent_classification.main \
     --early_stopping_threshold 0.001 \
     --evaluate_on_accuracy \
     --is_multi_label \
+    --use_focal_loss \
+    --focal_loss_alpha 0.25 \
+    --focal_loss_gamma 2.0 \

@@ -10,6 +10,7 @@ from typing import Optional, Callable
 from sklearn.metrics import precision_score, recall_score, f1_score
 
 from multi_intent_classification.utils.utils import AverageMeter
+from multi_intent_classification.services.loss import LossFunctionFactory
 
 class TrainingArguments:
     def __init__(
@@ -33,6 +34,9 @@ class TrainingArguments:
         evaluate_on_accuracy: bool = True,
         is_multi_label: bool = False,
         collator_fn: Optional[Callable] = None,
+        use_focal_loss: bool = False,
+        focal_loss_gamma: float = 2.0,
+        focal_loss_alpha: float = 0.25,
     ) -> None:
         self.device = device
         self.epochs = epochs
@@ -40,6 +44,10 @@ class TrainingArguments:
         self.train_batch_size = train_batch_size
         self.valid_batch_size = valid_batch_size
         self.is_multi_label = is_multi_label
+        
+        self.use_focal_loss = use_focal_loss
+        self.focal_loss_gamma = focal_loss_gamma
+        self.focal_loss_alpha = focal_loss_alpha
 
         self.train_loader = DataLoader(
             train_set,
@@ -59,6 +67,7 @@ class TrainingArguments:
         )
         self.tokenizer = tokenizer
         self.model = model.to(self.device)
+        self.loss_factory = LossFunctionFactory()
 
         no_decay = ["bias", "LayerNorm.weight"]
         optimizer_grouped_parameters = [
@@ -74,9 +83,12 @@ class TrainingArguments:
         self.optimizer = AdamW(optimizer_grouped_parameters, lr=learning_rate)
 
         if self.is_multi_label:
-            self.loss_fn = nn.BCEWithLogitsLoss(reduction='mean')
+            if self.use_focal_loss:
+                self.loss_fn = self.loss_factory.get_loss("focal_multi", gamma=self.focal_loss_gamma, alpha=self.focal_loss_alpha)
+            else:
+                self.loss_fn = self.loss_factory.get_loss("bce")
         else:
-            self.loss_fn = nn.CrossEntropyLoss(label_smoothing=0.0)
+            self.loss_fn = self.loss_factory.get_loss("ce")
 
         num_training_steps = len(self.train_loader) * epochs
         self.scheduler = get_scheduler(
