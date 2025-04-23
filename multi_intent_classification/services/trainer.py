@@ -6,6 +6,7 @@ from transformers import AutoTokenizer, get_scheduler
 
 import numpy as np
 from tqdm import tqdm
+from loguru import logger
 from typing import Optional, Callable
 from sklearn.metrics import precision_score, recall_score, f1_score
 
@@ -85,10 +86,13 @@ class TrainingArguments:
         if self.is_multi_label:
             if self.use_focal_loss:
                 self.loss_fn = self.loss_factory.get_loss("focal_multi", gamma=self.focal_loss_gamma, alpha=self.focal_loss_alpha)
+                logger.info("Using Focal Loss for multi-label classification.")
             else:
                 self.loss_fn = self.loss_factory.get_loss("bce")
+                logger.info("Using BCE Loss for multi-label classification.")
         else:
             self.loss_fn = self.loss_factory.get_loss("ce")
+            logger.info("Using CE Loss for single-label classification.")
 
         num_training_steps = len(self.train_loader) * epochs
         self.scheduler = get_scheduler(
