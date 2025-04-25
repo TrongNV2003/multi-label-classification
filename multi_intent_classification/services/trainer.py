@@ -210,25 +210,27 @@ class TrainingArguments:
                 tepoch.set_postfix({"valid_loss": eval_loss.avg})
                 tepoch.update(1)
 
-        all_preds = np.concatenate(all_preds)
-        all_labels = np.concatenate(all_labels)
-
-        accuracy = np.mean(all_preds == all_labels)
+        all_preds = np.vstack(all_preds) if self.is_multi_label else np.concatenate(all_preds)
+        all_labels = np.vstack(all_labels) if self.is_multi_label else np.concatenate(all_labels)
 
         if self.is_multi_label:
-            self._print_metrics(all_preds, all_labels, average_type="micro")
+            accuracy = np.mean((all_preds == all_labels).all(axis=-1))
+            self._metrics(all_preds, all_labels, average_type="micro")
         else:
-            self._print_metrics(all_preds, all_labels, average_type="weighted")
+            accuracy = np.mean(all_preds == all_labels)
+            self._metrics(all_preds, all_labels, average_type="weighted")
 
         return accuracy if self.evaluate_on_accuracy else eval_loss.avg
 
 
-    def _print_metrics(self, all_preds: np.ndarray, all_labels: np.ndarray, average_type: str) -> None:
-        accuracy = np.mean(all_preds == all_labels)
+    def _metrics(self, all_preds: np.ndarray, all_labels: np.ndarray, average_type: str) -> None:
+        if self.is_multi_label:
+            accuracy = np.mean((all_preds == all_labels).all(axis=-1))
+        else:
+            accuracy = np.mean(all_preds == all_labels)
         precision = precision_score(all_labels, all_preds, average=average_type, zero_division=0)
         recall = recall_score(all_labels, all_preds, average=average_type, zero_division=0)
         f1 = f1_score(all_labels, all_preds, average=average_type, zero_division=0)
-
         print(f"\n=== Metrics ({average_type}) ===")
         print(f"Accuracy: {accuracy * 100:.2f}%")
         print(f"Precision: {precision * 100:.2f}%")

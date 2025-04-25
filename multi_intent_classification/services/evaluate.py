@@ -104,21 +104,22 @@ class TestingArguments:
         all_preds = np.vstack(all_preds) if self.is_multi_label else np.concatenate(all_preds)
         all_labels = np.vstack(all_labels) if self.is_multi_label else np.concatenate(all_labels)
         
-        num_samples = len(results)
         if self.output_file:
             with open(self.output_file, "w", encoding="utf-8") as f:
                 json.dump(results, f, ensure_ascii=False, indent=4)
             print(f"Results saved to {self.output_file}")
 
         metrics = {}
-        for average_type in ["micro", "macro", "weighted"]:
-            m = self._calculate_metrics(all_preds, all_labels, average_type)
+        for avg in ["micro", "macro", "weighted"]:
+            metrics[avg] = self._calculate_metrics(all_preds, all_labels, avg)
 
         latency_stats = self._calculate_latency_stats(latencies)
         metrics["latency"] = latency_stats
-        print(f"num samples: {num_samples}")
         self._calculate_accuracy(results)
-
+        
+        num_samples = len(results)
+        print(f"num samples: {num_samples}")
+        return metrics
 
     def _map_labels(self, label_data, labels_mapping: Dict[int, str]) -> List[str]:
         if self.is_multi_label:
@@ -129,25 +130,16 @@ class TestingArguments:
             idx = int(label_data)
             return [labels_mapping.get(idx, constant.UNKNOWN_LABEL)]
 
-
     def _calculate_metrics(self, all_preds: np.ndarray, all_labels: np.ndarray, average_type: str) -> Dict[str, float]:
         metrics = {}
-        if self.is_multi_label:
-            metrics["precision"] = float(precision_score(all_labels, all_preds, average=average_type, zero_division=0))
-            metrics["recall"] = float(recall_score(all_labels, all_preds, average=average_type, zero_division=0))
-            metrics["f1"] = float(f1_score(all_labels, all_preds, average=average_type, zero_division=0))
-        else:
-            metrics["precision"] = float(precision_score(all_labels, all_preds, average=average_type, zero_division=0))
-            metrics["recall"] = float(recall_score(all_labels, all_preds, average=average_type, zero_division=0))
-            metrics["f1"] = float(f1_score(all_labels, all_preds, average=average_type, zero_division=0))
-        
+        metrics["precision"] = float(precision_score(all_labels, all_preds, average=average_type, zero_division=0))
+        metrics["recall"] = float(recall_score(all_labels, all_preds, average=average_type, zero_division=0))
+        metrics["f1"] = float(f1_score(all_labels, all_preds, average=average_type, zero_division=0))
         print(f"\nMetrics ({average_type}):")
         print(f"Precision: {metrics['precision'] * 100:.2f}")
         print(f"Recall: {metrics['recall'] * 100:.2f}")
         print(f"F1 Score: {metrics['f1'] * 100:.2f}")
-        
         return metrics
-
 
     def _calculate_accuracy(self, results):
         correct = 0
@@ -167,14 +159,13 @@ class TestingArguments:
 
 
     def _calculate_latency_stats(self, latencies: List[float]) -> Dict[str, float]:
-        latency_stats = {
+        stats = {
             "p95_ms": float(np.percentile(latencies, 95) * 1000),
             "p99_ms": float(np.percentile(latencies, 99) * 1000),
             "mean_ms": float(np.mean(latencies) * 1000),
         }
         print("\nLatency Statistics:")
-        print(f"P95 Latency: {latency_stats['p95_ms']:.2f} ms")
-        print(f"P99 Latency: {latency_stats['p99_ms']:.2f} ms")
-        print(f"Mean Latency: {latency_stats['mean_ms']:.2f} ms")
-        
-        return latency_stats
+        print(f"P95 Latency: {stats['p95_ms']:.2f} ms")
+        print(f"P99 Latency: {stats['p99_ms']:.2f} ms")
+        print(f"Mean Latency: {stats['mean_ms']:.2f} ms")
+        return stats
