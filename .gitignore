@@ -10,6 +10,8 @@ dataset_dify
 dataset_metadata
 dataset_speech_analyse
 
+services_release
+
 labels.txt
 label_hierarchy.json
 

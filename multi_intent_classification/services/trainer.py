@@ -122,15 +122,17 @@ class TrainingArguments:
                     attention_mask = data["attention_mask"].to(self.device)
                     labels = data["labels"].to(self.device)
 
+                    self.optimizer.zero_grad()
+                    
                     outputs = self.model(
                         input_ids=input_ids,
                         attention_mask=attention_mask,
                     )
                     logits = outputs.logits
+                    
                     loss = self.loss_fn(logits, labels)
-
-                    self.optimizer.zero_grad()
                     loss.backward()
+                    
                     nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
                     self.optimizer.step()
                     self.scheduler.step()
