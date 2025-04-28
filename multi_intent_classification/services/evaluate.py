@@ -82,9 +82,11 @@ class TestingArguments:
                                 if val == 1:
                                     label_name = self.model.config.id2label[idx]
                                     predicted_probs[label_name] = float(probs_np[idx])
-                                else: 
-                                    label_name = "UNKNOWN|UNKNOWN"
-                                    predicted_probs[label_name] = 0.0
+                                    has_prediction = True
+                                    
+                            if not has_prediction:
+                                label_name = "UNKNOWN|UNKNOWN"
+                                predicted_probs[label_name] = 0.0
                         else:
                             predicted_label_idx = batch_preds[i]
                             label_name = self.model.config.id2label[predicted_label_idx]
