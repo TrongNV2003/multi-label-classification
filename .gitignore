@@ -2,13 +2,16 @@ __pycache__
 
 _debugger.py
 .env
-query.sql
+
+*.sql
+*.xlsx
 
 dataset
 dataset_gen
 dataset_dify
 dataset_metadata
 dataset_speech_analyse
+data_speech_final
 
 services_release
 
@@ -27,3 +30,7 @@ output_records
 postprocessing
 
 BERT_for_multi_label_classification.ipynb
+
+preprocessing
+
+visualize_confusion_matrix

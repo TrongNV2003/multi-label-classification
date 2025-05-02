@@ -5,7 +5,7 @@ def analyze_and_build_hierarchy(dataset, output_file):
     hierarchy = {}
     
     for item in dataset:
-        labels = item["label_intent"]
+        labels = item["label"]
         for label in labels:
             level1, level2 = label.split("|")
             if level1 not in hierarchy:
