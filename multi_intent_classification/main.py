@@ -11,7 +11,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from multi_intent_classification.services.trainer import TrainingArguments
 from multi_intent_classification.services.evaluate import TestingArguments
-from multi_intent_classification.services.dataloader import Dataset, LlmDataCollator
+from multi_intent_classification.services.dataloader import Dataset, DataCollator
 
 
 def set_seed(seed: int) -> None:
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     val_set = Dataset(json_file=args.val_file, label_mapping=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
     test_set = Dataset(json_file=args.test_file, label_mapping=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
 
-    collator = LlmDataCollator(tokenizer=tokenizer, max_length=args.max_length, is_multi_label=args.is_multi_label)
+    collator = DataCollator(tokenizer=tokenizer, max_length=args.max_length, is_multi_label=args.is_multi_label)
 
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     model = get_model(args.model, args.device, tokenizer, num_labels=len(unique_labels), label2id=label2id, id2label=id2label)

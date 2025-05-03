@@ -11,7 +11,7 @@ import onnxruntime
 from optimum.onnxruntime import ORTModelForSequenceClassification
 
 from multi_intent_classification.onnx_cls.onnx_converter import OnnxConverter
-from multi_intent_classification.services.dataloader import Dataset, LlmDataCollator
+from multi_intent_classification.services.dataloader import Dataset, DataCollator
 
 class ONNXInference:
     def __init__(
@@ -83,7 +83,7 @@ if __name__ == "__main__":
         is_multi_label=True,
     )
 
-    collator = LlmDataCollator(tokenizer=tokenizer, max_length=256)
+    collator = DataCollator(tokenizer=tokenizer, max_length=256)
 
     test_loader = DataLoader(
         test_set,

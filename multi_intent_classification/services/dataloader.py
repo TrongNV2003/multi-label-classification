@@ -62,7 +62,7 @@ class Dataset:
         context = word_tokenize(sentence, format="text")
         return context
 
-class LlmDataCollator:
+class DataCollator:
     def __init__(self, tokenizer: AutoTokenizer, max_length: int, is_multi_label: bool = False) -> None:
         """
         Args:
