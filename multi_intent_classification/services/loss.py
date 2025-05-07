@@ -141,43 +141,22 @@ class FocalLossForMultiLabel(nn.Module):
     Công thức: -alpha * (1-p_t)^gamma * log(p_t)
     Trong đó p_t = p nếu y=1, và p_t = 1-p nếu y=0
     """
-    def __init__(self, alpha=0.25, gamma=2.0, reduction='mean'):
+    def __init__(self, num_labels: int = 122, alpha: float = 0.25, gamma: float = 2.0):
         super(FocalLossForMultiLabel, self).__init__()
+        self.num_labels = num_labels
         self.alpha = alpha
         self.gamma = gamma
-        self.reduction = reduction
-        
-    def forward(self, logits: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
-        """
-        Args:
-            logits: Tensor shape (batch_size, num_classes)
-            labels: Tensor shape (batch_size, num_classes)
-        """
-        bce_loss = F.binary_cross_entropy_with_logits(logits, labels, reduction='none')
 
-        probs = torch.sigmoid(logits)
-        p_t = probs * labels + (1 - probs) * (1 - labels)
+    def forward(self, logits, targets):
+        l = logits.reshape(-1)
+        t = targets.reshape(-1)
 
-        modulating_factor = (1.0 - p_t) ** self.gamma
-
-        pos_counts = labels.sum(dim=0, keepdim=True)
-        neg_counts = (1 - labels).sum(dim=0, keepdim=True)
-        total = pos_counts + neg_counts
-
-        alpha_weight = torch.where(
-            labels > 0,
-            (total / (pos_counts + 1e-5)) * self.alpha,  # Trọng số cho nhãn dương
-            (total / (neg_counts + 1e-5)) * (1 - self.alpha)  # Trọng số cho nhãn âm
-        )
-
-        focal_loss = alpha_weight * modulating_factor * bce_loss
-
-        if self.reduction == 'mean':
-            return focal_loss.mean()
-        elif self.reduction == 'sum':
-            return focal_loss.sum()
-        else:
-            return focal_loss
+        p = torch.sigmoid(l)
+        p = torch.where(t >= 0.5, p, 1 - p)
+        logp = -torch.log(torch.clamp(p, 1e-4, 1 - 1e-4))
+        loss = self.alpha * ((1 - p) ** self.gamma) * logp
+        loss = self.num_labels * loss.mean()
+        return loss
 
 
 class LossFunctionFactory:
