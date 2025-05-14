@@ -7,7 +7,7 @@ import argparse
 import numpy as np
 
 import torch
-from transformers import AutoModelForSequenceClassification, AutoTokenizer
+from transformers import AutoModelForSequenceClassification, AutoTokenizer, AutoConfig
 
 from multi_intent_classification.services.trainer import TrainingArguments
 from multi_intent_classification.services.evaluate import TestingArguments
@@ -78,12 +78,16 @@ def get_tokenizer(checkpoint: str) -> AutoTokenizer:
 def get_model(
     checkpoint: str, device: str, tokenizer: AutoTokenizer, num_labels: str, id2label: list, label2id: list
     ) -> AutoModelForSequenceClassification:
-    model = AutoModelForSequenceClassification.from_pretrained(
+    config = AutoConfig.from_pretrained(
         checkpoint,
         problem_type="multi_label_classification" if args.is_multi_label else "single_label_classification",
         num_labels=num_labels,
         label2id=label2id,
         id2label=id2label,
+    )
+    model = AutoModelForSequenceClassification.from_pretrained(
+        checkpoint,
+        config=config
     )
     model.resize_token_embeddings(len(tokenizer))
     model = model.to(device)
