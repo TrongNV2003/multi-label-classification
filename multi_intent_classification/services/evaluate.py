@@ -78,6 +78,7 @@ class TestingArguments:
 
                         predicted_probs = {}
                         if self.is_multi_label:
+                            has_prediction = False
                             for idx, val in enumerate(batch_preds[i]):
                                 if val == 1:
                                     label_name = self.model.config.id2label[idx]
