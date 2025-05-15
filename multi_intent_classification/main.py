@@ -63,20 +63,30 @@ parser.add_argument("--is_multi_label", action="store_true", default=False)
 parser.add_argument("--use_focal_loss", action="store_true", default=False)
 parser.add_argument("--focal_loss_gamma", type=float, default=2.0)
 parser.add_argument("--focal_loss_alpha", type=float, default=0.25)
+
+parser.add_argument("--use_lora", action="store_true", default=False, help="Whether to use LoRA for fine-tuning")
+parser.add_argument("--lora_rank", type=int, default=16, help="Rank for LoRA adaptation")
+parser.add_argument("--lora_alpha", type=int, default=32, help="Alpha parameter for LoRA")
+parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout probability for LoRA layers")
+parser.add_argument("--lora_target_modules", type=str, default=None,
+                    help="Comma-separated list of target modules for LoRA. If None, defaults to q_proj,v_proj")
 args = parser.parse_args()
 
 def get_tokenizer(checkpoint: str) -> AutoTokenizer:
     tokenizer = AutoTokenizer.from_pretrained(checkpoint)
-    """
-    Input format: <history>{history_1}<sep>{history_2}<sep>...<sep>{history_n}</history><current>{context}</current>
-    """
     tokenizer.add_special_tokens(
         {'additional_special_tokens': ['<history>', '</history>', '<current>', '</current>']}
     )
     return tokenizer
 
 def get_model(
-    checkpoint: str, device: str, tokenizer: AutoTokenizer, num_labels: str, id2label: list, label2id: list
+        checkpoint: str,
+        device: str,
+        tokenizer: AutoTokenizer,
+        num_labels: str,
+        id2label: list,
+        label2id: list,
+        resize_token_embeddings: bool = True,
     ) -> AutoModelForSequenceClassification:
     config = AutoConfig.from_pretrained(
         checkpoint,
@@ -89,7 +99,8 @@ def get_model(
         checkpoint,
         config=config
     )
-    model.resize_token_embeddings(len(tokenizer))
+    if resize_token_embeddings:
+        model.resize_token_embeddings(len(tokenizer))
     model = model.to(device)
     return model
 
@@ -110,7 +121,11 @@ if __name__ == "__main__":
     collator = DataCollator(tokenizer=tokenizer, max_length=args.max_length, is_multi_label=args.is_multi_label)
 
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
-    model = get_model(args.model, args.device, tokenizer, num_labels=len(unique_labels), label2id=label2id, id2label=id2label)
+    torch.set_float32_matmul_precision('high')
+    
+    model = get_model(
+        args.model, args.device, tokenizer, num_labels=len(unique_labels), label2id=label2id, id2label=id2label
+    )
     
     print(f"\nLabel: {model.config.id2label}")
     print(f"\nEval_on_accuracy: {args.evaluate_on_accuracy}")
@@ -147,8 +162,14 @@ if __name__ == "__main__":
         use_focal_loss=args.use_focal_loss,
         focal_loss_alpha=args.focal_loss_alpha,
         focal_loss_gamma=args.focal_loss_gamma,
+        use_lora=args.use_lora,
+        lora_rank=args.lora_rank,
+        lora_alpha=args.lora_alpha,
+        lora_dropout=args.lora_dropout,
+        lora_target_modules=args.lora_target_modules.split(',') if args.lora_target_modules else None,
     )
     trainer.train()
+    
     end_time = time.time()
     print(f"Training time: {(end_time - start_time) / 60} mins")
 
@@ -157,8 +178,20 @@ if __name__ == "__main__":
         print(f"VRAM tối đa tiêu tốn khi huấn luyện: {max_vram:.2f} GB")
 
 
-    # Test model
-    tuned_model = AutoModelForSequenceClassification.from_pretrained(save_dir).to(args.device)
+    # Evaluate model
+    if args.use_lora:
+        from peft import PeftModel
+        base_model = get_model(
+            args.model,
+            device,
+            tokenizer,
+            num_labels=len(unique_labels),
+            label2id=label2id,
+            id2label=id2label,
+        )
+        tuned_model = PeftModel.from_pretrained(base_model, save_dir)
+    else:
+        tuned_model = AutoModelForSequenceClassification.from_pretrained(save_dir)
     tester = TestingArguments(
         dataloader_workers=args.dataloader_workers,
         device=args.device,

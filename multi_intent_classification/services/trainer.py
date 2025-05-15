@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torch.optim import AdamW
 from torch.utils.data import DataLoader, Dataset
+from peft import LoraConfig, get_peft_model, PeftModel
 from transformers import AutoTokenizer, get_scheduler
 
 import numpy as np
@@ -38,10 +39,16 @@ class TrainingArguments:
         use_focal_loss: bool = False,
         focal_loss_gamma: float = 2.0,
         focal_loss_alpha: float = 0.25,
+        use_lora: bool = False,
+        lora_rank: int = 16,
+        lora_alpha: int = 32,
+        lora_dropout: float = 0.1,
+        lora_target_modules: list = None,
     ) -> None:
         self.device = device
         self.epochs = epochs
         self.save_dir = save_dir
+        self.tokenizer = tokenizer
         self.train_batch_size = train_batch_size
         self.valid_batch_size = valid_batch_size
         self.is_multi_label = is_multi_label
@@ -50,6 +57,7 @@ class TrainingArguments:
         self.focal_loss_gamma = focal_loss_gamma
         self.focal_loss_alpha = focal_loss_alpha
 
+        
         self.train_loader = DataLoader(
             train_set,
             batch_size=train_batch_size,
@@ -66,23 +74,46 @@ class TrainingArguments:
             shuffle=False,
             collate_fn=collator_fn,
         )
-        self.tokenizer = tokenizer
-        self.model = model.to(self.device)
+        self.use_lora = use_lora
+
+        if self.use_lora:
+            lora_target_modules = ["query", "value"] if lora_target_modules is None else lora_target_modules
+            lora_config = LoraConfig(
+                r=lora_rank,
+                lora_alpha=lora_alpha,
+                target_modules=lora_target_modules,
+                lora_dropout=lora_dropout,
+                bias="none",
+                task_type="SEQ_CLS",
+                use_rslora=False
+            )
+            self.model = get_peft_model(model, lora_config)
+            self.model.to(self.device)
+
+            trainable_params = [p for p in self.model.parameters() if p.requires_grad]
+            self.optimizer = AdamW(trainable_params, lr=learning_rate, weight_decay=weight_decay)
+            logger.info("Using LoRA for model training.")
+
+            train_params = sum(p.numel() for p in self.model.parameters() if p.requires_grad)
+            all_params = sum(p.numel() for p in self.model.parameters())
+            logger.info(f"Training {train_params:,d} parameters out of {all_params:,d} parameters ({train_params/all_params:.2%})")
+        else:
+            self.model = model.to(self.device)
+
+            no_decay = ["bias", "LayerNorm.weight"]
+            optimizer_grouped_parameters = [
+                {
+                    "params": [p for n, p in self.model.named_parameters() if not any(nd in n for nd in no_decay)],
+                    "weight_decay": weight_decay,
+                },
+                {
+                    "params": [p for n, p in self.model.named_parameters() if any(nd in n for nd in no_decay)],
+                    "weight_decay": 0.0,
+                },
+            ]
+            self.optimizer = AdamW(optimizer_grouped_parameters, lr=learning_rate)
+
         self.loss_factory = LossFunctionFactory()
-
-        no_decay = ["bias", "LayerNorm.weight"]
-        optimizer_grouped_parameters = [
-            {
-                "params": [p for n, p in self.model.named_parameters() if not any(nd in n for nd in no_decay)],
-                "weight_decay": weight_decay,
-            },
-            {
-                "params": [p for n, p in self.model.named_parameters() if any(nd in n for nd in no_decay)],
-                "weight_decay": 0.0,
-            },
-        ]
-        self.optimizer = AdamW(optimizer_grouped_parameters, lr=learning_rate)
-
         if self.is_multi_label:
             if self.use_focal_loss:
                 self.loss_fn = self.loss_factory.get_loss("focal_multi", gamma=self.focal_loss_gamma, alpha=self.focal_loss_alpha)
@@ -240,4 +271,7 @@ class TrainingArguments:
 
     def _save(self) -> None:
         self.tokenizer.save_pretrained(self.save_dir)
-        self.model.save_pretrained(self.save_dir)
+        if self.use_lora:
+            self.model.save_pretrained(self.save_dir, save_embedding_layers=True)   # save LoRA weights
+        else:
+            self.model.save_pretrained(self.save_dir)   # save full model

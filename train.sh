@@ -25,3 +25,8 @@ python -m multi_intent_classification.main \
     --use_focal_loss \
     --focal_loss_alpha 0.25 \
     --focal_loss_gamma 2.0 \
+    --use_lora \
+    --lora_rank 8 \
+    --lora_alpha 16 \
+    --lora_dropout 0.1 \
+    --lora_target_modules "query, key, value, dense" \
