@@ -35,7 +35,7 @@ class Dataset:
             current_message = self._word_segment(item["message"])
         else:
             history = item.get("history", [])
-            current_message = item["message"]
+            current_message = item["current_message"]
             
         labels = item["label_intent"]
 

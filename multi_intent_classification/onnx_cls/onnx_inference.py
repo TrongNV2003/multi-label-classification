@@ -24,7 +24,7 @@ class ONNXInference:
     ) -> None:
         self.test_loader = test_loader
         self.device = device
-        self.model = model.to(self.device)
+        self.model = model
         self.id2label = id2label
         self.output_file = output_file
         
@@ -43,7 +43,6 @@ class ONNXInference:
 
             # confidence: cao nhất trên softmax logits
             confidence = torch.softmax(logits, dim=-1)[0].max().item()
-
 
             log_message = (
                 f"Query {batch_idx + 1}: "
@@ -69,7 +68,9 @@ if __name__ == "__main__":
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     providers = "CUDAExecutionProvider" if torch.cuda.is_available() else "CPUExecutionProvider"
-    model = ORTModelForSequenceClassification.from_pretrained(onnx_model_dir, provider=providers, use_io_binding=True, file_name="model_optimized.onnx")
+    model = ORTModelForSequenceClassification.from_pretrained(
+        onnx_model_dir, provider=providers, use_io_binding=True, file_name="model_optimized.onnx"
+    )
     tokenizer = AutoTokenizer.from_pretrained(args.model)
     
     unique_labels = ["Cung cấp thông tin", "Tương tác", "Hỏi thông tin giao hàng", "Hỗ trợ, hướng dẫn", "Yêu cầu", "Phản hồi", "Sự vụ", "UNKNOWN"]
@@ -87,7 +88,7 @@ if __name__ == "__main__":
 
     test_loader = DataLoader(
         test_set,
-        batch_size=1,
+        batch_size=16,
         shuffle=False,
         collate_fn=collator
     )
