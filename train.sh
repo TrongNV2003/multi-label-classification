@@ -1,6 +1,5 @@
 python -m multi_intent_classification.main \
     --dataloader_workers 2 \
-    --device cuda \
     --seed 42 \
     --epochs 10 \
     --learning_rate 3e-5 \

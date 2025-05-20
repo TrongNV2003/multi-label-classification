@@ -37,7 +37,6 @@ def count_parameters(model: torch.nn.Module) -> None:
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataloader_workers", type=int, default=2)
-parser.add_argument("--device", type=str, default="cuda", required=True)
 parser.add_argument("--seed", type=int, default=42)
 parser.add_argument("--epochs", type=int, default=10, required=True)
 parser.add_argument("--learning_rate", type=float, default=3e-5, required=True)
@@ -53,7 +52,7 @@ parser.add_argument("--test_batch_size", type=int, default=16, required=True)
 parser.add_argument("--train_file", type=str, default="dataset/train.json", required=True)
 parser.add_argument("--val_file", type=str, default="dataset/val.json", required=True)
 parser.add_argument("--test_file", type=str, default="dataset/test.json", required=True)
-parser.add_argument("--output_dir", type=str, default="./models/classification", required=True)
+parser.add_argument("--output_dir", type=str, default="./models", required=True)
 parser.add_argument("--record_output_file", type=str, default="output.json")
 parser.add_argument("--early_stopping_patience", type=int, default=5, required=True)
 parser.add_argument("--early_stopping_threshold", type=float, default=0.001)
@@ -73,7 +72,7 @@ parser.add_argument("--lora_target_modules", type=str, default=None,
 args = parser.parse_args()
 
 def get_tokenizer(checkpoint: str) -> AutoTokenizer:
-    tokenizer = AutoTokenizer.from_pretrained(checkpoint)
+    tokenizer = AutoTokenizer.from_pretrained(checkpoint, use_fast=True)
     tokenizer.add_special_tokens(
         {'additional_special_tokens': ['<history>', '</history>', '<current>', '</current>']}
     )
@@ -83,9 +82,9 @@ def get_model(
         checkpoint: str,
         device: str,
         tokenizer: AutoTokenizer,
-        num_labels: str,
-        id2label: list,
-        label2id: list,
+        num_labels: int,
+        id2label: dict,
+        label2id: dict,
         resize_token_embeddings: bool = True,
     ) -> AutoModelForSequenceClassification:
     config = AutoConfig.from_pretrained(
@@ -120,20 +119,16 @@ if __name__ == "__main__":
 
     collator = DataCollator(tokenizer=tokenizer, max_length=args.max_length, is_multi_label=args.is_multi_label)
 
-    device = torch.device(args.device if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     torch.set_float32_matmul_precision('high')
     
     model = get_model(
-        args.model, args.device, tokenizer, num_labels=len(unique_labels), label2id=label2id, id2label=id2label
+        args.model, device, tokenizer, num_labels=len(unique_labels), label2id=label2id, id2label=id2label
     )
     
     print(f"\nLabel: {model.config.id2label}")
     print(f"\nEval_on_accuracy: {args.evaluate_on_accuracy}")
     count_parameters(model)
-
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
-        torch.cuda.reset_peak_memory_stats(device)
 
     model_name = args.model.split('/')[-1]
     if args.use_lora:
@@ -144,7 +139,7 @@ if __name__ == "__main__":
     start_time = time.time()
     trainer = TrainingArguments(
         dataloader_workers=args.dataloader_workers,
-        device=args.device,
+        device=device,
         epochs=args.epochs,
         learning_rate=args.learning_rate,
         weight_decay=args.weight_decay,
@@ -197,7 +192,7 @@ if __name__ == "__main__":
         tuned_model = AutoModelForSequenceClassification.from_pretrained(save_dir)
     tester = TestingArguments(
         dataloader_workers=args.dataloader_workers,
-        device=args.device,
+        device=device,
         model=tuned_model,
         pin_memory=args.pin_memory,
         test_set=test_set,
