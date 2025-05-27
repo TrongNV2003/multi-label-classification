@@ -1,10 +1,12 @@
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
+import json
 import time
 import random
 import argparse
 import numpy as np
+from collections import Counter
 
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, AutoConfig
@@ -20,11 +22,10 @@ def set_seed(seed: int) -> None:
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
-        torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
+        torch.backends.cudnn.deterministic = True
 
 def get_vram_usage(device):
-    """Trả về VRAM tối đa đã sử dụng trong quá trình chạy (GB)."""
     if not torch.cuda.is_available():
         return 0.0
     return torch.cuda.max_memory_allocated(device) / (1024 ** 3)
@@ -34,6 +35,20 @@ def count_parameters(model: torch.nn.Module) -> None:
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"Total parameters: {total_params:,}")
     print(f"Trainable parameters: {trainable_params:,}")
+
+def get_unique_labels(input_file: str) -> list:
+    with open(input_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    labels_count = Counter()
+    for record in data:
+        for label in record["label"]:
+            labels_count.update([label])
+    outputs_labels_list = [label for label, _ in labels_count.most_common()]
+
+    print(f"\nDanh sách nhãn: {outputs_labels_list}")
+    print(f"Tổng số lượng nhãn: {len(outputs_labels_list)}")
+    return outputs_labels_list
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataloader_workers", type=int, default=2)
@@ -107,7 +122,8 @@ def get_model(
 if __name__ == "__main__":
     set_seed(args.seed)
 
-    unique_labels = ["Cung cấp thông tin", "Tương tác", "Hỏi thông tin giao hàng", "Hỗ trợ, hướng dẫn", "Yêu cầu", "Phản hồi", "Sự vụ", "UNKNOWN"]
+    unique_labels = get_unique_labels(args.train_file)
+
     label2id = {label: idx for idx, label in enumerate(unique_labels)}
     id2label = {idx: label for idx, label in enumerate(unique_labels)}
 
