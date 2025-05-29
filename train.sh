@@ -1,4 +1,4 @@
-python -m multi_intent_classification.main \
+python -m main \
     --dataloader_workers 2 \
     --seed 42 \
     --epochs 10 \

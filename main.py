@@ -183,13 +183,7 @@ if __name__ == "__main__":
         lora_target_modules=args.lora_target_modules.split(',') if args.lora_target_modules else None,
     )
     trainer.train()
-    
     end_time = time.time()
-    print(f"Training time: {(end_time - start_time) / 60} mins")
-
-    if torch.cuda.is_available():
-        max_vram = get_vram_usage(device)
-        print(f"VRAM tối đa tiêu tốn khi huấn luyện: {max_vram:.2f} GB")
 
 
     # Evaluate model
@@ -219,6 +213,11 @@ if __name__ == "__main__":
     )
     tester.evaluate()
 
+
+    if torch.cuda.is_available():
+        max_vram = get_vram_usage(device)
+        print(f"VRAM tối đa tiêu tốn khi huấn luyện: {max_vram:.2f} GB")
+    print(f"Training time: {(end_time - start_time) / 60} mins")
     print(f"\nmodel: {args.model}")
     print(f"params: lr {args.learning_rate}, epoch {args.epochs}")
 
