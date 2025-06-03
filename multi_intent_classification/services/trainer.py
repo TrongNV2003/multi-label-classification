@@ -116,8 +116,8 @@ class TrainingArguments:
         self.loss_factory = LossFunctionFactory()
         if self.is_multi_label:
             if self.use_focal_loss:
-                self.loss_fn = self.loss_factory.get_loss("focal_multi", gamma=self.focal_loss_gamma, alpha=self.focal_loss_alpha)
-                logger.info("Using Focal Loss for multi-label classification.")
+                self.loss_fn = self.loss_factory.get_loss("focal_multi", num_labels=len(self.model.config.id2label), gamma=self.focal_loss_gamma, alpha=self.focal_loss_alpha)
+                logger.info(f"Using Focal Loss for multi-label classification with {len(self.model.config.id2label)} labels.")
             else:
                 self.loss_fn = self.loss_factory.get_loss("bce")
                 logger.info("Using BCE Loss for multi-label classification.")
