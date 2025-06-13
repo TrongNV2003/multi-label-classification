@@ -3,9 +3,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 import json
 import time
-import random
 import argparse
-import numpy as np
 from collections import Counter
 
 import torch
@@ -14,27 +12,8 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer, Auto
 from multi_intent_classification.services.trainer import TrainingArguments
 from multi_intent_classification.services.evaluate import TestingArguments
 from multi_intent_classification.services.dataloader import Dataset, DataCollator
+from multi_intent_classification.utils.model_utils import set_seed, get_vram_usage, count_parameters
 
-
-def set_seed(seed: int) -> None:
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(seed)
-        torch.backends.cudnn.benchmark = False
-        torch.backends.cudnn.deterministic = True
-
-def get_vram_usage(device):
-    if not torch.cuda.is_available():
-        return 0.0
-    return torch.cuda.max_memory_allocated(device) / (1024 ** 3)
-
-def count_parameters(model: torch.nn.Module) -> None:
-    total_params = sum(p.numel() for p in model.parameters())
-    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print(f"Total parameters: {total_params:,}")
-    print(f"Trainable parameters: {trainable_params:,}")
 
 def get_unique_labels(input_file: str) -> list:
     with open(input_file, 'r', encoding='utf-8') as f:
@@ -56,7 +35,7 @@ parser.add_argument("--seed", type=int, default=42)
 parser.add_argument("--epochs", type=int, default=10, required=True)
 parser.add_argument("--learning_rate", type=float, default=3e-5, required=True)
 parser.add_argument("--weight_decay", type=float, default=0.01)
-parser.add_argument("--warmup_steps", type=int, default=50)
+parser.add_argument("--use_warmup_steps", action="store_true")
 parser.add_argument("--max_length", type=int, default=256)
 parser.add_argument("--pad_mask_id", type=int, default=-100)
 parser.add_argument("--model", type=str, default="vinai/phobert-base-v2", required=True)
@@ -71,14 +50,14 @@ parser.add_argument("--output_dir", type=str, default="./models", required=True)
 parser.add_argument("--record_output_file", type=str, default="output.json")
 parser.add_argument("--early_stopping_patience", type=int, default=5, required=True)
 parser.add_argument("--early_stopping_threshold", type=float, default=0.001)
-parser.add_argument("--evaluate_on_accuracy", action="store_true", default=False)
-parser.add_argument("--is_multi_label", action="store_true", default=False)
+parser.add_argument("--evaluate_on_accuracy", action="store_true")
+parser.add_argument("--is_multi_label", action="store_true")
 
-parser.add_argument("--use_focal_loss", action="store_true", default=False)
+parser.add_argument("--use_focal_loss", action="store_true")
 parser.add_argument("--focal_loss_gamma", type=float, default=2.0)
 parser.add_argument("--focal_loss_alpha", type=float, default=0.25)
 
-parser.add_argument("--use_lora", action="store_true", default=False, help="Whether to use LoRA for fine-tuning")
+parser.add_argument("--use_lora", action="store_true", help="Whether to use LoRA for fine-tuning")
 parser.add_argument("--lora_rank", type=int, default=16, help="Rank for LoRA adaptation")
 parser.add_argument("--lora_alpha", type=int, default=32, help="Alpha parameter for LoRA")
 parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout probability for LoRA layers")
@@ -120,23 +99,21 @@ def get_model(
 
 
 if __name__ == "__main__":
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    torch.set_float32_matmul_precision('high')
     set_seed(args.seed)
 
     unique_labels = get_unique_labels(args.train_file)
-
     label2id = {label: idx for idx, label in enumerate(unique_labels)}
     id2label = {idx: label for idx, label in enumerate(unique_labels)}
 
     tokenizer = get_tokenizer(args.model)
-    
     train_set = Dataset(json_file=args.train_file, label_mapping=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
     val_set = Dataset(json_file=args.val_file, label_mapping=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
     test_set = Dataset(json_file=args.test_file, label_mapping=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
 
     collator = DataCollator(tokenizer=tokenizer, max_length=args.max_length, is_multi_label=args.is_multi_label)
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    torch.set_float32_matmul_precision('high')
     
     model = get_model(
         args.model, device, tokenizer, num_labels=len(unique_labels), label2id=label2id, id2label=id2label
@@ -159,7 +136,7 @@ if __name__ == "__main__":
         epochs=args.epochs,
         learning_rate=args.learning_rate,
         weight_decay=args.weight_decay,
-        warmup_steps=args.warmup_steps,
+        use_warmup_steps=args.use_warmup_steps,
         model=model,
         pin_memory=args.pin_memory,
         save_dir=save_dir,

@@ -22,7 +22,7 @@ class TrainingArguments:
         epochs: int,
         learning_rate: float,
         weight_decay: float,
-        warmup_steps: int,
+        use_warmup_steps: bool,
         model: torch.nn.Module,
         tokenizer: AutoTokenizer,
         pin_memory: bool,
@@ -52,6 +52,7 @@ class TrainingArguments:
         self.train_batch_size = train_batch_size
         self.valid_batch_size = valid_batch_size
         self.is_multi_label = is_multi_label
+        self.use_warmup_steps = use_warmup_steps
         
         self.use_focal_loss = use_focal_loss
         self.focal_loss_gamma = focal_loss_gamma
@@ -126,10 +127,17 @@ class TrainingArguments:
             logger.info("Using CE Loss for single-label classification.")
 
         num_training_steps = len(self.train_loader) * epochs
+
+        if self.use_warmup_steps:
+            num_warmup_steps = int(num_training_steps * 0.1)
+        else:
+            num_warmup_steps = 0
+        logger.info(f"Total training steps: {num_training_steps}, Warmup steps: {num_warmup_steps}")
+
         self.scheduler = get_scheduler(
             "linear",
             optimizer=self.optimizer,
-            num_warmup_steps=warmup_steps,
+            num_warmup_steps=num_warmup_steps,
             num_training_steps=num_training_steps
         )
 

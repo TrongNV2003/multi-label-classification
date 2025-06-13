@@ -86,7 +86,7 @@ class TestingArguments:
                                     has_prediction = True
                                     
                             if not has_prediction:
-                                label_name = "UNKNOWN|UNKNOWN"
+                                label_name = constant.UNKNOWN_LABEL
                                 predicted_probs[label_name] = 0.0
                         else:
                             predicted_label_idx = batch_preds[i]
@@ -116,7 +116,7 @@ class TestingArguments:
         for avg in ["micro", "macro", "weighted"]:
             metrics[avg] = self._calculate_metrics(all_preds, all_labels, avg)
 
-        latency_stats = self._calculate_latency_stats(latencies)
+        latency_stats = self._calculate_latency(latencies)
         metrics["latency"] = latency_stats
         self._calculate_accuracy(results)
         
@@ -161,7 +161,7 @@ class TestingArguments:
         print(f"Accuracy (Match all): {accuracy * 100:.2f}%")
 
 
-    def _calculate_latency_stats(self, latencies: List[float]) -> Dict[str, float]:
+    def _calculate_latency(self, latencies: List[float]) -> Dict[str, float]:
         stats = {
             "p95_ms": float(np.percentile(latencies, 95) * 1000),
             "p99_ms": float(np.percentile(latencies, 99) * 1000),
