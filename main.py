@@ -52,11 +52,9 @@ parser.add_argument("--early_stopping_patience", type=int, default=5, required=T
 parser.add_argument("--early_stopping_threshold", type=float, default=0.001)
 parser.add_argument("--evaluate_on_accuracy", action="store_true")
 parser.add_argument("--is_multi_label", action="store_true")
-
 parser.add_argument("--use_focal_loss", action="store_true")
 parser.add_argument("--focal_loss_gamma", type=float, default=2.0)
 parser.add_argument("--focal_loss_alpha", type=float, default=0.25)
-
 parser.add_argument("--use_lora", action="store_true", help="Whether to use LoRA for fine-tuning")
 parser.add_argument("--lora_rank", type=int, default=16, help="Rank for LoRA adaptation")
 parser.add_argument("--lora_alpha", type=int, default=32, help="Alpha parameter for LoRA")

@@ -1,10 +1,12 @@
 import json
 import numpy as np
 from typing import Mapping, Tuple
-from underthesea import word_tokenize
 
 import torch
 from transformers import AutoTokenizer
+
+from multi_intent_classification.services.preprocessing import word_normalize, word_segment
+
 
 class Dataset:
     def __init__(
@@ -15,10 +17,9 @@ class Dataset:
         is_multi_label: bool = False,
         word_segment: bool = False,
     ) -> None:
-        
         with open(json_file, "r", encoding="utf-8") as f:
             data = json.load(f)
-
+            
         self.data = data
         self.label_mapping = label_mapping
         self.sep_token = tokenizer.sep_token
@@ -30,21 +31,36 @@ class Dataset:
 
     def __getitem__(self, index: int) -> Tuple[str, list]:
         item = self.data[index]
+        history = item.get("history", [])
+        query = item["current_message"]
+        labels = item["label"]
+        role = item["role"]
+        
         if self.word_segment:
-            history = [self._word_segment(text) for text in item.get("history", []) if text is not None]
-            current_message = self._word_segment(item["message"])
-        else:
-            history = item.get("history", [])
-            current_message = item["current_message"]
-            
-        labels = item["label_intent"]
+            history = [word_segment(text) for text in history if text is not None]
+            query = word_segment(query)
+        query = word_normalize(query)
+        
+        
+        self.role_list = list({role for role in self.data})
+        if role not in self.role_list:
+            self.role_list = [role] + [r for r in self.role_list if r != role]
+        num_turns = len(history) + 1
+        last_role_idx = self.role_list.index(role)
+        roles = []
+        for i in range(num_turns):
+            idx = (last_role_idx - (num_turns - 1 - i)) % len(self.role_list)
+            roles.append(self.role_list[idx])
+        
+        history = [f"{r}: {t}" for r, t in zip(roles[:-1], history)]
+        query = f"{role}: {query}"
 
         if history:
-            reversed_history = list(reversed(history))
-            history_text = self.sep_token.join(reversed_history)
-            context = f"<current>{current_message}</current><history>{history_text}</history>"
+            history = history[::-1]
+            history_text = self.sep_token.join(history)
         else:
-            context = f"<current>{current_message}</current>"
+            history_text = ""
+        context = f"<current>{query}</current><history>{history_text}</history>"
         
         if self.is_multi_label:
             label_vector = [0] * len(self.label_mapping)
@@ -56,11 +72,8 @@ class Dataset:
                 raise ValueError(f"Single-label mode nhưng mẫu {index} có {len(labels)} nhãn: {labels}")
             label_vector = self.label_mapping[labels[0]]
 
-        return context, label_vector
+        return context, label_vector, role
 
-    def _word_segment(self, sentence: str) -> str:
-        context = word_tokenize(sentence, format="text")
-        return context
 
 class DataCollator:
     def __init__(self, tokenizer: AutoTokenizer, max_length: int, is_multi_label: bool = False) -> None:
@@ -75,7 +88,7 @@ class DataCollator:
         self.is_multi_label = is_multi_label
         
     def __call__(self, batch: list) -> Mapping[str, torch.Tensor]:
-        contexts, labels = zip(*batch)
+        contexts, labels, roles = zip(*batch)
 
         contexts_tensor = self.tokenizer(
             contexts,
@@ -92,5 +105,6 @@ class DataCollator:
         return {
             "input_ids": contexts_tensor["input_ids"],
             "attention_mask": contexts_tensor["attention_mask"],
-            "labels": label_tensor
+            "labels": label_tensor,
+            "roles": roles
         }
