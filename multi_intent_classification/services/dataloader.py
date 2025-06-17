@@ -41,8 +41,8 @@ class Dataset:
             query = word_segment(query)
         query = word_normalize(query)
         
+        self.role_list = list({item["role"] for item in self.data})
         
-        self.role_list = list({role for role in self.data})
         if role not in self.role_list:
             self.role_list = [role] + [r for r in self.role_list if r != role]
         num_turns = len(history) + 1
