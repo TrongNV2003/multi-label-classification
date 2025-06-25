@@ -6,7 +6,6 @@ python -m main \
     --weight_decay 0.01 \
     --use_warmup_steps \
     --max_length 256 \
-    --pad_mask_id -100 \
     --model vinai/phobert-base-v2 \
     --pin_memory \
     --train_batch_size 16 \

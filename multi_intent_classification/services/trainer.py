@@ -2,17 +2,18 @@ import torch
 import torch.nn as nn
 from torch.optim import AdamW
 from torch.utils.data import DataLoader, Dataset
-from peft import LoraConfig, get_peft_model, PeftModel
 from transformers import AutoTokenizer, get_scheduler
 
 import numpy as np
 from tqdm import tqdm
 from loguru import logger
 from typing import Optional, Callable
-from sklearn.metrics import precision_score, recall_score, f1_score
+from peft import LoraConfig, get_peft_model
 
 from multi_intent_classification.utils.utils import AverageMeter
 from multi_intent_classification.services.loss import LossFunctionFactory
+from multi_intent_classification.services.metrics import calculate_metrics
+
 
 class TrainingArguments:
     def __init__(
@@ -156,17 +157,16 @@ class TrainingArguments:
 
             with tqdm(total=len(self.train_loader), unit="batches") as tepoch:
                 tepoch.set_description(f"epoch {epoch}")
-                for data in self.train_loader:
-                    input_ids = data["input_ids"].to(self.device)
-                    attention_mask = data["attention_mask"].to(self.device)
-                    labels = data["labels"].to(self.device)
+                for batch in self.train_loader:
+                    contexts = batch["contexts"]
+                    labels = batch["labels"]
 
                     self.optimizer.zero_grad()
                     
-                    outputs = self.model(
-                        input_ids=input_ids,
-                        attention_mask=attention_mask,
-                    )
+                    contexts = {k: v.to(self.device) for k, v in contexts.items()}
+                    labels = labels.to(self.device)
+                    
+                    outputs = self.model(**contexts)
                     logits = outputs.logits
                     
                     loss = self.loss_fn(logits, labels)
@@ -176,7 +176,7 @@ class TrainingArguments:
                     self.optimizer.step()
                     self.scheduler.step()
 
-                    train_loss.update(loss.item(), input_ids.size(0))
+                    train_loss.update(loss.item(), contexts["input_ids"].size(0))
                     current_lr = self.optimizer.param_groups[0]["lr"]
                     tepoch.set_postfix({"train_loss": train_loss.avg, "lr": current_lr})
                     tepoch.update(1)
@@ -224,18 +224,18 @@ class TrainingArguments:
 
         with tqdm(total=len(dataloader), unit="batches") as tepoch:
             tepoch.set_description("validation")
-            for data in dataloader:
-                input_ids = data["input_ids"].to(self.device)
-                attention_mask = data["attention_mask"].to(self.device)
-                labels = data["labels"].to(self.device)
+            for batch in dataloader:
+                contexts = batch["contexts"]
+                labels = batch["labels"]
+                
+                contexts = {k: v.to(self.device) for k, v in contexts.items()}
+                labels = labels.to(self.device)
 
-                outputs = self.model(
-                    input_ids=input_ids,
-                    attention_mask=attention_mask,
-                )
+                outputs = self.model(**contexts)
                 logits = outputs.logits
                 loss = self.loss_fn(logits, labels)
-                eval_loss.update(loss.item(), input_ids.size(0))
+                
+                eval_loss.update(loss.item(), contexts["input_ids"].size(0))
 
                 if self.is_multi_label:
                     probs = torch.sigmoid(logits)
@@ -254,27 +254,12 @@ class TrainingArguments:
 
         if self.is_multi_label:
             accuracy = np.mean((all_preds == all_labels).all(axis=-1))
-            self._metrics(all_preds, all_labels, average_type="micro")
+            calculate_metrics(all_preds, all_labels, average_type="micro", is_multi_label=self.is_multi_label)
         else:
             accuracy = np.mean(all_preds == all_labels)
-            self._metrics(all_preds, all_labels, average_type="weighted")
+            calculate_metrics(all_preds, all_labels, average_type="weighted", is_multi_label=self.is_multi_label)
 
         return accuracy if self.evaluate_on_accuracy else eval_loss.avg
-
-
-    def _metrics(self, all_preds: np.ndarray, all_labels: np.ndarray, average_type: str) -> None:
-        if self.is_multi_label:
-            accuracy = np.mean((all_preds == all_labels).all(axis=-1))
-        else:
-            accuracy = np.mean(all_preds == all_labels)
-        precision = precision_score(all_labels, all_preds, average=average_type, zero_division=0)
-        recall = recall_score(all_labels, all_preds, average=average_type, zero_division=0)
-        f1 = f1_score(all_labels, all_preds, average=average_type, zero_division=0)
-        print(f"\n=== Metrics ({average_type}) ===")
-        print(f"Accuracy: {accuracy * 100:.2f}%")
-        print(f"Precision: {precision * 100:.2f}%")
-        print(f"Recall: {recall * 100:.2f}%")
-        print(f"F1 Score: {f1 * 100:.2f}%")
 
 
     def _save(self) -> None:

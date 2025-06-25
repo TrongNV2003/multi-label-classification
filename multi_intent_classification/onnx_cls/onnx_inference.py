@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     test_set = Dataset(
         json_file=args.test_set,
-        label_mapping=label2id,
+        label2id=label2id,
         tokenizer=tokenizer,
         is_multi_label=True,
     )

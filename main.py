@@ -37,7 +37,6 @@ parser.add_argument("--learning_rate", type=float, default=3e-5, required=True)
 parser.add_argument("--weight_decay", type=float, default=0.01)
 parser.add_argument("--use_warmup_steps", action="store_true")
 parser.add_argument("--max_length", type=int, default=256)
-parser.add_argument("--pad_mask_id", type=int, default=-100)
 parser.add_argument("--model", type=str, default="vinai/phobert-base-v2", required=True)
 parser.add_argument("--pin_memory", dest="pin_memory", action="store_true", default=False)
 parser.add_argument("--train_batch_size", type=int, default=16, required=True)
@@ -106,13 +105,12 @@ if __name__ == "__main__":
     id2label = {idx: label for idx, label in enumerate(unique_labels)}
 
     tokenizer = get_tokenizer(args.model)
-    train_set = Dataset(json_file=args.train_file, label_mapping=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
-    val_set = Dataset(json_file=args.val_file, label_mapping=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
-    test_set = Dataset(json_file=args.test_file, label_mapping=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
+    train_set = Dataset(json_file=args.train_file, label2id=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
+    val_set = Dataset(json_file=args.val_file, label2id=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
+    test_set = Dataset(json_file=args.test_file, label2id=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
 
     collator = DataCollator(tokenizer=tokenizer, max_length=args.max_length, is_multi_label=args.is_multi_label)
 
-    
     model = get_model(
         args.model, device, tokenizer, num_labels=len(unique_labels), label2id=label2id, id2label=id2label
     )
@@ -188,11 +186,9 @@ if __name__ == "__main__":
     )
     tester.evaluate()
 
-
     if torch.cuda.is_available():
         max_vram = get_vram_usage(device)
         print(f"VRAM tối đa tiêu tốn khi huấn luyện: {max_vram:.2f} GB")
     print(f"Training time: {(end_time - start_time) / 60} mins")
     print(f"\nmodel: {args.model}")
     print(f"params: lr {args.learning_rate}, epoch {args.epochs}")
-

@@ -12,7 +12,7 @@ class Dataset:
     def __init__(
         self,
         json_file: str,
-        label_mapping: dict,
+        label2id: dict,
         tokenizer: AutoTokenizer,
         is_multi_label: bool = False,
         word_segment: bool = False,
@@ -21,7 +21,7 @@ class Dataset:
             data = json.load(f)
             
         self.data = data
-        self.label_mapping = label_mapping
+        self.label_mapping = label2id
         self.sep_token = tokenizer.sep_token
         self.is_multi_label = is_multi_label
         self.word_segment = word_segment
@@ -68,8 +68,14 @@ class Dataset:
                 if label in self.label_mapping:
                     label_vector[self.label_mapping[label]] = 1
         else:
+            if isinstance(labels, str):
+                labels = [labels]
+            elif not isinstance(labels, list):
+                raise ValueError(f"Single-label mode nhưng nhãn tại mẫu {index} không phải str hoặc list: {labels}")
+            
             if len(labels) != 1:
                 raise ValueError(f"Single-label mode nhưng mẫu {index} có {len(labels)} nhãn: {labels}")
+            
             label_vector = self.label_mapping[labels[0]]
 
         return context, label_vector, role
@@ -103,8 +109,7 @@ class DataCollator:
             label_tensor = torch.tensor(labels, dtype=torch.long)
 
         return {
-            "input_ids": contexts_tensor["input_ids"],
-            "attention_mask": contexts_tensor["attention_mask"],
+            "contexts": contexts_tensor,
             "labels": label_tensor,
-            "roles": roles
+            "roles": roles,
         }
