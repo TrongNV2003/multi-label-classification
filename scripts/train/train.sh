@@ -1,4 +1,9 @@
-python -m main \
+#!/bin/bash
+export PYTHONPATH=$PYTHONPATH:$PWD
+
+# Train
+export RESULTS_FILE=results/test_code_results.txt
+python -m multi_intent_classification.main \
     --dataloader_workers 2 \
     --seed 42 \
     --epochs 10 \
@@ -14,6 +19,8 @@ python -m main \
     --train_file dataset/train.json \
     --val_file dataset/val.json \
     --test_file dataset/test.json \
+    --text_col message \
+    --label_col label \
     --output_dir ./models \
     --record_output_file output.json \
     --early_stopping_patience 5 \
@@ -28,3 +35,4 @@ python -m main \
     --lora_alpha 16 \
     --lora_dropout 0.1 \
     --lora_target_modules "query, key, value, dense" \
+    > $RESULTS_FILE

@@ -7,7 +7,6 @@ from onnx import numpy_helper
 from optimum.onnxruntime import AutoOptimizationConfig, ORTOptimizer, ORTModelForSequenceClassification
 
 import os
-import argparse
 import numpy as np
 from loguru import logger
 

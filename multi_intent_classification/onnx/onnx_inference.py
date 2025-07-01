@@ -7,11 +7,12 @@ import torch
 from transformers import AutoTokenizer
 from torch.utils.data import DataLoader
 
-import onnxruntime
 from optimum.onnxruntime import ORTModelForSequenceClassification
 
-from multi_intent_classification.onnx_cls.onnx_converter import OnnxConverter
+from multi_intent_classification.onnx.onnx_converter import OnnxConverter
 from multi_intent_classification.services.dataloader import Dataset, DataCollator
+
+from multi_intent_classification.utils.get_labels import get_unique_labels
 
 class ONNXInference:
     def __init__(
@@ -41,7 +42,6 @@ class ONNXInference:
             pred_indices = preds[0].nonzero(as_tuple=True)[0].tolist()
             predicted_label_names = [self.id2label[idx] for idx in pred_indices] or ["UNKNOWN|UNKNOWN"]
 
-            # confidence: cao nhất trên softmax logits
             confidence = torch.softmax(logits, dim=-1)[0].max().item()
 
             log_message = (
@@ -56,8 +56,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default="vinai/phobert-base-v2", help="Torch model", required=True)
     parser.add_argument("--output_dir", type=str, default="./models", help="Output directory to save ONNX model")
+    parser.add_argument("--train_set", type=str, default="dataset/train.json", help="Train dataset file", required=True)
     parser.add_argument("--test_set", type=str, default="dataset/test.json", help="Test dataset file", required=True)
+    parser.add_argument("--is_multi_label", action="store_true", help="Whether the task is multi-label classification")
     parser.add_argument("--output_file", type=str, default="output.log", help="Output log file")
+    parser.add_argument("--max_length", type=int, default=256, help="Maximum sequence length for tokenization")
+    parser.add_argument("--test_batch_size", type=int, default=16, help="Batch size for testing")
     args = parser.parse_args()
 
     model_name = args.model.split('/')[-1]  # phobert-base-v2
@@ -72,8 +76,8 @@ if __name__ == "__main__":
         onnx_model_dir, provider=providers, use_io_binding=True, file_name="model_optimized.onnx"
     )
     tokenizer = AutoTokenizer.from_pretrained(args.model)
-    
-    unique_labels = ["Cung cấp thông tin", "Tương tác", "Hỏi thông tin giao hàng", "Hỗ trợ, hướng dẫn", "Yêu cầu", "Phản hồi", "Sự vụ", "UNKNOWN"]
+
+    unique_labels = get_unique_labels(args.train_set)
     id2label = {idx: label for idx, label in enumerate(unique_labels)}
     label2id = {label: idx for idx, label in enumerate(unique_labels)}
 
@@ -81,14 +85,14 @@ if __name__ == "__main__":
         json_file=args.test_set,
         label2id=label2id,
         tokenizer=tokenizer,
-        is_multi_label=True,
+        is_multi_label=args.is_multi_label,
     )
 
-    collator = DataCollator(tokenizer=tokenizer, max_length=256)
+    collator = DataCollator(tokenizer=tokenizer, max_length=args.max_length)
 
     test_loader = DataLoader(
         test_set,
-        batch_size=16,
+        batch_size=args.test_batch_size,
         shuffle=False,
         collate_fn=collator
     )

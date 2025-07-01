@@ -8,7 +8,11 @@ import torch
 from torch.utils.data import DataLoader, Dataset
 
 from multi_intent_classification.utils import constant
-from multi_intent_classification.services.metrics import calculate_metrics, calculate_latency, partial_accuracy
+from multi_intent_classification.services.metrics import (
+    calculate_metrics,
+    calculate_latency,
+    save_metrics_to_json
+)
 
 
 class TestingArguments:
@@ -113,11 +117,19 @@ class TestingArguments:
                 json.dump(results, f, ensure_ascii=False, indent=4)
             print(f"Results saved to {self.output_file}")
 
+        classification_metrics = {}
         for avg in ["micro", "macro", "weighted"]:
-            calculate_metrics(all_preds, all_labels, avg, self.is_multi_label)
-        calculate_latency(latencies)
-        partial_accuracy(results)
+            classification_metrics[avg] = calculate_metrics(all_preds, all_labels, avg, self.is_multi_label)
         
+        latencies_metrics = calculate_latency(latencies)
+        all_metrics = {
+            "metrics": classification_metrics,
+            "latencies": latencies_metrics,
+        }
+        save_metrics_to_json(all_metrics, self.output_file)
+        
+        return all_metrics
+
 
     def _map_labels(self, label_data, labels_mapping: Dict[int, str]) -> List[str]:
         if self.is_multi_label:

@@ -1,10 +1,8 @@
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-import json
 import time
 import argparse
-from collections import Counter
 
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, AutoConfig
@@ -12,22 +10,10 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer, Auto
 from multi_intent_classification.services.trainer import TrainingArguments
 from multi_intent_classification.services.evaluate import TestingArguments
 from multi_intent_classification.services.dataloader import Dataset, DataCollator
+
+from multi_intent_classification.utils.get_labels import get_unique_labels
 from multi_intent_classification.utils.model_utils import set_seed, get_vram_usage, count_parameters
 
-
-def get_unique_labels(input_file: str) -> list:
-    with open(input_file, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-
-    labels_count = Counter()
-    for record in data:
-        for label in record["label"]:
-            labels_count.update([label])
-    outputs_labels_list = [label for label, _ in labels_count.most_common()]
-
-    print(f"\nDanh sách nhãn: {outputs_labels_list}")
-    print(f"Tổng số lượng nhãn: {len(outputs_labels_list)}")
-    return outputs_labels_list
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataloader_workers", type=int, default=2)
@@ -45,6 +31,8 @@ parser.add_argument("--test_batch_size", type=int, default=16, required=True)
 parser.add_argument("--train_file", type=str, default="dataset/train.json", required=True)
 parser.add_argument("--val_file", type=str, default="dataset/val.json", required=True)
 parser.add_argument("--test_file", type=str, default="dataset/test.json", required=True)
+parser.add_argument("--text_col", type=str, default="text", required=True)
+parser.add_argument("--label_col", type=str, default="label", required=True)
 parser.add_argument("--output_dir", type=str, default="./models", required=True)
 parser.add_argument("--record_output_file", type=str, default="output.json")
 parser.add_argument("--early_stopping_patience", type=int, default=5, required=True)
@@ -100,23 +88,21 @@ if __name__ == "__main__":
     torch.set_float32_matmul_precision('high')
     set_seed(args.seed)
 
-    unique_labels = get_unique_labels(args.train_file)
+    unique_labels = get_unique_labels(args.train_file, label_col=args.label_col)
     label2id = {label: idx for idx, label in enumerate(unique_labels)}
     id2label = {idx: label for idx, label in enumerate(unique_labels)}
 
     tokenizer = get_tokenizer(args.model)
-    train_set = Dataset(json_file=args.train_file, label2id=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
-    val_set = Dataset(json_file=args.val_file, label2id=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
-    test_set = Dataset(json_file=args.test_file, label2id=label2id, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
-
-    collator = DataCollator(tokenizer=tokenizer, max_length=args.max_length, is_multi_label=args.is_multi_label)
-
-    model = get_model(
-        args.model, device, tokenizer, num_labels=len(unique_labels), label2id=label2id, id2label=id2label
-    )
+    model = get_model(args.model, device, tokenizer, num_labels=len(unique_labels), label2id=label2id, id2label=id2label)
+    max_length = getattr(model.config, 'max_position_embeddings', args.max_length)
     
+    train_set = Dataset(json_file=args.train_file, label2id=label2id, text_col=args.text_col, label_col=args.label_col, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
+    val_set = Dataset(json_file=args.val_file, label2id=label2id, text_col=args.text_col, label_col=args.label_col, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
+    test_set = Dataset(json_file=args.test_file, label2id=label2id, text_col=args.text_col, label_col=args.label_col, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
+
+    collator = DataCollator(tokenizer=tokenizer, max_length=max_length, is_multi_label=args.is_multi_label)
+
     print(f"\nLabel: {model.config.id2label}")
-    print(f"\nEval_on_accuracy: {args.evaluate_on_accuracy}")
     count_parameters(model)
 
     model_name = args.model.split('/')[-1]

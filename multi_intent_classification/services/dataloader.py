@@ -13,6 +13,8 @@ class Dataset:
         self,
         json_file: str,
         label2id: dict,
+        text_col: str,
+        label_col: str,
         tokenizer: AutoTokenizer,
         is_multi_label: bool = False,
         word_segment: bool = False,
@@ -21,6 +23,8 @@ class Dataset:
             data = json.load(f)
             
         self.data = data
+        self.text_col = text_col
+        self.label_col = label_col
         self.label_mapping = label2id
         self.sep_token = tokenizer.sep_token
         self.is_multi_label = is_multi_label
@@ -32,16 +36,16 @@ class Dataset:
     def __getitem__(self, index: int) -> Tuple[str, list]:
         item = self.data[index]
         history = item.get("history", [])
-        query = item["current_message"]
-        labels = item["label"]
-        role = item["role"]
-        
+        role = item.get("role", [])
+        query = item[self.text_col]
+        labels = item[self.label_col]
+
         if self.word_segment:
             history = [word_segment(text) for text in history if text is not None]
             query = word_segment(query)
         query = word_normalize(query)
         
-        self.role_list = list({item["role"] for item in self.data})
+        self.role_list = list({item.get("role", []) for item in self.data})
         
         if role not in self.role_list:
             self.role_list = [role] + [r for r in self.role_list if r != role]
