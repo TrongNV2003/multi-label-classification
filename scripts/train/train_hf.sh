@@ -29,7 +29,10 @@ python -m multi_intent_classification.main_hf \
     --logging_steps 100 \
     --logging_dir ./models/logs \
     --fp16 \
-    --metric_for_best_model eval_micro_f1 \
+    --metric_for_best_model eval_f1 \
     --greater_is_better \
     --load_best_model_at_end \
     --report_to mlflow \
+    # --is_multi_label \
+    # --alpha 0.25 \
+    # --gamma 2.0 \

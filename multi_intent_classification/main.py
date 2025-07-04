@@ -1,70 +1,79 @@
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
+import mlflow
 import time
-import argparse
-
 import torch
-from transformers import AutoModelForSequenceClassification, AutoTokenizer, AutoConfig
+import argparse
+from dotenv import load_dotenv
 
-from multi_intent_classification.services.trainer import TrainingArguments
-from multi_intent_classification.services.evaluate import TestingArguments
-from multi_intent_classification.services.dataloader import Dataset, DataCollator
+from transformers import (
+    AutoConfig,
+    AutoTokenizer,
+    TrainingArguments,
+    AutoModelForSequenceClassification,
+)
 
+from multi_intent_classification.trainer_hf.trainer import HFTrainer
+from multi_intent_classification.trainer_hf.dataloader import Dataset, DataCollator
+from multi_intent_classification.trainer_hf.callbacks.memory_callback import MemoryLoggerCallback
+from multi_intent_classification.trainer_hf.metrics import compute_metrics
 from multi_intent_classification.utils.get_labels import get_unique_labels
 from multi_intent_classification.utils.model_utils import set_seed, get_vram_usage, count_parameters
 
+mlflow.set_experiment("eval_classification")
+load_dotenv()
+
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--dataloader_workers", type=int, default=2)
-parser.add_argument("--seed", type=int, default=42)
-parser.add_argument("--epochs", type=int, default=10, required=True)
-parser.add_argument("--learning_rate", type=float, default=3e-5, required=True)
-parser.add_argument("--weight_decay", type=float, default=0.01)
-parser.add_argument("--use_warmup_steps", action="store_true")
-parser.add_argument("--max_length", type=int, default=256)
-parser.add_argument("--model", type=str, default="vinai/phobert-base-v2", required=True)
-parser.add_argument("--pin_memory", dest="pin_memory", action="store_true", default=False)
-parser.add_argument("--train_batch_size", type=int, default=16, required=True)
-parser.add_argument("--val_batch_size", type=int, default=16, required=True)
-parser.add_argument("--test_batch_size", type=int, default=16, required=True)
-parser.add_argument("--train_file", type=str, default="dataset/train.json", required=True)
-parser.add_argument("--val_file", type=str, default="dataset/val.json", required=True)
-parser.add_argument("--test_file", type=str, default="dataset/test.json", required=True)
-parser.add_argument("--text_col", type=str, default="text", required=True)
-parser.add_argument("--label_col", type=str, default="label", required=True)
-parser.add_argument("--output_dir", type=str, default="./models", required=True)
-parser.add_argument("--record_output_file", type=str, default="output.json")
-parser.add_argument("--early_stopping_patience", type=int, default=5, required=True)
-parser.add_argument("--early_stopping_threshold", type=float, default=0.001)
-parser.add_argument("--evaluate_on_accuracy", action="store_true")
-parser.add_argument("--is_multi_label", action="store_true")
-parser.add_argument("--use_focal_loss", action="store_true")
-parser.add_argument("--focal_loss_gamma", type=float, default=2.0)
-parser.add_argument("--focal_loss_alpha", type=float, default=0.25)
-parser.add_argument("--use_lora", action="store_true", help="Whether to use LoRA for fine-tuning")
-parser.add_argument("--lora_rank", type=int, default=16, help="Rank for LoRA adaptation")
-parser.add_argument("--lora_alpha", type=int, default=32, help="Alpha parameter for LoRA")
-parser.add_argument("--lora_dropout", type=float, default=0.1, help="Dropout probability for LoRA layers")
-parser.add_argument("--lora_target_modules", type=str, default=None,
-                    help="Comma-separated list of target modules for LoRA. If None, defaults to q_proj,v_proj")
+parser.add_argument("--model", type=str, default="vinai/phobert-base-v2", required=True, help="Model checkpoint or name")
+parser.add_argument("--train_file", type=str, default="dataset/train_word.json", required=True, help="Path to training data")
+parser.add_argument("--valid_file", type=str, default="dataset/dev_word.json", required=True, help="Path to validation data")
+parser.add_argument("--test_file", type=str, default="dataset/test_word.json", required=True, help="Path to test data")
+parser.add_argument("--max_length", type=int, default=256, help="Maximum sequence length for tokenization")
+parser.add_argument("--text_col", type=str, default="text", help="Column name for text data")
+parser.add_argument("--label_col", type=str, default="label", help="Column name for label data")
+parser.add_argument("--optim", type=str, default="adamw_torch_fused", help="Optimizer to use for training")
+parser.add_argument("--lr_scheduler_type", type=str, default="linear", help="Learning rate scheduler type")
+parser.add_argument("--is_multi_label", action="store_true", default=False, help="Whether the task is multi-label classification")
+parser.add_argument("--output_dir", type=str, default="output", help="Directory to save model and logs")
+parser.add_argument("--num_train_epochs", type=int, default=10, help="Number of training epochs")
+parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility")
+parser.add_argument("--learning_rate", type=float, default=3e-5, help="Learning rate")
+parser.add_argument("--weight_decay", type=float, default=0.01, help="Weight decay for optimizer")
+parser.add_argument("--warmup_ratio", type=float, default=0.1, help="Number of warmup steps")
+parser.add_argument("--per_device_train_batch_size", type=int, default=16, help="Batch size for training")
+parser.add_argument("--per_device_eval_batch_size", type=int, default=16, help="Batch size for evaluation")
+parser.add_argument("--test_batch_size", type=int, default=16, help="Batch size for testing")
+parser.add_argument("--eval_strategy", type=str, default="epoch", choices=["no", "steps", "epoch"], help="Evaluation strategy")
+parser.add_argument("--save_strategy", type=str, default="epoch", choices=["no", "steps", "epoch"], help="Save strategy")
+parser.add_argument("--save_total_limit", type=int, default=2, help="Maximum number of checkpoints to save")
+parser.add_argument("--logging_steps", type=int, default=100, help="Log every X steps")
+parser.add_argument("--logging_dir", type=str, default=None, help="Directory for logging")
+parser.add_argument("--fp16", action="store_true", default=False, help="Enable mixed precision training (FP16)")
+parser.add_argument("--bf16", action="store_true", default=False, help="Enable bfloat16 training")
+parser.add_argument("--metric_for_best_model", type=str, default="epoch", help="Metric to select best model")
+parser.add_argument("--greater_is_better", action="store_true", default=True, help="Whether higher metric is better")
+parser.add_argument("--load_best_model_at_end", action="store_true", default=True, help="Load best model at the end")
+parser.add_argument("--record_output_file", type=str, default="output.json", help="Output file for evaluation results")
+parser.add_argument("--dataloader_num_workers", type=int, default=2, help="Number of dataloader workers")
+parser.add_argument("--pin_memory", action="store_true", default=False, help="Pin memory for dataloader")
+parser.add_argument("--report_to", type=str, help="Reporting tool for training metrics")
+parser.add_argument("--alpha", type=float, help="Alpha parameter for Focal Loss")
+parser.add_argument("--gamma", type=float, help="Gamma parameter for Focal Loss")
 args = parser.parse_args()
+
 
 def get_tokenizer(checkpoint: str) -> AutoTokenizer:
     tokenizer = AutoTokenizer.from_pretrained(checkpoint, use_fast=True)
-    tokenizer.add_special_tokens(
-        {'additional_special_tokens': ['<history>', '</history>', '<current>', '</current>']}
-    )
     return tokenizer
 
 def get_model(
         checkpoint: str,
         device: str,
-        tokenizer: AutoTokenizer,
         num_labels: int,
         id2label: dict,
         label2id: dict,
-        resize_token_embeddings: bool = True,
     ) -> AutoModelForSequenceClassification:
     config = AutoConfig.from_pretrained(
         checkpoint,
@@ -73,12 +82,13 @@ def get_model(
         label2id=label2id,
         id2label=id2label,
     )
+    # config.classifier_activation = "gelu"
+    # config.global_rope_theta = 16000.0
+    # config.local_rope_theta = 10000.0
     model = AutoModelForSequenceClassification.from_pretrained(
         checkpoint,
         config=config
     )
-    if resize_token_embeddings:
-        model.resize_token_embeddings(len(tokenizer))
     model = model.to(device)
     return model
 
@@ -93,88 +103,77 @@ if __name__ == "__main__":
     id2label = {idx: label for idx, label in enumerate(unique_labels)}
 
     tokenizer = get_tokenizer(args.model)
-    model = get_model(args.model, device, tokenizer, num_labels=len(unique_labels), label2id=label2id, id2label=id2label)
-    max_length = getattr(model.config, 'max_position_embeddings', args.max_length)
+    model = get_model(args.model, device, num_labels=len(unique_labels), label2id=label2id, id2label=id2label)
+    max_length = min(tokenizer.model_max_length, model.config.max_position_embeddings)
+    print(f"Max length: {max_length}")
     
-    train_set = Dataset(json_file=args.train_file, label2id=label2id, text_col=args.text_col, label_col=args.label_col, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
-    val_set = Dataset(json_file=args.val_file, label2id=label2id, text_col=args.text_col, label_col=args.label_col, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
-    test_set = Dataset(json_file=args.test_file, label2id=label2id, text_col=args.text_col, label_col=args.label_col, tokenizer=tokenizer, is_multi_label=args.is_multi_label)
+    train_set = Dataset(json_file=args.train_file, label2id=label2id, text_col=args.text_col, label_col=args.label_col, is_multi_label=args.is_multi_label)
+    val_set = Dataset(json_file=args.valid_file, label2id=label2id, text_col=args.text_col, label_col=args.label_col, is_multi_label=args.is_multi_label)
+    test_set = Dataset(json_file=args.test_file, label2id=label2id, text_col=args.text_col, label_col=args.label_col, is_multi_label=args.is_multi_label)
 
     collator = DataCollator(tokenizer=tokenizer, max_length=max_length, is_multi_label=args.is_multi_label)
 
-    print(f"\nLabel: {model.config.id2label}")
     count_parameters(model)
 
     model_name = args.model.split('/')[-1]
-    if args.use_lora:
-        save_dir = f"{args.output_dir}/{model_name}-lora"
-    else:
-        save_dir = f"{args.output_dir}/{model_name}"
+    save_dir = f"{args.output_dir}/{model_name}"
+    logging_dir = args.logging_dir if args.logging_dir else f"{save_dir}/logs"
 
-    start_time = time.time()
-    trainer = TrainingArguments(
-        dataloader_workers=args.dataloader_workers,
-        device=device,
-        epochs=args.epochs,
+    training_args = TrainingArguments(
+        output_dir=save_dir,
+        num_train_epochs=args.num_train_epochs,
+        seed=args.seed,
+        optim=args.optim,
+        warmup_ratio=args.warmup_ratio,
         learning_rate=args.learning_rate,
+        lr_scheduler_type=args.lr_scheduler_type,
         weight_decay=args.weight_decay,
-        use_warmup_steps=args.use_warmup_steps,
+        per_device_train_batch_size=args.per_device_train_batch_size,
+        per_device_eval_batch_size=args.per_device_eval_batch_size,
+        gradient_accumulation_steps=1,
+        eval_accumulation_steps=1,
+        eval_strategy=args.eval_strategy,
+        save_strategy=args.save_strategy,
+        save_total_limit=args.save_total_limit,
+        logging_dir=logging_dir,
+        logging_steps=args.logging_steps,
+        fp16=args.fp16,
+        bf16=args.bf16,
+        report_to=args.report_to,
+        metric_for_best_model=args.metric_for_best_model,
+        greater_is_better=args.greater_is_better,
+        load_best_model_at_end=args.load_best_model_at_end,
+        dataloader_num_workers=args.dataloader_num_workers,
+        dataloader_pin_memory=args.pin_memory,
+    )
+    start_time = time.time()
+
+    trainer = HFTrainer(
         model=model,
-        pin_memory=args.pin_memory,
-        save_dir=save_dir,
+        args=training_args,
+        train_dataset=train_set,
+        eval_dataset=val_set,
+        data_collator=collator,
         tokenizer=tokenizer,
-        train_set=train_set,
-        valid_set=val_set,
-        train_batch_size=args.train_batch_size,
-        valid_batch_size=args.val_batch_size,
-        collator_fn=collator,
-        early_stopping_patience=args.early_stopping_patience,
-        early_stopping_threshold=args.early_stopping_threshold,
-        evaluate_on_accuracy=args.evaluate_on_accuracy,
+        compute_metrics=lambda eval_pred: compute_metrics(eval_pred, is_multi_label=args.is_multi_label),
+        callbacks=[MemoryLoggerCallback],
+        
         is_multi_label=args.is_multi_label,
-        use_focal_loss=args.use_focal_loss,
-        focal_loss_alpha=args.focal_loss_alpha,
-        focal_loss_gamma=args.focal_loss_gamma,
-        use_lora=args.use_lora,
-        lora_rank=args.lora_rank,
-        lora_alpha=args.lora_alpha,
-        lora_dropout=args.lora_dropout,
-        lora_target_modules=args.lora_target_modules.split(',') if args.lora_target_modules else None,
+        id2label=id2label,
+        alpha=args.alpha,
+        gamma=args.gamma,
     )
     trainer.train()
+
     end_time = time.time()
-
-
-    # Evaluate model
-    if args.use_lora:
-        from peft import PeftModel
-        base_model = get_model(
-            args.model,
-            device,
-            tokenizer,
-            num_labels=len(unique_labels),
-            label2id=label2id,
-            id2label=id2label,
-        )
-        tuned_model = PeftModel.from_pretrained(base_model, save_dir)
-    else:
-        tuned_model = AutoModelForSequenceClassification.from_pretrained(save_dir)
-    tester = TestingArguments(
-        dataloader_workers=args.dataloader_workers,
-        device=device,
-        model=tuned_model,
-        pin_memory=args.pin_memory,
-        test_set=test_set,
-        test_batch_size=args.test_batch_size,
-        collate_fn=collator,
-        output_file=args.record_output_file,
-        is_multi_label=args.is_multi_label,
-    )
-    tester.evaluate()
+    print(f"Training time: {(end_time - start_time) / 60:.2f} mins")
 
     if torch.cuda.is_available():
         max_vram = get_vram_usage(device)
-        print(f"VRAM tối đa tiêu tốn khi huấn luyện: {max_vram:.2f} GB")
-    print(f"Training time: {(end_time - start_time) / 60} mins")
+        print(f"VRAM usage: {max_vram:.2f} GB")
+
+    test_metrics = trainer.evaluate(eval_dataset=test_set)
+    print(f"Test metrics: {test_metrics}")
+
     print(f"\nmodel: {args.model}")
-    print(f"params: lr {args.learning_rate}, epoch {args.epochs}")
+    print(f"params: lr {args.learning_rate}, epochs {args.num_train_epochs}")
