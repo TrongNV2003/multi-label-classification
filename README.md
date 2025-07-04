@@ -1,5 +1,5 @@
-# multi-intent-classification
-Predict multiple intents for each message on conversations
+# Classification
+Fine-tuning models with Transformers models. Using Trainer of Transformers and Custom Trainer.
 
 ## Installation
 ```sh
@@ -7,29 +7,18 @@ pip install -r requirements.txt
 ```
 
 ## Usage
-training and evaluating models:
+Training and evaluating models:
+1. Using Trainer of Transformers:
 ```sh
-bash train.sh
+bash scripts/train/train_hf.sh
 ```
 
-## Example input for dataset
-```json
-[
-    {
-        "id": 1,
-        "history": [
-            "alo ạ"
-        ],
-        "message": "Xin chào bạn",
-        "label_intent": [
-            "Intent 1",
-            "Intent 2"
-        ]
-    }
-]
+2. Using custom Trainer:
+```sh
+bash scripts/train/train.sh
 ```
+
 
 ### Future plans:
-    + Convert model sang ONNX để tăng tốc inference (done)
-    + So sánh kết quả với LLM model (Qwen-72B) (done)
+- TBD
     
