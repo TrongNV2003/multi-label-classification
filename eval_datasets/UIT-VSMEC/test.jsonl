@@ -1,0 +1,693 @@
+{"sentence": "người ta có bạn bè nhìn vui thật", "label": "Sadness"}
+{"sentence": "cho nghỉ viêc mói đúng sao goi là kỷ luật", "label": "Surprise"}
+{"sentence": "kinh vãi ", "label": "Disgust"}
+{"sentence": "nhà thì không xa lắm nhưng chưa bao giờ đi vì sợ bị đè bẹp luôn người =)))))", "label": "Fear"}
+{"sentence": "bố không thích nộp đấy mày thích ý kiến không", "label": "Anger"}
+{"sentence": "bắt cóc bỏ đĩa . quanh đi quẩn lại chỉ khổ dân đen thôi !", "label": "Other"}
+{"sentence": "per khi nào bạn có bằng xe ôtô thì bạn mới hiểu . sai thì đã có ca", "label": "Other"}
+{"sentence": "một hành động đẹp đầy tính nhân văn ️️", "label": "Enjoyment"}
+{"sentence": "anh nhỏ nhẹ xin 100k rồi trước khi đi còn chào người đẹp , đi cẩn thận \"", "label": "Other"}
+{"sentence": "per trình mày vẫn còn thấp chán =))", "label": "Other"}
+{"sentence": "mấy ai được như vậy ??", "label": "Other"}
+{"sentence": "có ai như tao vô đọc bình luận  tao cười tao xĩu", "label": "Enjoyment"}
+{"sentence": "ủa má . 2 đứa yêu nhau vô duyên và sân si giống nhau vậy ?", "label": "Disgust"}
+{"sentence": "góp vui cho chủ thớt ", "label": "Enjoyment"}
+{"sentence": "sống 17 năm chưa crush ai bao giờ", "label": "Sadness"}
+{"sentence": "ổng quay thiệt mà sao chửi ổng thế . không quay sao máy bạn xem được đó :))", "label": "Other"}
+{"sentence": "thần kinh cái đầu mày …", "label": "Disgust"}
+{"sentence": "nghe ngọt thế :((", "label": "Enjoyment"}
+{"sentence": "sao lại cứ phải thế nhỉ", "label": "Other"}
+{"sentence": "mệt vãi .. mà cừời cũng vãi ??????", "label": "Enjoyment"}
+{"sentence": "kinh khủng thật :((", "label": "Fear"}
+{"sentence": "hậu duệ mặt trời đấy chứ đùa đâu nhá ", "label": "Other"}
+{"sentence": "tôi ở phú yên và anh này nói rất chuẩn < 3", "label": "Enjoyment"}
+{"sentence": "đứa nào bị táo bón thâm niên cứ ra cầu này mà nhảy đảm bảo hiệu quả ngay lần đầu trải nghiệm ", "label": "Enjoyment"}
+{"sentence": "trơi ơi sao lại cháy chứ", "label": "Surprise"}
+{"sentence": "có những người không có ý thức bỏ quần áo rách hoặc mặc rồi để vào tủ để đỡ phải đi vứt ...", "label": "Disgust"}
+{"sentence": "per khi ế nhưng vẫn phải giương mắt nhìn bọn nó ân ái", "label": "Sadness"}
+{"sentence": "per tiến cử bản thân nào", "label": "Other"}
+{"sentence": "vẫn chọn tech là ngân hàng đồng hành", "label": "Enjoyment"}
+{"sentence": "per dạo này ít tung tăng hơn xưa nên hơi trầm cảm dồi chăng ", "label": "Other"}
+{"sentence": "dume sao sao nó nói tiếng việt được vậy", "label": "Surprise"}
+{"sentence": "kêu gọi thì lói thế thôi chứ dân nó vẫn dùng apple như thường", "label": "Other"}
+{"sentence": "nhưng tao đéo có crush", "label": "Sadness"}
+{"sentence": "từ nay ho , thì phải kiếm chỗ nào nằm tạm", "label": "Other"}
+{"sentence": "tao đéo ngờ được đây là trường tao :))))", "label": "Surprise"}
+{"sentence": "yêu nghề thực sự", "label": "Enjoyment"}
+{"sentence": ":))) ra thấy nó xấu chó thì lại về chặn số à", "label": "Other"}
+{"sentence": "này là xạo chó chứ nguyên giá gì . kinh doanh là phải lừa lọc ... lừa giỏi diễn đạt thì giàu", "label": "Disgust"}
+{"sentence": "ý thức con ruồi là chủ yếu .. thì ngập rác là chuyện đương nhiên .", "label": "Disgust"}
+{"sentence": "phim hay thật nhưng cái kết hơi khó hiểu :v chốt lại là đáng đồng tiền bát gạo :v", "label": "Enjoyment"}
+{"sentence": "trời đụ thằng con trời đánh", "label": "Anger"}
+{"sentence": "má , chơi dị ai chơi lại , mấy ba", "label": "Disgust"}
+{"sentence": "bọn biến thái", "label": "Disgust"}
+{"sentence": "nào thức tỉnh đi các bạn ơi ", "label": "Other"}
+{"sentence": "chắc chắn bố của bạn này là một người vui tính chứ không phải khó tính . khiếu khôi hài bạn ấy ảnh hưởng từ bố .", "label": "Enjoyment"}
+{"sentence": "chất lượng âm thanh bản này hình như nghe hay hơn bản gốc hồi mấy năm trước nhiều < 3", "label": "Enjoyment"}
+{"sentence": "mặt chúng bạn kiểu lại đéo được trả tiền rồi ", "label": "Sadness"}
+{"sentence": "mình chưa từng thấy phim nào ý nghĩa như phim này cả , nó dạy cho ta về nhiều mặt trong cuộc sống , khi vui , khi buồn", "label": "Enjoyment"}
+{"sentence": "nhìn thôi cũng đau lòng :))", "label": "Sadness"}
+{"sentence": "xem cái con cặc gì , tắt đi", "label": "Anger"}
+{"sentence": "sao có dầu ăn ở đây nhỉ ?", "label": "Surprise"}
+{"sentence": "dưới nước không nhìn được , kiểu gì chả có đứa sờ mông sờ .... dcm súc vật :)", "label": "Anger"}
+{"sentence": "tao rất sợ mất đứa tỏ ra như thế", "label": "Fear"}
+{"sentence": "per ơi .... anh muốn anh và nó sẽ bảo vệ đời em ", "label": "Enjoyment"}
+{"sentence": "tao cũng thế mà ba tao vứt hết mẹ rồi", "label": "Other"}
+{"sentence": "đến cái camera nó cũng hắt hủi mày :))) chớt đi chứ sống nàm gì nữa", "label": "Disgust"}
+{"sentence": "hú hồn cái lồn còn nguyên :)", "label": "Fear"}
+{"sentence": "vẫn thắc mắc tại sao trước mình thi vào 10 lại dễ thế", "label": "Other"}
+{"sentence": "có vẻ người dân hơi mê tín quá ", "label": "Disgust"}
+{"sentence": "mình trả hùa , mình vẫn đỗ nhắn tin", "label": "Enjoyment"}
+{"sentence": "tôi còn chẳng lấy ảnh lớp cho nữa", "label": "Sadness"}
+{"sentence": "per sáng mai kiểu gì cũng về tới nhà :))", "label": "Enjoyment"}
+{"sentence": "đợt trước con em tao đi học cũng bị con kia hăm đòi đánh . tao lên tận trường kêu nó ra bảo mày muốn đánh tao cho tụi mày đánh đó . học sinh mà bố láo", "label": "Anger"}
+{"sentence": "tôi cũng muốn được cảm thấy như vậy ??", "label": "Sadness"}
+{"sentence": "xăm chữ trái và phải lên mu bàn tay ... hy vọng là mày vẫn biết phâ biệt mặt chữ :))", "label": "Enjoyment"}
+{"sentence": "sang năm quyêt định đi ngủ cho đỡ mỏi mắt", "label": "Other"}
+{"sentence": "khi nào vụ này kết thúc thì mình uống cf trung nguyên trở lại . sợ làm giàu cho cô per lắm .", "label": "Disgust"}
+{"sentence": "đến năm cuối đại học rồi lúc nhớ lại đéo có gì :))", "label": "Sadness"}
+{"sentence": "t chắc bỏ nhà ra đi khi ở với bố mẹ kiểu này quá . vẫn may bố mẹ tao không hề giống này tí nào", "label": "Enjoyment"}
+{"sentence": "đứa con gái nào mà đề nghị là biết bị ma nhập mà né nha mấy cha", "label": "Fear"}
+{"sentence": "đéo phải ai cũng được đặt tên cho 1 \" thuật bán hàng \" trong kinh doanh đâu . chấm hết", "label": "Disgust"}
+{"sentence": "per mấy con đĩ lồn cục súc ... dòng thứ quỷ yêu đel làm gì cũng rượt cho sấp mặt luôn", "label": "Anger"}
+{"sentence": "hình như bồ tao cũng tập gym ", "label": "Other"}
+{"sentence": "lúc trước chạy xe đạp đi ngang qua đàn vịt có mấy con ngỗng lẫn trong đó . thế là dume tụi nó rượt tao vừa chạy vừa la cái thứ âm thanh nghe \" ứ ứ \" \" hiếp em đi \" làm tao sợ tụt lol :))", "label": "Fear"}
+{"sentence": "tên của tao nghe rất bình thương , không có gì đặc sắc nên nhiều khi nghĩ cùng buồn tẹo .", "label": "Sadness"}
+{"sentence": "thích :)))) đi làm vui hay không là có đồng nghiệp tốt đừng chơi xấu mình là được :))", "label": "Enjoyment"}
+{"sentence": "per xem đi mày sẽ sướng thi nhìn con nhện bị giết ", "label": "Enjoyment"}
+{"sentence": "chạm đáy nỗi đau ", "label": "Sadness"}
+{"sentence": "thế ông bác sĩ đó bây giờ còn sống không ", "label": "Other"}
+{"sentence": " đó sẽ là những kỉ niệm thật đẹp", "label": "Sadness"}
+{"sentence": "per chưa bị rượt mà đọc bình luận thấy sợ quá , chắc tao sợ chó không là gì với con này :)", "label": "Fear"}
+{"sentence": "bắt cóc như chơi đó mậy , be careful", "label": "Fear"}
+{"sentence": "đảng ta bao dung thật < 3", "label": "Enjoyment"}
+{"sentence": "rất tiếc em vẫn chưa gặp được anh :((((", "label": "Sadness"}
+{"sentence": "đái mẹ ra quần ??", "label": "Fear"}
+{"sentence": "có ai không nghe thấy nói gì mà toàn xem hình người con gái ấy không ", "label": "Other"}
+{"sentence": "đẹp trai ghê :))", "label": "Enjoyment"}
+{"sentence": "dụ đấy ... đừng tin", "label": "Disgust"}
+{"sentence": "tán cây hình trái tim thì phải", "label": "Other"}
+{"sentence": "làm việc vất vả mới được miếng ăn mà chúng nó khốn nạn thật", "label": "Anger"}
+{"sentence": "dể thương quá ah", "label": "Enjoyment"}
+{"sentence": "tốt nhất không miễn phí cho những thể loại người như vậy . nhắc nhỉ thẳng thắn", "label": "Anger"}
+{"sentence": "gần thôi :))) giờ nhìn lại đề thi và không hiểu sao mình ra trường được :)))", "label": "Enjoyment"}
+{"sentence": "những đứa như vậy quá hèn", "label": "Disgust"}
+{"sentence": "hồi xưa làm fanpage được gạ kèo 7 triệu nhưng nhất quyết không bán . cảm thấy quyết định đúng đắn nhất trong đời", "label": "Enjoyment"}
+{"sentence": "per lúc xưa toàn nấu bằng bếp nay", "label": "Other"}
+{"sentence": "per luôn yêu đời và luôn yêu công việc em nhé", "label": "Enjoyment"}
+{"sentence": "ngày trước thì đòi dấn thân vào showbiz , giờ lại đòi lấy chồng đại gia , đâu ra lắm thế", "label": "Disgust"}
+{"sentence": "phim này coi lâu lắm ùi , mà mỗi năm phải coi lại 1 - 2 lần mới đủ , thực sự cực kì hay và sâu sắc , nhạc phim hay mà diễn cũng rất nhập nữa , amir khan đỉnh nhất ^.^/", "label": "Enjoyment"}
+{"sentence": "đần mặt ra nhìn nó y như con ngu , còn cười theo nó nữa , xong bị nó phát hiện .", "label": "Enjoyment"}
+{"sentence": "bà tôi giờ mất mấy năm rồi giờ lớn lên rồi mà chả tặng được bà món quà nào cả ", "label": "Sadness"}
+{"sentence": "hãm lồn là khi mình đéo ra gì còn đi nói người khác ", "label": "Disgust"}
+{"sentence": "ý thức như lol vậy ai cũng như mày thì máy bay quá tải dẫn tới chết chùm , ý thức như lol vậy mà còn đăng lên", "label": "Disgust"}
+{"sentence": "ai chửi admin ngu chứng tỏ eq thấp tệ", "label": "Disgust"}
+{"sentence": "nấu mì 2 tôm là vô địch", "label": "Enjoyment"}
+{"sentence": "mấy anh thiệt là nóng bỏng !!", "label": "Enjoyment"}
+{"sentence": "qua chạy xe nẹt nẹt bốc đầu bố ai dám dô", "label": "Fear"}
+{"sentence": "chia se cho ai thích thể hiện nè", "label": "Other"}
+{"sentence": "em mày cách mày bao nhiêu tuổi ?", "label": "Other"}
+{"sentence": "thật chứ thấy bạn nam kia cứu con chó không cần nhìn mặt cũng biết đẹp trai rồi ", "label": "Enjoyment"}
+{"sentence": "đó là những câu chuyện buồn mà :((", "label": "Sadness"}
+{"sentence": "diễn còn cứng quá à , kiểu biết rồi mà còn giả bộ bất ngờ :))", "label": "Enjoyment"}
+{"sentence": "làm người khác thỏa mãn bằng mùi hương của chính bản thân", "label": "Enjoyment"}
+{"sentence": "dkm xấu mặt những thằng tập gym vkl tao đéo hiểu sao thằng này nó lại thích đi đường tiểu ngạch là sao", "label": "Disgust"}
+{"sentence": "chỉ cần cho em nó 1 điểm tựa , em nó sẽ không ngán cả thế giới :))", "label": "Enjoyment"}
+{"sentence": "per một lần thôi không có lần thứ hai đâu ", "label": "Enjoyment"}
+{"sentence": "con đường này chắc dành cho mấy người như tôi", "label": "Enjoyment"}
+{"sentence": "đã bị đuổi 1 lần . đéo lgi cũng bị dí", "label": "Anger"}
+{"sentence": "lựa chọn cách thức tuyển như thế nào thì tốt quá rồi", "label": "Enjoyment"}
+{"sentence": "lùi về sau 3 bước đi . ngứa cả con mắt", "label": "Anger"}
+{"sentence": "tội bà vợ", "label": "Sadness"}
+{"sentence": "đẳng cấp :))", "label": "Enjoyment"}
+{"sentence": "nhìn mặt ổng nhẫn nhìn kìa :)) tao chờ sen tao ra thôi , lúc đó tao tung hê hết ", "label": "Other"}
+{"sentence": "dễ thương ", "label": "Enjoyment"}
+{"sentence": "đỉnh rồi , hiệu ứng tốt :))) ấn tượng vãi_chưởng luôn", "label": "Enjoyment"}
+{"sentence": "ko có biển cấm dừng đỗ nhưng đỗ thò đầu ở ngã 3 kia là rất bố láo .", "label": "Anger"}
+{"sentence": "khi mày tắt điện thoại một buổi sáng và tao nhảy tưng tưng lên :)", "label": "Other"}
+{"sentence": "vèo cái đã 7 năm ", "label": "Sadness"}
+{"sentence": "đm ngồi chờ đã rồi các tổng đài viên đều bận ", "label": "Sadness"}
+{"sentence": "nó đòi mượn áo thôi mà . thằng này kỳ ...", "label": "Disgust"}
+{"sentence": "cả ngàn tin nhắn không đổi lại được 1 lần xem :((", "label": "Sadness"}
+{"sentence": "đúng là tốt quá lai thành lạm dụng ", "label": "Sadness"}
+{"sentence": "t cũng thế . đang ngồi chơi với con , vợ nó đắp mặt nạ lù lù bước vào . xém đái trog quần ??????", "label": "Fear"}
+{"sentence": "cũng là 1 mạng người nên các cụ đừng phũ mồm chửi người ta . mong anh ấy sớm siêu thoát . a di đà phật !!!", "label": "Other"}
+{"sentence": "đây gọi là nghiệp vật", "label": "Enjoyment"}
+{"sentence": "có khi không biết thế nào là tự ái đâu :)))", "label": "Other"}
+{"sentence": "cho thơm miếng nào yêu quá cơ", "label": "Enjoyment"}
+{"sentence": "liên quan gì tới mày . mời đám cưới chắc gì mày đã đi . hỏi hỏi con cặc", "label": "Disgust"}
+{"sentence": "thích cái câu \" em không yêu anh nữa \"", "label": "Enjoyment"}
+{"sentence": "cho tao hỏi lúa nó dính mưa vầy ròi thì làm được gì không .", "label": "Other"}
+{"sentence": "nghe bạn này nói dễ thương zị", "label": "Enjoyment"}
+{"sentence": "làm ca nào không quan trọng , quan trọng là có đồng bọn bảo yến nguyễn hạnh ", "label": "Enjoyment"}
+{"sentence": "đỗ ngay góc cua thế có ngày sứt mõm ??", "label": "Other"}
+{"sentence": "phát ngán .", "label": "Disgust"}
+{"sentence": "em ý cute vãi !", "label": "Enjoyment"}
+{"sentence": "per về nhà mà thể hiện", "label": "Disgust"}
+{"sentence": "đúng . a có tầm nhìn . tâm nữa . mình biết", "label": "Enjoyment"}
+{"sentence": "củ cà rốt thôi mà cái mẹt đã vây nếu là miếng thịt thì không bít mẹt ra sao nhể ", "label": "Other"}
+{"sentence": "cái miệng nói chuyện không có người phụ nữ nào có trời ơi thật là có duyên khiếp quá đi thôi", "label": "Enjoyment"}
+{"sentence": "tuyệt vời quá cần nhiều tấm lòng tốt hơn nua thật là ý nghĩa", "label": "Enjoyment"}
+{"sentence": "đi đâu cũng gặp mấy cái thứ", "label": "Anger"}
+{"sentence": "per sao bố lại đủ bình tĩnh để xem hết cái trailer này nhỉ . _ . sợ vãi", "label": "Fear"}
+{"sentence": "sao mà đỉnh dữ vậy trời", "label": "Surprise"}
+{"sentence": "hai thằng đó sẽ .. nhau , cô về nhà nằm mơ típ đi cô bé", "label": "Disgust"}
+{"sentence": "thương .. hy vọng sớm có người cưu mang bé", "label": "Sadness"}
+{"sentence": "mức thu cao nhất - đồng ý vì số liệu nó thể hiện như vậy , chứ còn hiệu quả thì mình không biết đúng không  mỗi lần vô vcb là hiểu phải đợi mỏi mòn , không như những nh khác", "label": "Sadness"}
+{"sentence": "cần lắm nhiều vụ ly hôn như thế ", "label": "Enjoyment"}
+{"sentence": "sời , lừa làm sao được tao :))", "label": "Enjoyment"}
+{"sentence": "có bao nhiêu đôi ngôn tình , cớ sao lìa xa mình ta :((", "label": "Sadness"}
+{"sentence": "đây là một câu chuyện buồn không chỉ riêng tao", "label": "Sadness"}
+{"sentence": "con gái tao thì suốt ngày hêy siri bắt chước mẹ ", "label": "Enjoyment"}
+{"sentence": "chạy ios cho máu ", "label": "Enjoyment"}
+{"sentence": "khâm phục !!! quá khâm phục !!!", "label": "Enjoyment"}
+{"sentence": "per dạo này béo quá rùi :(", "label": "Sadness"}
+{"sentence": "mau khoẻ nhé :d", "label": "Enjoyment"}
+{"sentence": "quá đơn rản , bạn thân yêu ơi ,", "label": "Enjoyment"}
+{"sentence": "tao học nhân sự đây còn đang lo thất nghiệp đây này", "label": "Fear"}
+{"sentence": "cắt cả thắt lưng da của bố để làm ná ", "label": "Enjoyment"}
+{"sentence": "per hẹn xem phim này nữa nha mày ", "label": "Enjoyment"}
+{"sentence": "per vẫn là con mẻ . nay hàng họ to quá ;))))", "label": "Surprise"}
+{"sentence": "đỡ mua 5k tiền sổ rồi , kaka", "label": "Enjoyment"}
+{"sentence": "tinh trùng đâu lắm thế", "label": "Surprise"}
+{"sentence": "per giỏi phết đấy mỗi tội nghịch thôi , được cái làm từ thiện nhiều .", "label": "Enjoyment"}
+{"sentence": "ngọt sớt :)))", "label": "Enjoyment"}
+{"sentence": "tuổi thơ mình lớp 4 đã cảm nắng 1 anh chàng từ 1 viên phấn vôi .", "label": "Enjoyment"}
+{"sentence": "nhìn cái bản mặt bà ta mà ghét thay . tham vô độ . dân mình nhiều nhà dăn ba tỉ còn khó ....", "label": "Disgust"}
+{"sentence": "câu hỏi thú vị ", "label": "Enjoyment"}
+{"sentence": "cô ấy rất tốt , nhưng tôi biết thứ nào tốt đều không dành cho mình", "label": "Sadness"}
+{"sentence": "đm xem mãi quay lưng đi chửa được bước lại dừng :))", "label": "Disgust"}
+{"sentence": "không gì hơn ngoài tình thân", "label": "Other"}
+{"sentence": "lạ lùng nhỉ , cưỡng hôn trong thang máy thì phạt có 200k coi thường phụ nữ , bây giờ phạt 10 triệu vì đàn lợn chết (???)", "label": "Disgust"}
+{"sentence": "thật ra nhiều lúc bị bố mẹ chửi không hiểu vì lí do gì và những câu chửi ấy có những từ không chấp nhận nổi", "label": "Disgust"}
+{"sentence": "cay mắt lắm , mà nhìn nó lại nhớ nhiều kỉ niệm", "label": "Sadness"}
+{"sentence": "per giảm tốc ở bình dương tuổi gì với cái này .", "label": "Other"}
+{"sentence": "per cười tức bụng nà vợ ", "label": "Enjoyment"}
+{"sentence": "wtf , tao đã làm gì sai ️️️", "label": "Sadness"}
+{"sentence": "tao không sợ đi làm mệt mỏi tao chỉ sợ không có niềm vui với nó", "label": "Fear"}
+{"sentence": "lúc nó điên lên nó chã triệu hồi cả nhà mày ra ấy chứ nhổn", "label": "Other"}
+{"sentence": "còn không đụng vào được tóc của sai mà tự xưng vô địch", "label": "Disgust"}
+{"sentence": "mất niềm tin vào đàn ông chứ chưa từng mất niềm tin vào tình yêu ;", "label": "Other"}
+{"sentence": "bọn có tí quan hệ hay thích khoe , ngay chị gì quận phó quận x còn gọi cả công an , chủ tịch phường ra để dằn mặt dân ??", "label": "Anger"}
+{"sentence": "uống hết bia rồi mới về ,", "label": "Enjoyment"}
+{"sentence": "anh thứ 2 cute thế =)))", "label": "Enjoyment"}
+{"sentence": "hơi lạ nhỉ phải nhắn lại cho khách chứ grab thế này bị hủy chuyến làm sao", "label": "Other"}
+{"sentence": "chú nghĩ cháu rất giỏi văn và là người có suy nghĩ trưởng thành rồi  rất đáng yêu và tếu giống mấy con giặc nhà chú ️", "label": "Enjoyment"}
+{"sentence": "đám người lớn văn hóa lùn đẻ ra một đám trẻ vô học . bọn mất dạy này là nhà dột từ nóc ấy mà . nên đuổi học cho lũ ngu học ấy về để nhà tiếp nối sự vô học của gia đình chúng nó", "label": "Anger"}
+{"sentence": "chủ tịch giả làm ăn xin và cái kết . đừng bao giờ coi thường người nghèo", "label": "Disgust"}
+{"sentence": "có ai chỉ tự yêu bản thân như tôi không :(", "label": "Sadness"}
+{"sentence": "không khoe thì không sao . khoe ra mai lại còn cái gốc ... haha ", "label": "Enjoyment"}
+{"sentence": "nhiệt tình + ngu dốt là phải trả giá bằng tiền mặt ", "label": "Enjoyment"}
+{"sentence": "valentine là lễ tình yêu không phải ngày động dục . hãy vì một valentine lành mạnh đi các bạn trẻ ", "label": "Disgust"}
+{"sentence": "thấy anh đấy làm tùm lum mà con nhện vẫn đứng im là tao biết có chiêu rồi . định gạt anh ak", "label": "Enjoyment"}
+{"sentence": "có tí rượu vào nhìn đâu cũng thấy mồi nhìn gì cũng ăn được", "label": "Other"}
+{"sentence": "chết luôn .. tình yêu không phân biệt . giới tính .. tình yêu ơi là tình yêu .. tao đau khổ vì mày lắm rồi ...", "label": "Sadness"}
+{"sentence": "tôi cùng hoàn cảnh với bạn má tôi củng bệnh và từng ngày từng ngày tôi bên má tôi sợ giây phút má bỏ tôi ra đi và ngày đó củng đến ai còn mẹ hảy quí từng giây từng khắc bên mẹ", "label": "Sadness"}
+{"sentence": "có mà bữa chạy ngược chiều trên qlo 1a tại có hẻm nhỏ để quẹo tắt , chưa kịp quẹo bị 6 anh csgt + 1 xe bắt xe tấp vô chặn đầu xe , hoảng hồn cmnl .", "label": "Fear"}
+{"sentence": "ếch chết tại miệng", "label": "Other"}
+{"sentence": "gần 2 năm đến sớm nhất để mở cửa lớp , lúc về cũng là người là sau cùng để khóa cửa . đến giờ ra trường được 3 năm vẫn không muốn vứt chìa khóa của lớp ...", "label": "Sadness"}
+{"sentence": "tốt nhất là cần công khai minh bạch là tốt hơn", "label": "Other"}
+{"sentence": "chắc mình là thánh nguy hiểm", "label": "Enjoyment"}
+{"sentence": "mong bé sớm được mua lại", "label": "Sadness"}
+{"sentence": "nhiều tiền để làm gì ..... đạo đức xã hội thế này thì đi học đâm chém chứ học chữ làm gì nữa ", "label": "Disgust"}
+{"sentence": "má đớp chanh hùi hụi thế kia mà mặt không nhăn à", "label": "Surprise"}
+{"sentence": "thanh niên trả thù đời bằng cách này hả ?", "label": "Surprise"}
+{"sentence": "bán hàng onl riết bán luôn não rồi ", "label": "Disgust"}
+{"sentence": "per nhớ cái bếp huyền thoại của 2 đứa mình he", "label": "Enjoyment"}
+{"sentence": "nam chính đẹp . nữ chính hơi già . nếu nữ chính là 1 diển viên dể thương thì xem hay hơn nhiều", "label": "Disgust"}
+{"sentence": "chuyển cảnh nhanh quá làm tao theo không kịp luôn á", "label": "Surprise"}
+{"sentence": "thật ý nghĩa và hạnh phục cho 2 người họ . nhưng đâu đó trong tao vẫn thấy cái gì đó nó tởm lợn vê lờ ", "label": "Disgust"}
+{"sentence": "cu ̃ người it xa ̀ mày lă ́ mày ..", "label": "Disgust"}
+{"sentence": "ai cũng kiếm ăn thui ... hy vong qua video nay mọi ngươi sống có ý thức hơn ... đưng xem đồng tiền của minh to quá", "label": "Disgust"}
+{"sentence": "chửi vậy cũng bình thường mà mọi người cứ làm quá . mẹ tao cũng suốt ngày chửi tao , tao thấy vui mà .", "label": "Enjoyment"}
+{"sentence": "t đề nghị tụi mày trả cái đĩa bay cho con bé đi nghe , tới ca mà vào điều tra thì tụi mày mệt :))", "label": "Other"}
+{"sentence": "thế nên thổ lộ trực tiếp vẫn hơn là tin nhắn .", "label": "Other"}
+{"sentence": "từ lúc có vợ nhiều váy mặc để quay video hẳn :))))))", "label": "Enjoyment"}
+{"sentence": "người việt nam mãi mãi cũng chỉ là bọn hạ cấp so với nước ngoài vì ý thức như lol có 100 năm sau thì ý thức vẫn đel bằng", "label": "Disgust"}
+{"sentence": "ừ nhìn rợn thật =]]]]", "label": "Disgust"}
+{"sentence": "đuma tao đang ở đấy nè , vừa đi vừa ôm túi sợ cướp :((", "label": "Fear"}
+{"sentence": "phát hiện mới !!!", "label": "Surprise"}
+{"sentence": "ai cũng chỉ muốn cho con tất cả nhưng vì được không có mà thôi , có con thì mới biết lòng cha mẹ", "label": "Sadness"}
+{"sentence": "moẹ ! nghe cái tên đã hấp con mẹ nó dẫn lắm rồi đây này ! đjln ??????", "label": "Enjoyment"}
+{"sentence": "per không bao giờ quên được hihi", "label": "Enjoyment"}
+{"sentence": "nói câu trước đá câu sau vẫn là sai bét đúng không cả nhà", "label": "Disgust"}
+{"sentence": "ngu người", "label": "Disgust"}
+{"sentence": "nói xong còn chả dám ăn nữa ", "label": "Fear"}
+{"sentence": "cứu tao :(( tao sợ rắn", "label": "Fear"}
+{"sentence": "t thấy tội nghiệp thằng cải", "label": "Enjoyment"}
+{"sentence": "anh yêu đứa bướng lắm vì mỗi lần em bướng là anh treo em lên sàn nhà đập mát tay", "label": "Other"}
+{"sentence": "chỉ mới hỏi về người khác giới cái là bị gán là thích bạn đó luôn mí sợ :(", "label": "Sadness"}
+{"sentence": "tối mà tắt đèn gặp mặt nó với cặp mắt nó là tao còn sợ hơn thấy ma", "label": "Fear"}
+{"sentence": "công nhận chữ đẹp . ", "label": "Enjoyment"}
+{"sentence": "áo phông dễ thương quá anh ơiiii", "label": "Enjoyment"}
+{"sentence": "còn nhiều người có cuộc sống khốn khổ hơn ta :)", "label": "Sadness"}
+{"sentence": "mèo nhà em thì cho tiền cũng không ra khỏi cửa", "label": "Other"}
+{"sentence": "đào đúng chó cậy chủ =)))", "label": "Disgust"}
+{"sentence": ":v crush có người yêu rồi", "label": "Sadness"}
+{"sentence": "cái con đồ chơi đó mua ở đâu nhỉ . cười đéo nhặt được mồm . ", "label": "Enjoyment"}
+{"sentence": "nghĩ lại ngày xưa cũng như 2 đứa nhỏ ??", "label": "Other"}
+{"sentence": "hôm nay quên vào đọc bình luận trước !! tính xem con nhện nước bạn khác nhện nước mình như thế nào ! ai ngờ đâu khác xa quá !! d mày mày adm ơi làm hết hồn !!", "label": "Anger"}
+{"sentence": "má cười ỉa luônn", "label": "Enjoyment"}
+{"sentence": "1 năm lật tàu trật đường ray của vận tải đường sắt việt nam !", "label": "Other"}
+{"sentence": "mày làm tao nhớ em gái ghê , mai sinh nhật con bé rồi mà tao đang đi làm xa nhà , không về được .......... ", "label": "Sadness"}
+{"sentence": "cái câu liếm củi chỏ sao sai được nhỉ", "label": "Other"}
+{"sentence": "chỉ cần nghĩ tới cảnh đó là máu kinh sôi trào như núi lửa ", "label": "Anger"}
+{"sentence": "tư ̀ hô ̀ i ba ̣ n â ́ y chuyê ̉ n trươ ̀ người thi ̀ chă ̉ người co ̀ n ai đô ́ i xư ̉ tô ́ tao vơ ́ i tao như vâ ̣ y nư ̃ anh . :(", "label": "Sadness"}
+{"sentence": "đợi chúng nó đang ăn lấy xe cứu hỏa phun nước ôi tao hình dung ra cảnh đó thật tuyệt", "label": "Enjoyment"}
+{"sentence": "đã check in thành công và mãi vẫn chưa gặp được người ấy là ai :((", "label": "Sadness"}
+{"sentence": "đôi khi thích nói chuyện chỉ vì nói chuyện hợp và vì thích nói chuyện chứ thật ra chả phải yêu đương hay thích kiểu trai gái gì", "label": "Other"}
+{"sentence": "mình thấy sợ mấy con rắn quá trời , mà cái gì mình sợ là mình hay muốn tiêu diệt -))", "label": "Fear"}
+{"sentence": "hút ít thôi và hãy chích nhiều hơn ", "label": "Disgust"}
+{"sentence": "em cũng như con chó thôi , nếu anh đủ kiên nhẫn thì mọi chuyện đã khác rồi ", "label": "Sadness"}
+{"sentence": "per khi trong người khó ở thì nên vào đây . động lực để nôn", "label": "Disgust"}
+{"sentence": "ê tao đi nhật chưa được 1 năm mà xem video này làm tao loạn ngôn ngữ ghê . thỉnh thoảng phải dừng video ngẫm câu nó nói nghĩa gì", "label": "Fear"}
+{"sentence": "về thôi , nghỉ ngơi rồi nở rộ tiếp", "label": "Other"}
+{"sentence": "ông mặt trời dễ thương hha", "label": "Enjoyment"}
+{"sentence": "vậy nên cứ lờ đi mà sống tiếp", "label": "Other"}
+{"sentence": "vậy vài bửa trời nắng mình không mang quần nằm dưới nắng cho nó nở ra :))", "label": "Other"}
+{"sentence": "những cử chỉ đẹp làm từ thiện cho người nghèo hay thiếu đến lấy thừa đi đến cho", "label": "Enjoyment"}
+{"sentence": "ý tưởng hay ", "label": "Enjoyment"}
+{"sentence": "cả thế giới thấy hay trừ tao", "label": "Other"}
+{"sentence": "toàn mấy con lợn ký gửi với xách tay thì đợi đấy mà xếp hạng :))", "label": "Disgust"}
+{"sentence": "nhanh vãi mới thấy xong", "label": "Other"}
+{"sentence": "sợ quá đi", "label": "Fear"}
+{"sentence": "tao đây chứ còn ai", "label": "Other"}
+{"sentence": "bằng củi thì tao nấu suốt cho tới tận bây giờ còn bằng rơm thì chưa từng :v", "label": "Other"}
+{"sentence": "thấy dòng này quen quen . thấy đọc bình luận của ai á . haha . buồn cười   ", "label": "Enjoyment"}
+{"sentence": "tuy chưa viết hết nhưng tao người khác sẽ hiểu là viết cái gì", "label": "Enjoyment"}
+{"sentence": "làm ở đâu cũng vậy cũng có đầy rẫy những khó khăn nhưng trọng hơn là làm cùng những đồng nghiệp như thế nào", "label": "Other"}
+{"sentence": "không nha cậu :) mình đi bình thường nha =))", "label": "Enjoyment"}
+{"sentence": "bác không ở lại làm tô phở đã ", "label": "Other"}
+{"sentence": "per tao thấy mấy ảnh thật đẹp trai", "label": "Enjoyment"}
+{"sentence": "do mày ngu đéo ghi chỗ khác :))", "label": "Disgust"}
+{"sentence": "phàm việc quan trọng trong thiên hạ , cứ về hỏi vợ , vợ nói sao cứ làm ngược lại chắc chắc sẽ đúng !", "label": "Enjoyment"}
+{"sentence": "à ra là ngứa mắt vì người ta đỗ ô tô mà không phải trả tiền . khi nào người ta mất tiền mới hài lòng .", "label": "Disgust"}
+{"sentence": "cái toilet hay nhỉ vào đấy được thoải mái nhìn nhau mà trò chuyện trong lúc ị ... :)", "label": "Surprise"}
+{"sentence": "dễ thương ha", "label": "Enjoyment"}
+{"sentence": "chia buồn cùng khổ chủ", "label": "Sadness"}
+{"sentence": "cao su đó khai thắc làm sao có mủ", "label": "Other"}
+{"sentence": "sao mà có nhiều người ngu quá . đậu xe xát đường ray xe lửa . còn mấy thg bình luận cũng ngu theo xe lửa chạy theo đường ray mà kêu nó bẻ lái qua chúc xíu . bẻ đi đâu được mà bẻ", "label": "Disgust"}
+{"sentence": "cháu xl ông trước . cháu cũng không có í gì chê bai đâu ạ . nhưng cháu nhìn móng dài bẩn quá . đang ăn mà cháu cũng run run .", "label": "Disgust"}
+{"sentence": "giờ cứ thành lập các tổ an ninh . bắt được bao nhiêu . chiên free cho các tiệm bia hết là bao tuyệt chủng ", "label": "Enjoyment"}
+{"sentence": "cay và đắng nghe mấy ông lớn tuổi toàn kêu thế thôi", "label": "Enjoyment"}
+{"sentence": "làm video thì ăn bớt chắp chắp như heo lại , đang coi nghe ăn phát mất con mẹ nó hứng , vô duyên", "label": "Disgust"}
+{"sentence": "cha mẹ tao còn cãi lộn nhau vì không biết ngày sinh tháng sinh của tao là dương hay âm ", "label": "Sadness"}
+{"sentence": "người ta đã phải bỏ tiền . bỏ sức ra mới có bữa cơm từ thiện nv mà còn có những người vô ý thức như vậy", "label": "Disgust"}
+{"sentence": "oaaaaaaa ...... thực sự rất tạo động lực và niềm tin cho người khác đó < 3 rất thích nụ cười và sự thoải mái tự tin của anh chị < 3", "label": "Enjoyment"}
+{"sentence": "nhớ đến lại buồn . chuyện tình chúng ta chẳng đi được đến đâu cả", "label": "Sadness"}
+{"sentence": "xuất sắc quá", "label": "Surprise"}
+{"sentence": "nhà tao vẫn nấu . à mà lâu lâu tao về nấu một lần thì không cháy cũng nát", "label": "Sadness"}
+{"sentence": "thiết kế đẹp quá", "label": "Surprise"}
+{"sentence": "per không nhận dạng được mặt bả luôn", "label": "Surprise"}
+{"sentence": "18t đủ trách nhiệm pháp lý rồi ", "label": "Other"}
+{"sentence": "vô học !. tý tuổi tưởng vậy là hay !", "label": "Disgust"}
+{"sentence": "ai thử rồi cho xin tấm hình cái coi nào", "label": "Other"}
+{"sentence": "bố mẹ thì còng lưng nuôi ăn học vất vả không mua được thì thôi , bất hạnh cái gì , bất hạnh cái gì", "label": "Anger"}
+{"sentence": "đúg là dân miền tây , chưa nói đã chửi tục rồi . vậy mà cũg đăg lên được . ở gần phòng mấy người này , đầu mình không yên được .", "label": "Disgust"}
+{"sentence": "nó thả thính xong nó chạy mất ..", "label": "Sadness"}
+{"sentence": "bị nó chặn đầu mấy lần khóc sướt mướt luôn . mấy con yêu nghiệt này còn dữ hơn chó", "label": "Fear"}
+{"sentence": "lò xo chắc giờ không còn nữa rồi", "label": "Sadness"}
+{"sentence": "chơi cái trò mất dạy :))", "label": "Anger"}
+{"sentence": "trong luâ ̣ tao co ́ khung hi ̀ nh pha ̣ tao bă ́ n không . ghê tơ ̉ mày con qua ́ i na ̀ y qua ́", "label": "Disgust"}
+{"sentence": "tao chỉ lên ngắm cảnh tí xíu mà mày cũng dìm tao :))))", "label": "Sadness"}
+{"sentence": "tim vỡ nát", "label": "Sadness"}
+{"sentence": "có biết giận là gì đâu ", "label": "Other"}
+{"sentence": "lương này là tính luôn quá trình tham nhũng ăn bớt ăn xén rồi đó ! tụi mày chưa đủ trình đó thì lấy tư cách gì nói người ta nói xạo ?", "label": "Disgust"}
+{"sentence": "per không lấy được vợ thì có thể đi tâp gym đêt lấy chồng ", "label": "Enjoyment"}
+{"sentence": "đéo thể tin tưởng một ai được", "label": "Other"}
+{"sentence": "thái độ lồi lõm có ngày răng rụng đầy đường đấy =))", "label": "Disgust"}
+{"sentence": "thử đụng vô tao coi dume mấy thằng lol cặn bã", "label": "Anger"}
+{"sentence": "chắc anh phải đáng yêu lắm luôn ý nhể ", "label": "Enjoyment"}
+{"sentence": "muốn bảo vệ và chăm sóc người đấy", "label": "Enjoyment"}
+{"sentence": "hết sức nguy hiểm và có phần dại dột !", "label": "Disgust"}
+{"sentence": "ôi thôi , cưng quá :v", "label": "Enjoyment"}
+{"sentence": "nghe kể mà thèm ạ :'(", "label": "Sadness"}
+{"sentence": "per vãi xem phải cỡ này . , đoạn nó nhếch môi bố mày sợ suýt đái ra quần dume ", "label": "Fear"}
+{"sentence": "tao . đôi lúc nghĩ lại thì tao vẫn thấy sợ tao lúc tức giận .", "label": "Fear"}
+{"sentence": "nó mà là đặc vụ thật thì lại ngớ người ", "label": "Other"}
+{"sentence": "các chàng trai của tôi về đến nhà chưa ??", "label": "Other"}
+{"sentence": "liệu có còn tồn tại cô gái nào chấp nhận một thằng vừa nghèo vừa xấu đặc biệt lại còn yếu sinh lý như tôi không", "label": "Sadness"}
+{"sentence": "per quan tâm per như là 1 đứa em gái thôi . đừng có mà ảo tưởng nha .", "label": "Other"}
+{"sentence": "vì ghét nhau thôi", "label": "Disgust"}
+{"sentence": "một con ngựa hoang đúng nghĩa ..... đầy tài năng nhưng đang tiếc là không gặp được hlv và những đồng đội hỉu mình", "label": "Enjoyment"}
+{"sentence": "hời ơi ... cưng xĩu", "label": "Enjoyment"}
+{"sentence": "t chỉ chờ đết lúc nó lôi ra xem được cục to như ngón tay không", "label": "Other"}
+{"sentence": "nuôi kiểu đéo gì lại để nó như thế này ??? thằg chủ có tâm hồn thối rữa à ??", "label": "Anger"}
+{"sentence": "hút cần xong đúng là đời toàn màu hồng em nhỉ . nói chậm vãi :))))", "label": "Disgust"}
+{"sentence": "cục cuối khủng bố vãi vậy :(", "label": "Surprise"}
+{"sentence": "per xem xong hình như tao mới bị thêm bệnh tiểu đường", "label": "Sadness"}
+{"sentence": "mất dạy từ nhỏ , đẹp mặt khi bố mẹ nó đang ngồi xem tivi , cứ tưởng hay", "label": "Disgust"}
+{"sentence": "wow sản phẩm tốt ngoài mong đợi luôn á", "label": "Surprise"}
+{"sentence": "không cướp ở đâu đi cướp ngân hàng của nhà nước ", "label": "Enjoyment"}
+{"sentence": "đấy thấy chưa con người ta khổ như thế", "label": "Sadness"}
+{"sentence": "quàooo hay vậy sao , chà chà =))))", "label": "Surprise"}
+{"sentence": "nuốt được cục tiền đó cũng hay đó ( y )", "label": "Enjoyment"}
+{"sentence": "mày nhớ đặt bạn ý cho những lần gọi sau nhé !", "label": "Other"}
+{"sentence": "nhiệt tình cộng ngu dốt bằng phá hoại", "label": "Disgust"}
+{"sentence": "lỗi tại cái gậy thôi mà ", "label": "Other"}
+{"sentence": "hả hả .. tới giờ ăn hả", "label": "Surprise"}
+{"sentence": "chưa tỏ tình với ai bao giờ , nhưng tao bức xúc với những người không tôn trọng quyền riêng tư như vậy", "label": "Anger"}
+{"sentence": "mỗi lần nó cắt thì tao không muốn thấy mặt nó một tuần , nhìn xấu vãi", "label": "Disgust"}
+{"sentence": "t đéo hiểu ai bày ra cái này . xàm lol chết mẹ . người ta viết nhạc cho nghe rồi làm video xàm , mày thề là không hát theo đi", "label": "Disgust"}
+{"sentence": "con quỷ này dí bao dai ... thù dai hơn cả chó , tuổi thơ đi ngang qua bầy ngỗng là y như rằng đúng con quỷ đó nó dí tao", "label": "Anger"}
+{"sentence": "nhìn là biết đỏ chót rồi", "label": "Other"}
+{"sentence": "đựng túi nilon là chất rồi ", "label": "Enjoyment"}
+{"sentence": "tan rã hết rồi , giờ toàn đánh lẻ thôi ", "label": "Sadness"}
+{"sentence": "ăn học bao nhiêu năm rồi mà vẫn ngu", "label": "Disgust"}
+{"sentence": "cái lol mẹ đóng vào mồm thì có ở đấy mà đóng băng", "label": "Anger"}
+{"sentence": "khoảnh khắc tao nhận ra tao đã từng rơi vào hoàn cảnh bế tắc này ", "label": "Sadness"}
+{"sentence": "t nói té 1 cái không dập mề thua gì cũg thua ..", "label": "Fear"}
+{"sentence": "cái này mà đơn giản ? chị à , là chị nghĩ đơn giản thôi =]]]]", "label": "Disgust"}
+{"sentence": "tao ở thanh hà và nhà tao không quả vải nào hết ", "label": "Sadness"}
+{"sentence": "hãy mang cô ấy sang việt nam ngay", "label": "Other"}
+{"sentence": ":)) thật là kì lạ", "label": "Surprise"}
+{"sentence": "bả thôi đó , gặm đi .", "label": "Other"}
+{"sentence": "per tụi bây có thấy nó vô lí vlonee hôngg ", "label": "Disgust"}
+{"sentence": "họ sáng tạo , cải chế cho đời thêm xanh thì bảo họ luồn cúi .", "label": "Disgust"}
+{"sentence": "per thua là hết cf để uống .", "label": "Other"}
+{"sentence": "đơn giản vậy thôi là đủ ️", "label": "Enjoyment"}
+{"sentence": "mày nói thôi mà tao nghĩ cũng thấy buồn rồi :(((", "label": "Sadness"}
+{"sentence": "đái mẹ ra quần", "label": "Fear"}
+{"sentence": "còn tôi tự nhủ dù lớp học tự ý bỏ về hết tôi cũng phải ở lại học đến tiết cuối cùng . hết giờ tôi cứ ngồi đó rồi từ từ bước chậm ra cửa ngoái đầu nhìn lại .", "label": "Sadness"}
+{"sentence": "làm bát phở đã bác ơi", "label": "Other"}
+{"sentence": "bị ám ảnh hồi bé đi nhổ răng , không dám đi nha sĩ nữa :((( huhu ", "label": "Fear"}
+{"sentence": "tôi trưởng thành vclll", "label": "Enjoyment"}
+{"sentence": "dậy tắt đồng hồ báo thức kìa , giờ này còn ngủ được à :v", "label": "Other"}
+{"sentence": "lỗi tại cái cây hay lỗi tại anh , tại anh nặng quá nên cây ....", "label": "Disgust"}
+{"sentence": "tự nhiên thấy tụi con gái khóc tu tu , thế là mình lủi ra ghế đá trước lớp ngồi . tự nhiên cô dạy văn cũng ra theo xong ôm mình khóc ,", "label": "Sadness"}
+{"sentence": "đến ông cũng chẳng dám xơi", "label": "Fear"}
+{"sentence": "hiếu nghĩa . nhìn cái này nhớ mắc cười má đào chúc quá ", "label": "Enjoyment"}
+{"sentence": "ôi trời nguy hiểm thế", "label": "Fear"}
+{"sentence": "tội cho mấy thằng đang xoay tiền mua bánh trung thu cho vợ thằng khác ăn", "label": "Sadness"}
+{"sentence": "mấy thằng ở ngoài bình luận gặp tao tao xé mỏ từng đứa . cha mẹ đéo dạy để xã hội dạy nhé . còn phèn lắm", "label": "Anger"}
+{"sentence": "dỡn ngu gặp những tg yếu tim đùa kiểu này nó lên cơn lăn đùng ra ăn cho hết ...", "label": "Disgust"}
+{"sentence": "cười ỉa :))", "label": "Enjoyment"}
+{"sentence": "trước em cũng hắt xì 1 cái lưng khụ xuống như ông già đau vãi", "label": "Sadness"}
+{"sentence": "thôi xong 1 chiếc ôto . chắc tối nay ăn không ngon , nhậu không yên rồi .", "label": "Sadness"}
+{"sentence": "cuteeeeeee ", "label": "Enjoyment"}
+{"sentence": "bà tao mất rồi :<", "label": "Sadness"}
+{"sentence": "nó cười mà muốn rụng tim ", "label": "Enjoyment"}
+{"sentence": "ui còn chưa kịp đi xem đã rút rồi :((", "label": "Sadness"}
+{"sentence": "con đĩ mèo mất dạy ! gặp tao tao đá cái mày , dám đánh con thỏ của tao , bởi tao ghét vxl", "label": "Anger"}
+{"sentence": "em ấy còn viết đẹp hơn mình luôn á", "label": "Surprise"}
+{"sentence": "em chân thành nên em tổn thương !", "label": "Sadness"}
+{"sentence": "dume mình tưởng tinh trùng :)", "label": "Disgust"}
+{"sentence": "béo quá không ai yêu thì về đây em nuôi nè", "label": "Other"}
+{"sentence": "rút kinh nghiệm năm ngoái ", "label": "Enjoyment"}
+{"sentence": "đ biết tình yêu là gì mà ăn rồi cứ đi thả thính đậu má", "label": "Disgust"}
+{"sentence": "per móc lên tới não :))", "label": "Fear"}
+{"sentence": "sợ vãi nồi tao còn tg thằng kia bay ra cơ :))))", "label": "Fear"}
+{"sentence": "cũng đúng :))", "label": "Enjoyment"}
+{"sentence": "tao nghe nói đứa bé còn nhỏ là không được chụp hình đâu mày", "label": "Other"}
+{"sentence": "bị bắt nạt im re hà hiền khô luôn thấy tội nghiệp ai dè tới chừng ...... ha ha ha", "label": "Enjoyment"}
+{"sentence": "mới yêu thôi nhá yêu lâu rồi chán nhau rồi á thử xem đường đứa nào đứa đấy đi", "label": "Other"}
+{"sentence": "con bố mẹ nào không dạy được để xã hội dạy cho , bố mẹ bất hợp tác để làng xóm hợp tác", "label": "Disgust"}
+{"sentence": "thằng lái tàu quá đáng , bẻ lái qua tý có sao đâu :))", "label": "Disgust"}
+{"sentence": "đừng đùa với nước bạn", "label": "Other"}
+{"sentence": "tiền mất tật mang . xe đã nát rồi giờ còn phải đền cách cửa cho tàu nửa", "label": "Sadness"}
+{"sentence": "ưng dã man luôn", "label": "Enjoyment"}
+{"sentence": "rất có thể nó đang pr trá hình để bán hàng", "label": "Other"}
+{"sentence": "per mắc dại quá mà", "label": "Disgust"}
+{"sentence": "per lại lật nữa hả", "label": "Surprise"}
+{"sentence": "các em thật là vãi", "label": "Disgust"}
+{"sentence": "cầm cái búa ra", "label": "Other"}
+{"sentence": "per vẽ ổ điện bá vãi em ạ ", "label": "Surprise"}
+{"sentence": "thế không đạt được gì à", "label": "Surprise"}
+{"sentence": "cuộc sống tạo ta áp lực ..", "label": "Fear"}
+{"sentence": "tư tưởng đột phá đấy chứ", "label": "Surprise"}
+{"sentence": "đối với tình yêu thì thời gian có tác dụng xây đắp chứ không còn là phá huỷ mọi thứ nữa . ngưỡng mộ hai ông bà ️️️", "label": "Enjoyment"}
+{"sentence": "thời đi học tao còn bị bạt tai với bắt quỳ trên bục giảng luôn , tội phá , như này thấm gì đâu :3 phụ huynh ngày nay cứ làm quá lên", "label": "Disgust"}
+{"sentence": "bây giờ thế mới biết tác dụng của con cái ", "label": "Sadness"}
+{"sentence": "đây là thằng chó", "label": "Disgust"}
+{"sentence": "trẻ trâu việt nam thật đáng sợ", "label": "Fear"}
+{"sentence": "ngày đẹp trời là ngày được nghỉ làm , đi những nơi mình thích , với người mình thương , ăn những món ăn ngon . xong về ôm nhau ngủ :)))", "label": "Enjoyment"}
+{"sentence": "mày bị ngu hả đĩ chó :) hết chỗ viết à :) thích viết thì tìm chỗ nào đéo trôi á :) hoặc mua giấy về viết chứ địt mẹ viết rồi lại viết làm tao buồn mày :)", "label": "Anger"}
+{"sentence": "t dọn quán hát mà muốn diệt sạch mấy con ngu :))) đuỵt ăn sinh nhật mà cỡ nát hết cốc , bôi bánh hết lên ghế bàn thì ks , đây bôi cả lên loa , ti vi , trần nhà .... dume cái :))) đồ điện bôi lên để tao dọn tao bị giật chết à :))", "label": "Anger"}
+{"sentence": "giáo viên tiếng anh mà không biết tiếng anh ?", "label": "Disgust"}
+{"sentence": "tao có hiểu đéo gì đau", "label": "Sadness"}
+{"sentence": "sao không xúm lại rỉa lông tụi đầu bếp nhỉ .", "label": "Other"}
+{"sentence": "khang khang 1 thời cùng nhau vui say ! bjo thì khác rồi thân ai nấy lo hở chị hố hố ;))", "label": "Enjoyment"}
+{"sentence": "phát hiện nghi vấn đổ vỏ :))", "label": "Other"}
+{"sentence": "tuổi thơ bất hạnh .. học mẫu giáo mà cạnh trường học là 1 bầy ngỗng . sáng nào tao cũng được chạy bộ tập thể dục nhờ bọn nó", "label": "Sadness"}
+{"sentence": ":v cướp xong trừ khi ông bơi sông . chứ đi đường :)))) với cái bộ dạng đó . ai trả thấy :)))", "label": "Disgust"}
+{"sentence": "không biết ô ý có nhận con nuôi không nhỉ ?", "label": "Other"}
+{"sentence": "1 chút đắng , chút chua cay , với 1 chút ngọt ngào ở đâu đó ", "label": "Sadness"}
+{"sentence": "quá đau lòng nhưng chúng ta phải chấp nhận với điều đó", "label": "Sadness"}
+{"sentence": "mở ra mà thấy vậy chắc tao sợ quá mà chết luôn mất :)", "label": "Fear"}
+{"sentence": "ai làm được cây cầu khó đi này tài quá", "label": "Surprise"}
+{"sentence": "tình anh em thật đáng khâm phục ", "label": "Enjoyment"}
+{"sentence": "xàm bà cố luôn ??????", "label": "Disgust"}
+{"sentence": "chuẩn bị đón chờ mùa nhiệt miệng lưỡi :v", "label": "Other"}
+{"sentence": "per lần sau hãy hưởng ứng câu chuyện của tao như này này", "label": "Other"}
+{"sentence": "các cháu giờ lợi hại quá :<", "label": "Enjoyment"}
+{"sentence": "bất công", "label": "Disgust"}
+{"sentence": "chưa bao giờ nghe ngươ ̀ i ta chửi thề mà đáng êu đến vậy lun =))!", "label": "Enjoyment"}
+{"sentence": "ghi nguồn vào page ạ :)", "label": "Other"}
+{"sentence": "mấy đứa thấy mình hiền nó làm tới hà .. quá đáng lắm luôn á !", "label": "Anger"}
+{"sentence": "mày dek làm được ghen ak", "label": "Disgust"}
+{"sentence": "không đấm vào mặt là may rồi :))", "label": "Disgust"}
+{"sentence": "chưa bao giờ bắn trúng thứ gì .", "label": "Enjoyment"}
+{"sentence": "chuẩn rồi per dù mệt mỏi nhưng vẫn vui :)))", "label": "Other"}
+{"sentence": "thả mẹ tay ra :vậy đằng nào em kia cũng không sống nổi ", "label": "Other"}
+{"sentence": "không có bạn trai ... thì giận ai ", "label": "Sadness"}
+{"sentence": "năm xưa mày cũng ôm gối đứng cửa phòng c như này này per ", "label": "Enjoyment"}
+{"sentence": "bác bảo vệ như lồn", "label": "Disgust"}
+{"sentence": "dell hiểu sao ngày sưa tao có thể cầm nó trưen tay đi câu cá  nhớ lại vẫn thấy ớn ", "label": "Fear"}
+{"sentence": "đạp xe xíu rã chân ông này đạp như tay đua xe", "label": "Enjoyment"}
+{"sentence": "ơ thế sai chỗ mẹ nào nữa ??", "label": "Surprise"}
+{"sentence": "bọn sống thất đức không có tâm chưa nói tới tầm ! bảo sao tâm hồn trẻ trí tuệ kém phát triển ảnh hưởng tới thể chất cũng như tâm sinh lí trong tương lai", "label": "Disgust"}
+{"sentence": "cũng nhờ thầy khắt khe uốn nén bỏ thói hư tật xấu , bây giờ mỗi lần họp lớp đều nhắc tới thầy và vô cùng kính trọng", "label": "Enjoyment"}
+{"sentence": "ừm ngồi đất đỡ mỏi châm", "label": "Other"}
+{"sentence": "có đứa nào vừa coi vừa nuốt nước miếng như tao không ?", "label": "Enjoyment"}
+{"sentence": "tư duy của họ hơn hẳn 1 cái đầu ", "label": "Enjoyment"}
+{"sentence": "cấp 1 hiền lành ít nói , ngồi gần 1 cô bé cái gì cũng nhường cô ấy , nhường đến mức nhường luôn tập sách , để bà già phải dẫn ra nhà nó lấy lại ! ", "label": "Enjoyment"}
+{"sentence": "ngu nhất năm", "label": "Disgust"}
+{"sentence": "kiểu em sai rồi . a xin lỗi em đi ", "label": "Enjoyment"}
+{"sentence": "chỉ mong ông trời sẽ bù đắp cho con cháu của họ sau này ", "label": "Sadness"}
+{"sentence": "bà mẹ nó giật mình", "label": "Fear"}
+{"sentence": "chỉ có bọn óc chó . đú đởn mới phàn nàn .", "label": "Other"}
+{"sentence": "chưa 1 lần vấn vương thời c3 =))", "label": "Other"}
+{"sentence": "em đỗ 6 trường đại học ở mỹ , còn hàng trăm thằng đổ em luôn rồi đó , em biết không . trong đó có anh ", "label": "Enjoyment"}
+{"sentence": "nên xử lý nghiêm khắc", "label": "Other"}
+{"sentence": "cười đau bụng :)))", "label": "Enjoyment"}
+{"sentence": "nghe cái lời rõ đéo hỉu và cái tên cũg không liên quan", "label": "Disgust"}
+{"sentence": "giỡn ngu kiểu đó người ta bị tim giật mình chết rồi sao . giỡn với mình kiểu đó mình đánh cho vỡ mồm luôn", "label": "Anger"}
+{"sentence": "kiên nhẫn với 1 con chó chứ chắc gì đã kiên nhẫn với bố mẹ hay người thân bên cạnh mình .", "label": "Disgust"}
+{"sentence": "cứ tưởng là người yêu =))", "label": "Enjoyment"}
+{"sentence": "đẹp trai quá ak", "label": "Enjoyment"}
+{"sentence": "làm ơn đi .. đừng bám theo tao nua được không", "label": "Anger"}
+{"sentence": "aii may mắn thì có vị ngọt còn aii thiếu may mắn thì họ chỉ toàn gặp những vị cay vị đắng của đờii :))", "label": "Sadness"}
+{"sentence": "thằng đoạn cuối mặc áo hồng đang định gải đít nhưng vì thấy rắn nên anh ấy đã hết ngứa", "label": "Enjoyment"}
+{"sentence": "eo ôi thằng nhóc áo xanh cuối cùng , sao này lớn lên chắc là sói ca haha", "label": "Enjoyment"}
+{"sentence": "đã dâm tâm còn biến thái ", "label": "Disgust"}
+{"sentence": "rất ghét bọn trộm cắp", "label": "Disgust"}
+{"sentence": "nhìn mặt đã thấy đóng vai ác rồi", "label": "Disgust"}
+{"sentence": "per coi chừng bị vậy nha chưa haha", "label": "Enjoyment"}
+{"sentence": "đây là đâu ? cái này là như nào thế ??", "label": "Other"}
+{"sentence": "tuổi thơ thật đáng yêu . chỉ có người lớn dẫn sai đường các em thôi", "label": "Other"}
+{"sentence": "thua cả người ta ", "label": "Sadness"}
+{"sentence": "per , nhơ cai thời sv ở tro , :)", "label": "Enjoyment"}
+{"sentence": "ông lão cục súc", "label": "Disgust"}
+{"sentence": "công khai và phạt thật nặng : đuổi học , cấm thi 10 năm", "label": "Anger"}
+{"sentence": "cưng ghê ️", "label": "Enjoyment"}
+{"sentence": "vị nước mắt , dù cảm xúc như nào thì khi có nó cũng thật đáng nhớ !", "label": "Sadness"}
+{"sentence": "mặt nhỏ dễ thương vãi =))", "label": "Enjoyment"}
+{"sentence": "thích mấy đứa này", "label": "Enjoyment"}
+{"sentence": "đầu độc trẻ em mà sử như vậy là nhẹ quá chuyển công tác ra khỏi nghành", "label": "Disgust"}
+{"sentence": "mày xinh thế ? tao ốm tí đã xấu hoắc", "label": "Sadness"}
+{"sentence": "xịt nước là ướt rồi", "label": "Other"}
+{"sentence": "hy vọng sẽ mau tìm được anh người yêu thật tốt để 5 năm sau có một gia đình như vậy ️️", "label": "Enjoyment"}
+{"sentence": "mới ngày nào bidv còn đứng nhất mà .. haizzz", "label": "Sadness"}
+{"sentence": "chỉ là bạn chưa biết yêu đúng cách thoiii", "label": "Other"}
+{"sentence": "cái ảnh giống hệt mình :))", "label": "Other"}
+{"sentence": "thời gian thấm nhuần yêu thương , nếu đủ kiên nhẫn thì hạnh phúc sẽ đến bên , không sợ sệt ", "label": "Other"}
+{"sentence": "nhất định sẽ làm được", "label": "Other"}
+{"sentence": "câu nói \" ngu thì chết chứ bệnh tật gì \" tao thấy chính xác rồi đây ! dume thiệt hại tài sản còn bị phạt nữa . ngu vãi", "label": "Disgust"}
+{"sentence": "dòm sợ thiệt ", "label": "Fear"}
+{"sentence": "nhìn một cái rồi thôi , chuyện của những năm trước", "label": "Sadness"}
+{"sentence": "khiêp vãi", "label": "Disgust"}
+{"sentence": "bạn trai người khác không bao giờ làm tao thất vọng =)))))", "label": "Enjoyment"}
+{"sentence": "per =)))))))))))) tao cười không biết chỗ nín lun", "label": "Enjoyment"}
+{"sentence": "là do mày quá ảo tưởng", "label": "Disgust"}
+{"sentence": "dễ thương ghê =)) nói y như mấy ông ngồi nhậu trong bàn v \" đúng không \" \" đúng chưa \" \" vui rầu \" =)))", "label": "Enjoyment"}
+{"sentence": "mình rất rất muốn đi nhưng trong túi kô còn xu mẹ nào vân kiều ơi", "label": "Sadness"}
+{"sentence": "khi bạn muốn lầy và cũng có người lầy cùng bạn =))", "label": "Enjoyment"}
+{"sentence": "hay vãi ra , ai đi qua kiểu gì cũng phải đọc và mỉm cười , đánh mạnh vào tâm lý :))", "label": "Enjoyment"}
+{"sentence": "thời chúng ta , đồ hỏng thì mua mới còn thời ông bà , đồ hỏng thì đem đi sửa . đó là lý do vì sao tình yêu của họ luôn bền lâu ....", "label": "Other"}
+{"sentence": "mai tao ăn gà , chụp hình bình luận lại cho mày thèm chơi ??", "label": "Enjoyment"}
+{"sentence": "làm bạn với mấy thể loại này cũng nhục cả người", "label": "Disgust"}
+{"sentence": "thật vậy luôn sao per ?", "label": "Surprise"}
+{"sentence": "tao vừa về xong thề là ở mẹ nhà ngủ còn sướng hơn đông đéo thể nhích nổi , toàn ngắm người ??", "label": "Disgust"}
+{"sentence": "ức chế lắm cụ ạ . đi trong phố cổ còn chưa dừng hẳn đã bị gõ cửa xua đi .", "label": "Anger"}
+{"sentence": "tội nghiệp , có rất nhiều em ở nông thôn bị như vậy .", "label": "Sadness"}
+{"sentence": "chuẩn luôn , áp lực công việc cũng không bằng mối quan hệ với đồng nghiệp", "label": "Enjoyment"}
+{"sentence": "mé bọn trẻ bây giờ", "label": "Disgust"}
+{"sentence": "rụng cả răng khi xem không nhặt được mồm kkk", "label": "Enjoyment"}
+{"sentence": "1 con giáo viên ngu + vài đứa lớn đầu tập làm người lớn nhưng bất thành = dạy ra 1 lũ học sinh mất dậy , 1 lũ đầu bò", "label": "Disgust"}
+{"sentence": "những video như này chỉ khiến cho các cô gái càng thêm ảo tưởng về tình yêu thôi =))) # ngưngảotưởng", "label": "Other"}
+{"sentence": "mong là có bảo hiểm", "label": "Other"}
+{"sentence": "nếu 1 ngày per theo thằng khác và per cũng có bỏ bạn mà đi thôi huhu", "label": "Sadness"}
+{"sentence": "cay đắng ngọt bùi . nhưng cay đắng thì thường nhiều hơn =))", "label": "Other"}
+{"sentence": "tình yêu cha mẹ dành cho con cái là vô điều kiện . mình đã khóc", "label": "Sadness"}
+{"sentence": "đúng rồi , kiên trì thêm một chút nữa đi ! :v", "label": "Enjoyment"}
+{"sentence": "hên crush nay ăn chơi lành mạnh", "label": "Enjoyment"}
+{"sentence": "đau đớn hơn còn là khi làm bạn cũng khó và gặp nhau coi như người dưng nước lã", "label": "Sadness"}
+{"sentence": "cách xử lý thông minh", "label": "Enjoyment"}
+{"sentence": "per mai cấm chọc tao cười nhé dume , tao mà không pass probation là do mày đấy =))", "label": "Other"}
+{"sentence": "trong phim này thấy cái thằng anh hùng đạp xa đạp phế vkl", "label": "Disgust"}
+{"sentence": "per sắp bị đuổi khỏi trường rồi nhé ", "label": "Other"}
+{"sentence": "không biết luôn á", "label": "Surprise"}
+{"sentence": "tao tát cho bây giờ đấy", "label": "Anger"}
+{"sentence": "tao thề tao rất sợ ma quỷ nên tao rất không dám xem phim", "label": "Fear"}
+{"sentence": "điều tồi tệ nhất là kiểm tra code trên giấy .", "label": "Sadness"}
+{"sentence": "thay vì gà chuyển sang ăn lợn , tao cungc thế nên món khoái khẩu là gà chuyển sang sườn mày ạ", "label": "Other"}
+{"sentence": "ta sao khúc cuối cậu bé xịt nói chuyện hoa làm gì vậy", "label": "Other"}
+{"sentence": "t được theo mẹ ra đây những 3 lần :v . uống no nước biển đs . phải công nhận nói chuyện biển đục vãi ", "label": "Disgust"}
+{"sentence": "đm mùi thế :)))", "label": "Disgust"}
+{"sentence": "per của anh tao chứ anh mày à ??", "label": "Other"}
+{"sentence": "mày tưởng ai cũng khùng giống mày hả lo xo dau", "label": "Disgust"}
+{"sentence": "per nam dân trí thấp , ý thức như ruồi là hợp lí .", "label": "Disgust"}
+{"sentence": "họ không cho ta là vì họ không có gì hihiiii", "label": "Enjoyment"}
+{"sentence": "14 / 2 năm sau tau sẽ là ông già cô đơn ....", "label": "Sadness"}
+{"sentence": "gì thế này ? này là kiến thức đó hả ?", "label": "Surprise"}
+{"sentence": "dume xem đi xem lại vẫn đéo thể nhịn được cười :v", "label": "Enjoyment"}
+{"sentence": "trong 1 lần tao được mẹ cho về quê ngoại , nó nhìn tao - tao nhìn nó - và dume đầu tao chôm bôm . cđ đó dữ vãi ! sao nó không đi thi đai đen cấp quốc gia cmnl đi chứ võ công cao cường như vậy mà ở vùng qê hẻo lánh thì thật là phí của giời !!!!", "label": "Disgust"}
+{"sentence": "còn nhỏ mà đã như thế này lớn lên ai chịu được yêu chết đi được", "label": "Enjoyment"}
+{"sentence": "cậu lái xe nói chưa thấy sai gì . ?? đỗ dưới đường chứ có đỗ vào phòng khách nhà mình đâu mà kêu .", "label": "Other"}
+{"sentence": "khóc không chịu được luôn , và mình cũng sẽ làm được nếu phải đánh đổi tính mạng cho 2 cô con gái bé nhỏ của gia đình mình", "label": "Sadness"}
+{"sentence": "per bảo nó nói chuyện đi nhưng không , chỉ nhìn thôi", "label": "Other"}
+{"sentence": "per đợi rụng răng rồi anh tặng quà cho em luôn háy . hhha", "label": "Enjoyment"}
+{"sentence": "per giờ đi ra chỗ ăn phở cũng khó , đi bộ cũng chả chen được ??", "label": "Other"}
+{"sentence": "mấy thèn cức rảnh", "label": "Disgust"}
+{"sentence": "giun xào tỏi , đỉa xào lăn , cứt nấu đông , hỉ mũi rang cơm trộn với đờm , tởm vãi", "label": "Disgust"}
+{"sentence": "và từ đó bà cụ sống trong hạnh phúc :))", "label": "Enjoyment"}
+{"sentence": "video mờ thế còn xác minh được , thế còn lão per đến giờ vẫn im lặng là sao ? ", "label": "Surprise"}
+{"sentence": "lúc nhỏ mẹ nấu cơm bằng bếp củi , ttao thì không biết gì thấy lửa tắt thì chụm vô : )) mẹ ra quánh cho trận vì nồi cơm khét nghẹt ", "label": "Sadness"}
+{"sentence": "đm thằng mập mặt thoả mãn vãi . lần đầu tiên thấy con gái ah", "label": "Disgust"}
+{"sentence": "dm lùi xuống rồi viết , suy ra là bạn để mất người ta là do bạn ngu chứ đéo phải đổ thừa cho cái gì", "label": "Disgust"}
+{"sentence": "bình dị vậy thôi .. mà sao mãi tao chưa tìm được ? hix", "label": "Sadness"}
+{"sentence": "tao thấy tai nạn giao thông là tao nói với mẹ .. con chạy ra đó để tối lên ti vi ... mẹ tao chửi sấp mặt luôn", "label": "Sadness"}
+{"sentence": "đúng kiểu đến mùa động dục . khác gì động vật bậc thấp không", "label": "Disgust"}
+{"sentence": "cười đấy , sau lưng nó đâm con mẹ nó dao vô hình cho chết mà vẫn sống nhăn răng luôn .", "label": "Fear"}
+{"sentence": "toan cao lại nữa , tao dg suy nghĩ có nên đi bằng grap về không", "label": "Other"}
+{"sentence": "bày đặt viết trên cát khắc luôn vào đá cho tạt thoải mái", "label": "Enjoyment"}
+{"sentence": "bài nhạc đầu tiên là nhạc phim gì nhỉ ? mình quên tên phim rồi , xin hỏi có ai biết không ạ", "label": "Other"}
+{"sentence": "hn đéo có đâu nhé . dăm ba cái thứ y đg vớ vẩn :))", "label": "Disgust"}
+{"sentence": "các cháu thật tốt , hãy thương yêu mọi người và cả loài vật nhé , may mắn và niềm vui sẽ đến với các cháu .", "label": "Enjoyment"}
+{"sentence": "cảm động vleu haha", "label": "Enjoyment"}
+{"sentence": "cảm thấy thay được thì thay , giáo viên bây giờ thừa nhiều mà", "label": "Anger"}
+{"sentence": "nghe mãi mà vẫn thấy hay", "label": "Enjoyment"}
+{"sentence": "mèo nhà tao cũng từng đi lạc vì bị chó rượt tưởng mất rồi . sau mấy tháng thấy nó trở về nhà mừng vãi ", "label": "Enjoyment"}
+{"sentence": "vẫn xinh đẹp dịu dàng trong mắt tao ", "label": "Enjoyment"}
+{"sentence": "thấy per hất môg thằg đó bay hài lòng dễ sợ", "label": "Enjoyment"}
+{"sentence": "anh sau đó , không còn là anh nữa ...", "label": "Sadness"}
+{"sentence": "cả đời mình chỉ ước có 500tr trả nợ ngân hàng cái xe để chạy kiếm ăn ...", "label": "Sadness"}
+{"sentence": "cố gắng chứ từ bỏ con cặc gì", "label": "Disgust"}
+{"sentence": "ký ức 1 thời . nhớ", "label": "Enjoyment"}
+{"sentence": "gia tộc bất hạnh :vậy", "label": "Disgust"}
+{"sentence": "vì lợi nhuận con người ta có thể độc ác với nhau như vậy sao ???", "label": "Disgust"}
+{"sentence": "thương anh bạn kia quá .", "label": "Enjoyment"}
+{"sentence": "nhìn muốn tè ra quần rồi", "label": "Fear"}
+{"sentence": "nhìn dơ vãi dume :v", "label": "Disgust"}
+{"sentence": "tao cũng ăn hại nhưng chưa bao giờ ăn hại đến nỗi phí phạm thế", "label": "Disgust"}
+{"sentence": "sao mày không ngủ với mẹ mày luôn", "label": "Other"}
+{"sentence": "phần này dù xem lại 100 lần vẫn bật khóc tình cha thật phi thường", "label": "Sadness"}
+{"sentence": "ăn xong mất hứng đéo nói nữa", "label": "Anger"}
+{"sentence": "chả có gì hay ho , vô bổ", "label": "Disgust"}
+{"sentence": "nhìn giống hai anh đang tỉnh tò với nhau ghê ( mình là hủ đừng ném đá nha )", "label": "Enjoyment"}
+{"sentence": "buồn nhỉ ", "label": "Sadness"}
+{"sentence": "toàn lũ thất đức", "label": "Disgust"}
+{"sentence": "per thế đéo nào mình chơi với toàn gái mà tính vẫn giống con trai . _ .", "label": "Sadness"}
+{"sentence": "cuộc sống của mình đừng hỏi ý kiến người khác", "label": "Other"}
+{"sentence": "mấy thằng mặt địt . chim chưa mọc đủ lông mà lông đã ăn vào tận não chúng mày rồi . đm chúng mày", "label": "Anger"}
+{"sentence": "bà về nơi phương xa mất rồi . nhưng với tớ bà là người dễ thương nhất trên đời . chỉ muốn ngả vào lòng ngoại nghe kể về những câu chuyện cổ ", "label": "Sadness"}
+{"sentence": "vui vẻ chút , lạc quan chút cho đời thêm vui cũng là một cách ", "label": "Enjoyment"}
+{"sentence": "hài vãi :)))", "label": "Enjoyment"}
+{"sentence": "còn gì đau đớn hơn cảnh này :(((", "label": "Sadness"}
+{"sentence": "yep . chính tao . đi vệ sinh thôi cũng phải đảo qua , mà giờ thì người ta sắp đi lấy chồng rồi", "label": "Sadness"}
+{"sentence": "còn mình nhìn như thằng ngu", "label": "Sadness"}
+{"sentence": "thay đổi văn hóa tí đi . đường là tài sản chung của mọi người dân . và mọi người dân được phép làm những gì pháp luật không cấm .", "label": "Other"}
+{"sentence": "ai thấy pha cuối phê vãi không", "label": "Enjoyment"}
+{"sentence": "tội em gái đó", "label": "Sadness"}
+{"sentence": "đứa nào nhây hơn đứa đấy thắng", "label": "Other"}
+{"sentence": "hahah thú vị ghê hen", "label": "Enjoyment"}
+{"sentence": "ngã nhìn cũng thấy yêu ", "label": "Enjoyment"}
+{"sentence": "hồi bé tôi cũng bị chửi cả ngày từ sáng chí tối ! nhưng không phải bố tôi mà là bà nội tôi !", "label": "Sadness"}
+{"sentence": "cung quá ak", "label": "Enjoyment"}
+{"sentence": "mày xinh ghê vậy :d", "label": "Enjoyment"}
+{"sentence": "thương các bác quá , vất vả 10 năm trời mà bị như vậy ", "label": "Sadness"}
+{"sentence": "hên là đụng nhầm người chứ đụng trúng cái là rụng trứng cả bày cả lũ -))", "label": "Enjoyment"}
+{"sentence": "đau ghê", "label": "Sadness"}
+{"sentence": "khúc mắc cười đoạn nào vậy ", "label": "Disgust"}
+{"sentence": "đếm không hết nên nó vương nó vãi ấy mà", "label": "Other"}
+{"sentence": "1 hình này thấy từ sáng đến giờ trên mấy page rồi ", "label": "Other"}
+{"sentence": "mày ăn xong thì cút luôn dùm nha ", "label": "Anger"}
+{"sentence": "thôi thì giả tạo đến phút chót cho tròn chữ hãm lồn", "label": "Disgust"}
+{"sentence": "con bé bị quơ trúng nhìn đẹp như búp bê ấy < 3", "label": "Enjoyment"}
+{"sentence": "bạn không có lỗi sinh ra trong nghèo khó nhưng nếu chết trong nghèo khó thì đó là lỗi của bạn", "label": "Other"}
+{"sentence": "lỗi tổng hợp . đường bộ mà nằm sát đường sắt , còn ông tài xế thì đậu xe cẩu thả .", "label": "Disgust"}
+{"sentence": "phim kinh dị vào cái trời âm u ", "label": "Fear"}
+{"sentence": "crush đéo bị thịt nhé :d nó cũng ế vãi vì tội chảnh chóa", "label": "Anger"}
+{"sentence": "tự nhiên coi tới khúc th bé kéo hết bạn bè tới chụp hình tao buồn cười vãi ! ông kia nghĩ ! thôi chết mẹ rồi ! kiểu này tối mới lau xong ", "label": "Enjoyment"}
+{"sentence": "bếp dầu thời bao cấp cùng thời đôt đèn dầu", "label": "Other"}
+{"sentence": "mình nghĩ đợt này bà per thua rồi . đuối lý lẫn truyền thông yếu", "label": "Sadness"}
+{"sentence": "bọn trẻ trung quốc thời nay ăn gì mà cao thế nhỉ", "label": "Surprise"}
+{"sentence": "fa lâu năm có biết 14 / 2 hay 15 / 2 là ngày gì đâu , chỉ biết là ngày đi làm về và rất mệt", "label": "Sadness"}
+{"sentence": "kinh quá . đau lắm đây . mà nhìn nổi hết da gà ra .", "label": "Disgust"}
+{"sentence": "t đang thắc mắc là 2 thằng kia đéo hỏi thằng per à ", "label": "Other"}
+{"sentence": "nhìn đoạn ổng tránh nó cắn mà nhảy tưng tưng rất chi là điệu nghệ và mang trong đó cả sự tấu hài nữa ", "label": "Enjoyment"}
+{"sentence": "đừng để râu , móng tay cắt gọn gàng . nếu mà thơm nữa thì 8d chuẩn mẹ rồi", "label": "Other"}
+{"sentence": "hôm nào đi học về cũng phải đi qa , nhà nuôi lũ này ở đỉnh dốc , đi học về tới chân dốc thôi là nghe lũ quỷ đó đứng đầu dốc đón đường bọn tao rồi . méo đạp xe lên dốc nổi , dắt xe lên dốc mà muốn vứt mẹ cái xe đạp để chạy lấy thân cho rồi :((", "label": "Fear"}
+{"sentence": "công ty nào nhận bạn không quan trọng , quan trọng là ai giới thiệu bạn vào công ty ", "label": "Enjoyment"}
+{"sentence": "đến cả khi nó nói thích mình , 1 phút sau nó lại nói chỉ trêu . mệt mỏi", "label": "Sadness"}
+{"sentence": "ây da 1 thời", "label": "Other"}
+{"sentence": "nhìn cái bản mặt bà ta mà ghét thay . tham vô độ . dân mình nhiều nhà dăn ba tỉ còn khó ....", "label": "Disgust"}
+{"sentence": "đỡ mua cuốn sổ 5 ngàn =))", "label": "Enjoyment"}
+{"sentence": "chỉ dân đen là khổ thôi . chả trách được họ khi cố gắng đi tìm may mắn ở nơi chùa chiền", "label": "Sadness"}
+{"sentence": "còn gì đau hơn", "label": "Sadness"}
+{"sentence": "nó vẫn luôn hiện hữu xung quanh chúng ta . hãy dùng tình yêu thương đó và cho đi ", "label": "Enjoyment"}
+{"sentence": "3 idiots ! phim hay nhất mọi thời đại .", "label": "Enjoyment"}
+{"sentence": "đi xa nó bắt cóc chết mẹ mày :)", "label": "Disgust"}
+{"sentence": "ôi dume bọn súc vật", "label": "Disgust"}
+{"sentence": "xuất sắc . thật sự quá đỉnh .", "label": "Enjoyment"}
+{"sentence": "đúng là yêu tới đầu bạc răng long .", "label": "Enjoyment"}
+{"sentence": "cho thằng khác ăn ốc bắt bố đổ vỏ à ", "label": "Anger"}
+{"sentence": "động lực là tình yêu , gia đình là nơi để về hihi", "label": "Enjoyment"}
+{"sentence": "đã thất tình xem pim này khóc cả đêm mất thôi mới đề mô mà đã khóc thút thít rồi chắc xem hết thì không biết pai làm sao ..", "label": "Sadness"}
+{"sentence": "và sau mùa vải , tàn dư còn lại là những nốt mụn ", "label": "Sadness"}
+{"sentence": "mỗi lần coi lại sởn gai ốc", "label": "Fear"}
+{"sentence": "con người giỏi nhỉ .", "label": "Surprise"}
+{"sentence": "sến đụ dễ sợ ", "label": "Disgust"}
+{"sentence": "tao muốn mèo nhà tao cũng tìm về được như này ", "label": "Sadness"}
+{"sentence": "rãnh vãi , kiếm cái gì làm đi", "label": "Disgust"}
+{"sentence": "per chuẩn . gọi công an cho lành . cãi cộ chẳng may sửng cồ lên không kìm được phang vào xe nó lại mệt ??", "label": "Disgust"}
+{"sentence": "khi nào mình già rồi cũng như v nha per kkkkkkkkkk", "label": "Enjoyment"}
+{"sentence": "vl gần nhà", "label": "Other"}
+{"sentence": "cứu em nó với", "label": "Sadness"}
+{"sentence": "đụ mẹ ngu à :)) có thiếu chỗ đéo nào cho mày viết khôg", "label": "Disgust"}
+{"sentence": "tao thì sợ nhất lúc nó mới cắt tóc", "label": "Fear"}
+{"sentence": "được cái công tác truyền thông tốt", "label": "Enjoyment"}
+{"sentence": "nhìn rợn vãi", "label": "Fear"}
+{"sentence": "đúng là ổng có vợ rồi có khác . không cần lấy áo làm tóc nữa mà có hẳn váy để mặc rồi ", "label": "Surprise"}
+{"sentence": "haha :))) nãy giờ mấy tiếng rồi mà các bác vẫn còn căng :)))", "label": "Enjoyment"}
+{"sentence": "ngưỡng mộ ông bà á . ông bà đáng yêu ghê", "label": "Enjoyment"}
+{"sentence": "thằng nào kiểu như này tao cho cạch mặt !!! đéo thích nữa ", "label": "Anger"}
+{"sentence": ":)) mọi người bị sao thế ??? thích chơi với mấy đứa như vầy nè :)) hài hước đi chung cười sấp mặt luôn =)))) nhây nhây vầy mới zui chớ ? tự nhiên chửi con nhỏ thấy tội nghiệp ", "label": "Enjoyment"}
+{"sentence": "giờ cắt bộ móng đi cái tay vẫn cứ bị phế khó mà phục hồi được", "label": "Sadness"}
+{"sentence": "per ông đó có đôi mắt đẹp ghê", "label": "Enjoyment"}
+{"sentence": "có vậy ông mới có công chuyện làm mà kiếm tiền còn la lối chửi mắng có tội nghe con .", "label": "Disgust"}
+{"sentence": "phim gì z .. thánh nữ nào cho biết cái chủ đề dới !!", "label": "Other"}
+{"sentence": "địt mẹ đời tao", "label": "Sadness"}
+{"sentence": "áp dụng ở việt nam cơ mà chỉ có ăn cái đầu mày .", "label": "Disgust"}
+{"sentence": "nó cứ sai sai thế nào ấy", "label": "Other"}
+{"sentence": "còn chặt cả cây ổi của hàng xóm để lấy cái chạc làm súng đấy cứ", "label": "Enjoyment"}
+{"sentence": "chắc là uncrush thôi . bố mẹ thì còng lưng ra làm cho con đi học .", "label": "Sadness"}
+{"sentence": "chúng mày cứ cười . dm mai gần đấy có biến lại thấy anh ấy trong bộ cảnh phục thì lại tung hô quả nằm vùng quá đẳng cấp ", "label": "Enjoyment"}
+{"sentence": "gửi nhầm video mình hát chế cho nó nghe", "label": "Other"}
+{"sentence": "tự nhiên mình xem và mỉm cười theo .", "label": "Enjoyment"}
+{"sentence": "bạn ăn cơm chưa ?", "label": "Other"}
+{"sentence": "lúc thì cuốc đất è cổ ra không có giun mà câu cá ", "label": "Sadness"}
+{"sentence": "các bác dẫn crush qua cây sữa nay mà hứng nước đái ve nha haha", "label": "Enjoyment"}
+{"sentence": "vợ chồng rồi mà trong sáng như này chỉ có trong phim nhỉ ", "label": "Surprise"}
+{"sentence": "bep này vào binh dương dùng xuất", "label": "Other"}
+{"sentence": "đôi mắt đằm thắm vãi", "label": "Surprise"}
